@@ -9,6 +9,8 @@ import { ICommand } from './icommand';
 const express = require('express')
 const app = express()
 
+console.error('starting up');
+
 app.get('/', (req: any, res: any) => {
   res.send('Hello World!')
 })
