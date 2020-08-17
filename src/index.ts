@@ -10,9 +10,21 @@ const TOKEN = process.env.TOKEN;
 
 bot.login(TOKEN);
 
+schedule.scheduleJob('30 8 * * *', function() {
+  Weather.currentWeather().then( value => {
+    const channel = bot.channels.find(channel => (channel as Discord.TextChannel).name === 'noaa-information-bureau');
+    (channel as Discord.TextChannel).send(value);
+  })
+});
 
+schedule.scheduleJob('0 12 * * *', function() {
+  Weather.currentWeather().then( value => {
+    const channel = bot.channels.find(channel => (channel as Discord.TextChannel).name === 'noaa-information-bureau');
+    (channel as Discord.TextChannel).send(value);
+  })
+});
 
-schedule.scheduleJob('* * 8 * *', function() {
+schedule.scheduleJob('30 4 * * *', function() {
   Weather.currentWeather().then( value => {
     const channel = bot.channels.find(channel => (channel as Discord.TextChannel).name === 'noaa-information-bureau');
     (channel as Discord.TextChannel).send(value);
