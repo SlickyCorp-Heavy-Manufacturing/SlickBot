@@ -91,8 +91,48 @@ export class Troutslap {
         return usage_string;
     }
     
+    private static TROUT_LIST = [
+        // sized trout
+        "giant trout",
+        "large trout",
+        "small trout",
+        "tiny trout",
+        "diminutive trout",
+        "infitesimally small trout",
+
+        // other adjective trout
+        "wet trout",
+        "smelly trout",
+        "slimy trout",
+
+        // actual trout species
+        "Adriatic trout",
+        "brown trout",
+        "river trout",
+        "flathead trout",
+        "marble trout",
+        "ohrid trout",
+        "sevan trout",
+        "biwa trout",
+        "cutthroat trout",
+        "gila trout",
+        "Apache trout",
+        "rainbow trout",
+        "Mexican golden trout",
+        "brook trout",
+        "bull trout",
+        "Dolly Varden trout",
+        "lake trout",
+        "silver trout",
+        "tiger trout",
+        "Splake trout",
+
+        // lulz
+        "MR402-sized trout"
+    ]
+
     private static randomTrout(): String {
         // TODO: Actually random. Unlike https://xkcd.com/221/
-        return "wet trout";
+        return this.TROUT_LIST[Math.floor(Math.random() * this.TROUT_LIST.length)]
     }
 }
