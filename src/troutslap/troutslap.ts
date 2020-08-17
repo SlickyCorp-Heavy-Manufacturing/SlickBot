@@ -30,7 +30,7 @@ export class Troutslap {
                     // Get the last channel they talked in
                     // Assign them a random trout
                     // Write a message to that channel
-                    user.lastMessage.reply("/me slaps you around with a " + this.randomTrout())
+                    user.lastMessage.reply("/me slaps " + user.username + " around with a " + this.randomTrout())
                         .catch(console.error);
                 });
             }
@@ -43,18 +43,27 @@ export class Troutslap {
         else if (msg.channel.type == "text") {
             // TODO: reply in channel, ignoring provided #channel
 
-            // If @everyone or @here
-                    // Assign them a random trout
-                    // Aggregate up into a single message.
-                    // Reply in the publicly messaged channel.
-            // If @people...
+            // If @everyone or @here...
+            if (msg.mentions.everyone) {                  
+                // Assign a random trout
+                // Reply in the publicly messaged channel.
+                const slapMessage = "Slaps with a " + this.randomTrout() + " all around!";
+                msg.channel.send(slapMessage)
+                    .catch(console.error);
+            }
+            else if (msg.mentions.users) {
                 // For each person,
+                msg.mentions.users.forEach(function(user, userstr) {
                     // Assign them a random trout
-                    // Aggregate up into a single message.
                     // Reply in the publicly messaged channel.
-            // Else
-                // DM user with usage.
-            msg.reply('/me slaps you around with a wet trout.');
+                    msg.channel.send("/me slaps " + user.username + " around with a " + this.randomTrout())
+                        .catch(console.error);
+                });
+            }
+            else {
+                // Slide into author's DMs with usage.
+                msg.author.dmChannel.send(this.usage());
+            }
         }
         else {
             // Slide into author's DMs with usage.
@@ -65,11 +74,11 @@ export class Troutslap {
     
     private static usage(): String {
         var usage_string = `
-        Slap users around with a trout. You may PM SlickBot so no one knows who requested the slapping.
+        Slap users around with a trout. You may DM SlickBot so no one knows who requested the slapping.
 
         Usage:
             !troutslap @user[ @user @user @user]
-                Finds the named users' last messages and slaps them in that channel for it.
+                Finds the named users' latest messages and slaps them in that channel for it.
             
             !troutslap @everyone #channel
             !troutslap @here #channel
