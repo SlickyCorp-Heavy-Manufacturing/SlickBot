@@ -3,7 +3,7 @@ import Discord from 'discord.js';
 
 var schedule = require('node-schedule');
 
-import { Weather } from './weather'
+import { Weather } from './weather/weather'
 
 const bot = new Discord.Client();
 const TOKEN = process.env.TOKEN;
