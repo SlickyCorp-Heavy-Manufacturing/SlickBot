@@ -18,21 +18,21 @@ function findChannelByName(name: String): Discord.TextChannel {
 }
 
 schedule.scheduleJob('30 8 * * *', function() {
-  Weather.currentWeather().then((value: string) => {
+  Weather.currentWeather().then( value => {
     const channel = findChannelByName('noaa-information-bureau');
     channel.send(value);
   })
 });
 
 schedule.scheduleJob('0 12 * * *', function() {
-  Weather.currentWeather().then((value: string) => {
+  Weather.currentWeather().then( value => {
     const channel = findChannelByName('noaa-information-bureau');
     channel.send(value);
   })
 });
 
 schedule.scheduleJob('30 4 * * *', function() {
-  Weather.currentWeather().then((value: string) => {
+  Weather.currentWeather().then( value => {
     const channel = findChannelByName('noaa-information-bureau');
     channel.send(value);
   })
