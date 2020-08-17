@@ -6,6 +6,19 @@ import { Weather } from './weather/weather';
 import { commandList } from './commandList';
 import { ICommand } from './icommand';
 
+const express = require('express')
+const app = express()
+
+console.error('starting up');
+
+app.get('/', (req: any, res: any) => {
+  res.send('Hello World!')
+})
+
+app.listen(process.env.PORT, () => {
+  console.log(`Example app listening at http://localhost:${process.env.PORT}`)
+})
+
 const bot = new Discord.Client();
 const TOKEN = process.env.TOKEN;
 
@@ -40,6 +53,9 @@ schedule.scheduleJob('30 4 * * *', function() {
 
 bot.on('ready', () => {
   console.info(`Logged in as ${bot.user.tag}!`);
+
+  const channel = findChannelByName('judgement-day-practice');
+  channel.send('Hello from Azure');
 });
 
 bot.on('message', (msg: Discord.Message) => {
