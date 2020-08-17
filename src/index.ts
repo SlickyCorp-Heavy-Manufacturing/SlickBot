@@ -45,6 +45,6 @@ bot.on('ready', () => {
 bot.on('message', (msg: Discord.Message) => {
   const commands = commandList.filter((command: ICommand) => command.trigger(msg));
   commands.forEach((command) => {
-    command.command().then((value: string) => msg.channel.send(value));
+    command.command(msg);
   });
 });

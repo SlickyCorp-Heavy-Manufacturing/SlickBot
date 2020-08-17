@@ -6,7 +6,8 @@ export const TrollPulakCommand: ICommand = {
     helpDescription: '',
     showInHelp: false,
     trigger: (msg: Message) => msg.author.username === 'Pulak' && (msg.channel as TextChannel).name === 'thing-i-would-buy', 
-    command: () => {
-        return Promise.resolve('https://i.redd.it/ng2ewzvfado21.jpg');
+    command: (msg: Message) => {
+        const retval = msg.channel.send('https://i.redd.it/ng2ewzvfado21.jpg');
+        return Promise.resolve(retval);
     },
 }

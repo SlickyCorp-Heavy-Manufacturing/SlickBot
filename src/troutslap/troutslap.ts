@@ -1,14 +1,13 @@
 import Discord from 'discord.js';
 
 export class Troutslap {
-    public static slap(msg: Discord.Message): Promise<string> {
+    public static slap(msg: Discord.Message) {
         // pm format:
             // !troutslap @person @person @person
             // !troutslap @everyone||@here #channel
         // public format:
             // !troutslap @person @person @person
             // !troutslap @everyone||@here
-        const client = msg.client
         
         // If private messaged...
         if (msg.channel.type == "dm") {
@@ -18,7 +17,7 @@ export class Troutslap {
                 msg.mentions.channels.forEach(function(channel, channelstr) {
                     // Assign a random trout
                     // Write a message to that channel
-                    const slapMessage = `/me hands out slaps with a ${this.randomTrout()} to everyone.`;
+                    const slapMessage = `/me hands out slaps with a ${Troutslap.randomTrout()} to everyone.`;
                     channel.send(slapMessage)
                         .catch(console.error);
                 })
@@ -30,7 +29,7 @@ export class Troutslap {
                     // Get the last channel they talked in
                     // Assign them a random trout
                     // Write a message to that channel
-                    const slapMessage = `/me slaps ${user.username} around with a ${this.randomTrout()}`;
+                    const slapMessage = `/me slaps ${user.username} around with a ${Troutslap.randomTrout()}`;
                     user.lastMessage.reply(slapMessage)
                         .catch(console.error);
                 });
@@ -48,7 +47,7 @@ export class Troutslap {
             if (msg.mentions.everyone) {                  
                 // Assign a random trout
                 // Reply in the publicly messaged channel.
-                const slapMessage = `Slaps with a ${this.randomTrout()} all around!`;
+                const slapMessage = `Slaps with a ${Troutslap.randomTrout()} all around!`;
                 msg.channel.send(slapMessage)
                     .catch(console.error);
             }
@@ -57,7 +56,7 @@ export class Troutslap {
                 msg.mentions.users.forEach(function(user, userstr) {
                     // Assign them a random trout
                     // Reply in the publicly messaged channel.
-                    const slapMessage = `/me slaps ${user.username} around with a ${this.randomTrout()}`
+                    const slapMessage = `/me slaps ${user.username} around with a ${Troutslap.randomTrout()}`
                     msg.channel.send(slapMessage)
                         .catch(console.error);
                 });
@@ -71,7 +70,7 @@ export class Troutslap {
             // Slide into author's DMs with usage.
             msg.author.dmChannel.send(this.usage());
         }
-        return Promise.resolve(null);
+        
     }
     
     private static usage(): String {
