@@ -17,11 +17,9 @@ bot.on('ready', () => {
 });
 
 bot.on('message', msg => {
-  const command = commandList.find((command: ICommand) => command.name === msg.content);
+  const command = commandList.filter((command: ICommand) => command.trigger(msg));
   if (command) {
     command.command().then(result => msg.channel.send(result));
-  } else {
-    msg.channel.send(`Command ${msg.content} not found.`)
   }
 });
 

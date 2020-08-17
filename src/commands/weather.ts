@@ -1,3 +1,4 @@
+import { Message } from 'discord.js';
 import got from 'got';
 import { ICommand } from './icommand';
 
@@ -14,5 +15,6 @@ export class Weather {
 export const WeatherCommand: ICommand = {
     name: '!weather',
     helpDescription: 'Bot will respond with the weather',
+    trigger: (msg: Message) => msg.content === '!weather', 
     command: () => Weather.currentWeather()
 }

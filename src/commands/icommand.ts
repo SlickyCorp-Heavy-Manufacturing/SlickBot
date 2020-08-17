@@ -1,5 +1,8 @@
+import { Message } from 'discord.js';
+
 export interface ICommand {
-    name: String;
-    helpDescription: String;
+    name: string;
+    helpDescription: string;
+    trigger: (message: Message) => boolean;
     command: (...args: any[]) => Promise<string>;
 }
