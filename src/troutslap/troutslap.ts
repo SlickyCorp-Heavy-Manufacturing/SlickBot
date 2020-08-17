@@ -18,7 +18,7 @@ export class Troutslap {
                 msg.mentions.channels.forEach(function(channel, channelstr) {
                     // Assign a random trout
                     // Write a message to that channel
-                    const slapMessage = "/me hands out slaps with a " + this.randomTrout() + " to everyone.";
+                    const slapMessage = `/me hands out slaps with a ${this.randomTrout()} to everyone.`;
                     channel.send(slapMessage)
                         .catch(console.error);
                 })
@@ -30,7 +30,8 @@ export class Troutslap {
                     // Get the last channel they talked in
                     // Assign them a random trout
                     // Write a message to that channel
-                    user.lastMessage.reply("/me slaps " + user.username + " around with a " + this.randomTrout())
+                    const slapMessage = `/me slaps ${user.username} around with a ${this.randomTrout()}`;
+                    user.lastMessage.reply(slapMessage)
                         .catch(console.error);
                 });
             }
@@ -47,7 +48,7 @@ export class Troutslap {
             if (msg.mentions.everyone) {                  
                 // Assign a random trout
                 // Reply in the publicly messaged channel.
-                const slapMessage = "Slaps with a " + this.randomTrout() + " all around!";
+                const slapMessage = `Slaps with a ${this.randomTrout()} all around!`;
                 msg.channel.send(slapMessage)
                     .catch(console.error);
             }
@@ -56,7 +57,8 @@ export class Troutslap {
                 msg.mentions.users.forEach(function(user, userstr) {
                     // Assign them a random trout
                     // Reply in the publicly messaged channel.
-                    msg.channel.send("/me slaps " + user.username + " around with a " + this.randomTrout())
+                    const slapMessage = `/me slaps ${user.username} around with a ${this.randomTrout()}`
+                    msg.channel.send(slapMessage)
                         .catch(console.error);
                 });
             }
