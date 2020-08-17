@@ -17,7 +17,7 @@ export class Troutslap {
                 msg.mentions.channels.forEach(function(channel, channelstr) {
                     // Assign a random trout
                     // Write a message to that channel
-                    const slapMessage = `/me hands out slaps with a ${Troutslap.randomTrout()} to everyone.`;
+                    const slapMessage = `_slaps everyone with a ${Troutslap.randomTrout()}_`;
                     channel.send(slapMessage)
                         .catch(console.error);
                 })
@@ -29,9 +29,15 @@ export class Troutslap {
                     // Get the last channel they talked in
                     // Assign them a random trout
                     // Write a message to that channel
-                    const slapMessage = `/me slaps ${user.username} around with a ${Troutslap.randomTrout()}`;
-                    user.lastMessage.reply(slapMessage)
+                    const slapMessage = `_slaps ${user.username} around with a ${Troutslap.randomTrout()}_`;
+                    if (user.lastMessage != null) {
+                        user.lastMessage.channel.send(slapMessage)
                         .catch(console.error);
+                    }
+                    else {
+                        msg.reply("Sorry, I cannot find their last message.")
+                    }
+                    
                 });
             }
             else {
@@ -53,7 +59,7 @@ export class Troutslap {
             if (msg.mentions.everyone) {                  
                 // Assign a random trout
                 // Reply in the publicly messaged channel.
-                const slapMessage = `Slaps with a ${Troutslap.randomTrout()} all around!`;
+                const slapMessage = `_slaps everyone with a ${Troutslap.randomTrout()}_`;
                 msg.channel.send(slapMessage)
                     .catch(console.error);
             }
@@ -62,7 +68,7 @@ export class Troutslap {
                 msg.mentions.users.forEach(function(user, userstr) {
                     // Assign them a random trout
                     // Reply in the publicly messaged channel.
-                    const slapMessage = `/me slaps ${user.username} around with a ${Troutslap.randomTrout()}`
+                    const slapMessage = `_slaps ${user.username} around with a ${Troutslap.randomTrout()}_`
                     msg.channel.send(slapMessage)
                         .catch(console.error);
                 });
@@ -90,16 +96,16 @@ export class Troutslap {
         Slap users around with a trout. You may DM SlickBot so no one knows who requested the slapping.
 
         Usage:
-            !troutslap @user[ @user @user @user]
-                Finds the named users' latest messages and slaps them in that channel for it.
+        !troutslap @user[ @user @user @user]
+            Finds the named users' latest messages and slaps them in that channel for it.
             
-            !troutslap @everyone #channel
-            !troutslap @here #channel
-                Slaps users in the given channels.
+        !troutslap @everyone #channel
+        !troutslap @here #channel
+            Slaps users in the given channels.
             
-            !troutslap help
-            !troutslap usage
-                Replies with this message.
+        !troutslap help
+        !troutslap usage
+            DMs you with this message.
         `
         return usage_string;
     }
