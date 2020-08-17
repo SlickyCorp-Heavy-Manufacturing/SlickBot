@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { DMChannel } from 'discord.js';
 
 export class Troutslap {
     public static slap(msg: Discord.Message) {
@@ -23,7 +23,7 @@ export class Troutslap {
                 })
             }
             // If @people...
-            else if (msg.mentions.users) {
+            else if (msg.mentions.users.size > 0) {
                 // For each person,
                 msg.mentions.users.forEach(function(user, userstr) {
                     // Get the last channel they talked in
@@ -36,7 +36,13 @@ export class Troutslap {
             }
             else {
                 // Slide into author's DMs with usage.
-                msg.author.dmChannel.send(this.usage());
+                if (msg.author.dmChannel === null) {
+                    msg.author.createDM()
+                        .then((channel: DMChannel) => channel.send(this.usage()))
+                }
+                else {
+                    msg.author.dmChannel.send(this.usage());
+                }
             }
         }
         // If public messaged...
@@ -51,7 +57,7 @@ export class Troutslap {
                 msg.channel.send(slapMessage)
                     .catch(console.error);
             }
-            else if (msg.mentions.users) {
+            else if (msg.mentions.users.size > 0) {
                 // For each person,
                 msg.mentions.users.forEach(function(user, userstr) {
                     // Assign them a random trout
@@ -63,7 +69,13 @@ export class Troutslap {
             }
             else {
                 // Slide into author's DMs with usage.
-                msg.author.dmChannel.send(this.usage());
+                if (msg.author.dmChannel === null) {
+                    msg.author.createDM()
+                        .then((channel: DMChannel) => channel.send(this.usage()))
+                }
+                else {
+                    msg.author.dmChannel.send(this.usage());
+                }
             }
         }
         else {
