@@ -36,6 +36,7 @@ bot.on('ready', () => {
 });
 
 bot.on('message', msg => {
+  // Mike's stupid bot replies
   switch(msg.content) {
     case 'ping':
       msg.reply('pong');
@@ -51,5 +52,10 @@ bot.on('message', msg => {
     case '!commands':
       msg.reply('!help for commands');
       break;
+  }
+
+  // Darrell's stupid bot replies
+  if(msg.author == '?Pulak' && msg.channel == 'thing-i-would-buy') {
+    msg.reply('https://i.redd.it/ng2ewzvfado21.jpg')
   }
 });
