@@ -9,6 +9,8 @@ import { ICommand } from './icommand';
 const bot = new Discord.Client();
 const TOKEN = process.env.TOKEN;
 
+console.log(process.env)
+
 bot.login(TOKEN);
 
 
