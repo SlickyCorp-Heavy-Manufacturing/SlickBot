@@ -4,6 +4,7 @@ import Discord from 'discord.js';
 var schedule = require('node-schedule');
 
 import { Weather } from './weather/weather'
+import { Troutslap } from './troutslap/troutslap';
 
 const bot = new Discord.Client();
 const TOKEN = process.env.TOKEN;
@@ -62,5 +63,9 @@ bot.on('message', msg => {
   // Darrell's stupid bot replies
   if(msg.author.username === 'Pulak' && (msg.channel as Discord.TextChannel).name === 'thing-i-would-buy') {
     msg.reply('https://i.redd.it/ng2ewzvfado21.jpg')
+  }
+
+  if (msg.content.startsWith('!troutslap')) {
+    Troutslap.slap(msg);
   }
 });
