@@ -10,24 +10,29 @@ const TOKEN = process.env.TOKEN;
 
 bot.login(TOKEN);
 
+function findChannelByName(name: String): Discord.TextChannel {
+  const channel = bot.channels.find(channel => (channel as Discord.TextChannel).name === name);
+  return (channel as Discord.TextChannel)
+}
+
 schedule.scheduleJob('30 8 * * *', function() {
   Weather.currentWeather().then( value => {
-    const channel = bot.channels.find(channel => (channel as Discord.TextChannel).name === 'noaa-information-bureau');
-    (channel as Discord.TextChannel).send(value);
+    const channel = findChannelByName('noaa-information-bureau');
+    channel.send(value);
   })
 });
 
 schedule.scheduleJob('0 12 * * *', function() {
   Weather.currentWeather().then( value => {
-    const channel = bot.channels.find(channel => (channel as Discord.TextChannel).name === 'noaa-information-bureau');
-    (channel as Discord.TextChannel).send(value);
+    const channel = findChannelByName('noaa-information-bureau');
+    channel.send(value);
   })
 });
 
 schedule.scheduleJob('30 4 * * *', function() {
   Weather.currentWeather().then( value => {
-    const channel = bot.channels.find(channel => (channel as Discord.TextChannel).name === 'noaa-information-bureau');
-    (channel as Discord.TextChannel).send(value);
+    const channel = findChannelByName('noaa-information-bureau');
+    channel.send(value);
   })
 });
 
@@ -55,7 +60,7 @@ bot.on('message', msg => {
   }
 
   // Darrell's stupid bot replies
-  if(msg.author == '?Pulak' && msg.channel == 'thing-i-would-buy') {
+  if(msg.author.username === 'Pulak' && (msg.channel as Discord.TextChannel).name === 'thing-i-would-buy') {
     msg.reply('https://i.redd.it/ng2ewzvfado21.jpg')
   }
 });
