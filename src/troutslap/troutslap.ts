@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 
 export class Troutslap {
-    public static slap(msg: Discord.Message) {
+    public static slap(msg: Discord.Message): Promise<string> {
         // pm format:
             // !troutslap @person @person @person
             // !troutslap @everyone||@here #channel
@@ -60,6 +60,7 @@ export class Troutslap {
             // Slide into author's DMs with usage.
             msg.author.dmChannel.send(this.usage());
         }
+        return Promise.resolve(null);
     }
     
     private static usage(): String {
