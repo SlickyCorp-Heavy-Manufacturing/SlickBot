@@ -49,6 +49,7 @@ export class FOAAS {
         var requestUrl = FOAAS.URL + insultUrl + FOAAS.DEFAULT_LANGUAGE;
         const response = await got(requestUrl, {responseType: 'json', headers: { 'content-type':'application/json' }})
         const insult = response.body as any;
-        return `${!hasNameField?name + ', ':''}${insult.message}_`;
+        var escapedMessage = insult.message.replace('_','\\_');
+        return `_${!hasNameField?name.replace('_','\\_') + ', ':''}${insult.message}_`;
     }
 }
