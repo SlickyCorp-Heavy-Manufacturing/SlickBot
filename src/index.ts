@@ -23,20 +23,19 @@ app.listen(port, () => {
 });
 
 const discordClient = new DiscordClient();
-discordClient.init().then( value => {
-  console.log('client init')
-});
-
-discordClient.client.on('message', (msg: Discord.Message) => {
-  const commands = commandList.filter((command) => command.trigger(msg));
-  commands.forEach((command): void => command.command(msg));
-});
-
-scheduledPosts.forEach((scheduledPost) => {
-  schedule.scheduleJob(scheduledPost.cronDate, () => {
-    scheduledPost.getMessage().then((value: string) => {
-      const channel = findChannelByName(discordClient.client, scheduledPost.channel);
-      channel.send(value);
-    })
+discordClient.init().then( () => {
+  
+  discordClient.client.on('message', (msg: Discord.Message) => {
+    const commands = commandList.filter((command) => command.trigger(msg));
+    commands.forEach((command): void => command.command(msg));
+  });
+  
+  scheduledPosts.forEach((scheduledPost) => {
+    schedule.scheduleJob(scheduledPost.cronDate, () => {
+      scheduledPost.getMessage().then((value: string) => {
+        const channel = findChannelByName(discordClient.client, scheduledPost.channel);
+        channel.send(value);
+      })
+    });
   });
 });
