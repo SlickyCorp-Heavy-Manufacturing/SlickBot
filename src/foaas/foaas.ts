@@ -30,7 +30,6 @@ export class FOAAS {
             name = user.username
         }
 
-        console.log(insultData)
         insultData.fields.forEach( (element:any) => { 
             var replaceValue = FOAAS.DEFAULT_NOUN;
             if( element.field == "name" ) { 
@@ -44,7 +43,6 @@ export class FOAAS {
         })
         
         var requestUrl = FOAAS.URL + insultUrl + FOAAS.DEFAULT_LANGUAGE;
-        console.log(requestUrl);
         const response = await got(requestUrl, {responseType: 'json', headers: { 'content-type':'application/json' }})
         const insult = response.body as any;
         return `${insult.message}`;
