@@ -6,18 +6,7 @@ export class Troutslap {
         if (msg.channel.type == "dm") {
             if (msg.mentions.users.size > 0) {
                 msg.mentions.users.forEach(function(user, userstr) {
-                    // Get the last channel they talked in
-                    // Assign them a random trout
-                    // Write a message to that channel
-                    const slapMessage = `_slaps ${user.username} around with a ${Troutslap.randomTrout()}_`;
-                    if (user.lastMessage != null) {
-                        user.lastMessage.channel.send(slapMessage)
-                        .catch(console.error);
-                    }
-                    else {
-                        msg.reply("Sorry, I cannot find their last message.")
-                    }
-                    
+                    Troutslap.dmSlap(user);
                 });
             }
             else {
@@ -52,6 +41,19 @@ export class Troutslap {
         }
     }
 
+    private static dmSlap(user: Discord.User) {
+        const slapMessage = `_slaps ${user.username} around with a ${Troutslap.randomTrout()}_`;
+
+        // Slide into author's DMs with usage.
+        if (user.dmChannel === null) {
+            user.createDM()
+                .then((channel: DMChannel) => channel.send(slapMessage));
+        }
+        else {
+            user.dmChannel.send(slapMessage);
+        }
+    }
+
     private static dmUsage(msg: Discord.Message) {
         // Slide into author's DMs with usage.
         if (msg.author.dmChannel === null) {
@@ -70,7 +72,8 @@ Slap users around with a trout. You may DM SlickBot so no one knows who requeste
 Usage:
 !troutslap @user[ @user @user @user]
     Finds the named users' latest messages and slaps them in that channel for it.
-    Can be called in a public channel or via DM.
+    If called in a public channel, slaps the user publicly.
+    If called in a DM, slaps the user in a DM.
 
 !troutslap @everyone
 !troutslap @here
