@@ -12,7 +12,7 @@
   "author": "Abe",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "^11.6.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "got": "^11.5.2",
