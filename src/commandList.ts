@@ -4,6 +4,7 @@ import { PingCommand } from './ping/ping-command';
 import { WeatherCommand } from './weather/weather-command';
 import { TrollPulakCommand } from './troll/troll-pulak-command';
 import { TroutslapCommand } from './troutslap/troutslap-command';
+import { FoffCommand } from './foaas/foaas-command';
 
 export const commandList: ICommand[] = [
     HelpCommand,
@@ -11,4 +12,5 @@ export const commandList: ICommand[] = [
     WeatherCommand,
     TrollPulakCommand,
     TroutslapCommand,
+    FoffCommand
 ];
