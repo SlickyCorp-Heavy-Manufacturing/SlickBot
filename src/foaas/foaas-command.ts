@@ -4,8 +4,8 @@ import { FOAAS } from "./foaas";
 
 export const FoffCommand: ICommand = {
     name: '!foff',
-    helpDescription: 'Bot will says something in German',
+    helpDescription: 'Bot will says a random f*&k off message',
     showInHelp: true,
     trigger: (msg: Message) => msg.content.startsWith('!foff'), 
-    command: (msg: Message) => FOAAS.insult(msg)
+    command: (msg: Message) => FOAAS.foff(msg).then((value: string) => msg.channel.send(value)),
 }

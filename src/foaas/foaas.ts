@@ -20,7 +20,7 @@ export class FOAAS {
         return data[FOAAS.randomIndex(data.length)];
     }
 
-    public static async insult(msg:Message): Promise<string> {
+    public static async foff(msg:Message): Promise<string> {
         var insultData = FOAAS.randomFO();
         var insultUrl = insultData.url;
 
@@ -31,7 +31,7 @@ export class FOAAS {
         }
 
         console.log(insultData)
-        insultData.fields.forEach( function(element:any) { 
+        insultData.fields.forEach( (element:any) => { 
             var replaceValue = FOAAS.DEFAULT_NOUN;
             if( element.field == "name" ) { 
                 replaceValue = name; 
