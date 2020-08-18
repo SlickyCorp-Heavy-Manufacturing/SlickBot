@@ -72,8 +72,12 @@ Slap users around with a trout. You may DM SlickBot so no one knows who requeste
 Usage:
 !troutslap @user[ @user @user @user]
     Finds the named users' latest messages and slaps them in that channel for it.
+<<<<<<< HEAD
     If called in a public channel, slaps the user publicly.
     If called in a DM, slaps the user in a DM.
+=======
+    Can be called in a public channel or via DM.
+>>>>>>> master
 
 !troutslap @everyone
 !troutslap @here
