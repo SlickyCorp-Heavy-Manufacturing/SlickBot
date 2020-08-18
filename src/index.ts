@@ -1,5 +1,6 @@
 require('dotenv').config();
 var schedule = require('node-schedule');
+const express = require('express')
 
 import Discord from 'discord.js';
 import { commandList } from './commandList';
@@ -8,6 +9,13 @@ import { findChannelByName } from './utils';
 
 const client = new Discord.Client();
 const TOKEN = process.env.TOKEN;
+const app = express()
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 8000 as any;
+}
+app.listen(port);
 
 client.login(TOKEN);
 

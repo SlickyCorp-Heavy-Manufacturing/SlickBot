@@ -1,0 +1,1 @@
+export { XKCDCommand } from "./xkcd";
