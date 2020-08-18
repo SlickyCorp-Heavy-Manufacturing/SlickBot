@@ -1,8 +1,8 @@
 import { ICommand } from './icommand';
-import { HelpCommand } from './help-command';
-import { PingCommand } from './ping-command';
+import { HelpCommand } from './help/help-command';
+import { PingCommand } from './ping/ping-command';
 import { WeatherCommand } from './weather/weather-command';
-import { TrollPulakCommand } from './troll-pulak-command';
+import { TrollPulakCommand } from './troll/troll-pulak-command';
 import { TroutslapCommand } from './troutslap/troutslap-command';
 
 export const commandList: ICommand[] = [
@@ -10,5 +10,5 @@ export const commandList: ICommand[] = [
     PingCommand,
     WeatherCommand,
     TrollPulakCommand,
-    TroutslapCommand
+    TroutslapCommand,
 ];

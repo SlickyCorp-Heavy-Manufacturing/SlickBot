@@ -1,6 +1,6 @@
-import { ICommand } from './icommand';
+import { ICommand } from '../icommand';
 import { Message } from 'discord.js';
-import { commandList } from './commandList';
+import { commandList } from '../commandList';
 
 export const HelpCommand: ICommand = {
     name: '!help',
@@ -12,7 +12,6 @@ export const HelpCommand: ICommand = {
         commandList.filter(command => command.showInHelp).forEach((command: ICommand) => {
             retVal += `${command.name} - ${command.helpDescription}\n`;
         });
-        var msg_result = msg.channel.send(retVal);
-        return Promise.resolve(msg_result);
+        msg.channel.send(retVal);
     },
 }
