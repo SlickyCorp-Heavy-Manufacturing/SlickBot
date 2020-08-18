@@ -6,6 +6,7 @@ import { TrollPulakCommand } from './troll/troll-pulak-command';
 import { TroutslapCommand } from './troutslap/troutslap-command';
 import { XKCDCommand } from './xkcd';
 import { MemeCommand } from './meme'
+import { FoffCommand } from './foaas/foaas-command';
 
 export const commandList: ICommand[] = [
     HelpCommand,
@@ -15,4 +16,5 @@ export const commandList: ICommand[] = [
     TroutslapCommand,
     XKCDCommand,
     MemeCommand,
+    FoffCommand
 ];
