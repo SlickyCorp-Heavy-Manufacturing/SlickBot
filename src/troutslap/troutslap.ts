@@ -2,21 +2,7 @@ import Discord, { DMChannel } from 'discord.js';
 
 export class Troutslap {
     public static slap(msg: Discord.Message) {
-        // If private messaged...
-        if (msg.channel.type == "dm") {
-            if (msg.mentions.users.size > 0) {
-                msg.mentions.users.forEach(function(user, userstr) {
-                    Troutslap.dmSlap(user);
-                });
-            }
-            else {
-                Troutslap.dmUsage(msg);
-            }
-        }
-        // If public messaged...
-        else if (msg.channel.type == "text") {
-            // TODO: reply in channel, ignoring provided #channel
-
+        if (msg.channel.type == "text") {
             // If @everyone or @here...
             if (msg.mentions.everyone) {                  
                 // Assign a random trout
@@ -39,18 +25,8 @@ export class Troutslap {
                 Troutslap.dmUsage(msg);
             }
         }
-    }
-
-    private static dmSlap(user: Discord.User) {
-        const slapMessage = `_slaps ${user.username} around with a ${Troutslap.randomTrout()}_`;
-
-        // Slide into author's DMs with usage.
-        if (user.dmChannel === null) {
-            user.createDM()
-                .then((channel: DMChannel) => channel.send(slapMessage));
-        }
         else {
-            user.dmChannel.send(slapMessage);
+            Troutslap.dmUsage(msg);
         }
     }
 
@@ -67,22 +43,15 @@ export class Troutslap {
     
     private static usage(): String {
         var usage_string = `
-Slap users around with a trout. You may DM SlickBot so no one knows who requested the slapping.
+Slap users around with a trout.
 
 Usage:
 !troutslap @user[ @user @user @user]
     Finds the named users' latest messages and slaps them in that channel for it.
-<<<<<<< HEAD
-    If called in a public channel, slaps the user publicly.
-    If called in a DM, slaps the user in a DM.
-=======
-    Can be called in a public channel or via DM.
->>>>>>> master
 
 !troutslap @everyone
 !troutslap @here
-    Slaps all users in the channel.
-    Can only be called in a public channel.`
+    Slaps all users in the channel.`
         return usage_string;
     }
     
