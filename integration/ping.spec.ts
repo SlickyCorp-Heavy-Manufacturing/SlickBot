@@ -14,6 +14,9 @@ describe('ping', () => {
     let _lastMessage: Subject<Discord.Message> = new Subject();
 
     beforeAll( async () => {
+        console.log('intgration test');
+        console.log(process.env);
+        
         _userClient = new DiscordClient(process.env.TEST_USER_TOKEN);
         await _userClient.init();
 
