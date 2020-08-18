@@ -23,17 +23,21 @@ export class FOAAS {
     public static async foff(msg:Message): Promise<string> {
         var insultData = FOAAS.randomFO();
         var insultUrl = insultData.url;
+        var hasNameField = false;
 
         var name = FOAAS.DEFAULT_NAME;
         if (msg.mentions.users.size > 0)  {
             var user = msg.mentions.users.first();
             name = user.username
+        } else {
+            name = msg.author.username
         }
 
         insultData.fields.forEach( (element:any) => { 
             var replaceValue = FOAAS.DEFAULT_NOUN;
             if( element.field == "name" ) { 
-                replaceValue = name; 
+                replaceValue = name;
+                hasNameField = true;
             } else if( element.field == "from") {
                 replaceValue = FOAAS.DEFAULT_FROM; 
             } else if( element.field == "company") {
@@ -45,6 +49,6 @@ export class FOAAS {
         var requestUrl = FOAAS.URL + insultUrl + FOAAS.DEFAULT_LANGUAGE;
         const response = await got(requestUrl, {responseType: 'json', headers: { 'content-type':'application/json' }})
         const insult = response.body as any;
-        return `${insult.message}`;
+        return `${!hasNameField?name + ', ':''}${insult.message}_`;
     }
 }
