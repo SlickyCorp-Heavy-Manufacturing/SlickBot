@@ -121,11 +121,11 @@ describe('slickbot', () => {
 
         _lastMessage
             .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('TestUserBot')))
+            .pipe(filter(msg => msg.content.includes('everyone')))
             .pipe(take(1))
             .subscribe( msg => {
-                expect(msg.content).toContain('TestUserBot')
+                expect(msg.content).toContain('everyone')
                 done();
             });
-    }, 10000);
+    }, 15000);
 })
