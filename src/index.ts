@@ -31,7 +31,7 @@ discordClient.init().then( () => {
   });
   
   scheduledPosts.forEach((scheduledPost) => {
-    schedule.scheduleJob(scheduledPost.cronDate, () => {
+    schedule.scheduleJob({rule: scheduledPost.cronDate, tz: 'America/Chicago'}, () => {
       scheduledPost.getMessage().then((value: string) => {
         const channel = findChannelByName(discordClient.client, scheduledPost.channel);
         channel.send(value);
