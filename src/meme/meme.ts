@@ -34,8 +34,11 @@ export class Meme {
     }
 
     private static findTemplate(name: string): meme {
-        const templateName = this._templateNames.get(name)[0][1];
-        return Meme._memes.find( x => x.name === templateName)
+        const template = this._templateNames.get(name)
+        if(!template) {
+            return Meme._memes[69] //hehe its bad luck brian 
+        }
+        return Meme._memes.find( x => x.name === template[0][1])
     }
 
     public static async memeSearch(msg: Message): Promise<String> {
@@ -58,6 +61,8 @@ export class Meme {
             box2: { type: 'string' },
             box3: { type: 'string' },
             box4: { type: 'string' },
+            box5: { type: 'string' },
+            box6: { type: 'string' },
         }).parse(msg.content)
 
 
@@ -66,6 +71,8 @@ export class Meme {
             args.box2,
             args.box3,
             args.box4,
+            args.box5,
+            args.box6,
         ]
 
         captions = captions.filter( x => x);
