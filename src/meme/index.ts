@@ -1,1 +1,1 @@
-export { MemeCommand } from "./meme-command";
+export { MemeCommand, MemeSearchCommand } from "./meme-command";

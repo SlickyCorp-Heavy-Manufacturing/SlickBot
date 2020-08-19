@@ -8,5 +8,12 @@ export const MemeCommand: ICommand = {
     showInHelp: true,
     trigger: (msg: Message) => msg.content.startsWith('!meme'), 
     command: (msg: Message) => { Meme.getImage(msg).then( message => msg.reply(message)) },
+}
 
+export const MemeSearchCommand: ICommand = {
+  name: '!meme-search',
+  helpDescription: '!meme-search --template "drake"',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!meme-search'), 
+  command: (msg: Message) => { Meme.getImage(msg).then( message => msg.reply(message)) },
 }
