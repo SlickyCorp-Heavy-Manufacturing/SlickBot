@@ -1,4 +1,5 @@
 import Discord, { DMChannel } from 'discord.js';
+import { escapeMarkdown } from '../utils'
 
 export class Troutslap {
     public static slap(msg: Discord.Message) {
@@ -16,7 +17,7 @@ export class Troutslap {
                 msg.mentions.users.forEach(function(user, userstr) {
                     // Assign them a random trout
                     // Reply in the publicly messaged channel.
-                    const slapMessage = `_slaps ${user.username.replace('_','\\_')} around with a ${Troutslap.randomTrout()}_`
+                    const slapMessage = `_slaps ${escapeMarkdown(user.username)} around with a ${Troutslap.randomTrout()}_`
                     msg.channel.send(slapMessage)
                         .catch(console.error);
                 });
