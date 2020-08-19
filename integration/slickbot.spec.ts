@@ -117,15 +117,15 @@ describe('slickbot', () => {
 
     it('foass should f off', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
-        testChannel.send('!foff @TestSlickBot');
+        testChannel.send('!foff @everyone');
 
         _lastMessage
             .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('TestSlickBot')))
+            .pipe(filter(msg => msg.content.includes('everyone')))
             .pipe(take(1))
             .subscribe( msg => {
-                expect(msg.content).toContain('TestSlickBot')
+                expect(msg.content).toContain('everyone')
                 done();
             });
-    }, 10000);
+    }, 15000);
 })
