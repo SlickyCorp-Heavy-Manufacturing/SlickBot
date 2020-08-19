@@ -19,15 +19,7 @@ export class Meme {
     private static _memes: meme[];
     private static _templateNames: FuzzySet;
 
-    public static async getImage(msg: Message): Promise<String> {
-        const args = yargs.options({
-            template: { type: 'string', default: `pigeon` },
-            box1: { type: 'string' },
-            box2: { type: 'string' },
-            box3: { type: 'string' },
-            box4: { type: 'string' },
-        }).parse(msg.content)
-
+    private static async login(): Promise<Imgflip> {
         // https://imgflip.com/signup
         const imgflip = new Imgflip({
             username: process.env.IMGFLIP_USER,
@@ -38,6 +30,37 @@ export class Meme {
             this._templateNames = FuzzySet(Meme._memes.map( x => x.name))
         }
 
+        return imgflip;
+    }
+
+    private static findTemplate(name: string): meme {
+        const templateName = this._templateNames.get(name)[0][1];
+        return Meme._memes.find( x => x.name === templateName)
+    }
+
+    public static async memeSearch(msg: Message): Promise<String> {
+        await this.login();
+
+        const args = yargs.options({
+            template: { type: 'string' },
+        }).parse(msg.content)
+        
+        const template = this.findTemplate(args.template)
+        return `${template.name} boxes ${template.box_count}`;
+    }
+
+    public static async getImage(msg: Message): Promise<String> {
+        const imgflip = await this.login();
+
+        const args = yargs.options({
+            template: { type: 'string', default: `pigeon` },
+            box1: { type: 'string' },
+            box2: { type: 'string' },
+            box3: { type: 'string' },
+            box4: { type: 'string' },
+        }).parse(msg.content)
+
+
         let captions = [
             args.box1,
             args.box2,
@@ -45,10 +68,8 @@ export class Meme {
             args.box4,
         ]
 
-        const templateName = this._templateNames.get(args.template)[0][1];
-        let template = Meme._memes.find( x => x.name === templateName)
-
         captions = captions.filter( x => x);
+        const template = this.findTemplate(args.template)
 
         if(captions.length != template.box_count) {
             return `${template.name} requires ${template.box_count} strings`
