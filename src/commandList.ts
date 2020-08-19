@@ -8,6 +8,7 @@ import { XKCDCommand } from './xkcd';
 import { MemeCommand, MemeSearchCommand } from './meme'
 import { KlingonCommand } from './translate/klingon-command';
 import { FoffCommand } from './foaas/foaas-command';
+import { TendiesCommand } from './tendies';
 
 export const commandList: ICommand[] = [
     HelpCommand,
@@ -19,5 +20,6 @@ export const commandList: ICommand[] = [
     MemeCommand,
     MemeSearchCommand,
     KlingonCommand,
-    FoffCommand
+    FoffCommand,
+    TendiesCommand
 ];
