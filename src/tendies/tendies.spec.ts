@@ -24,7 +24,7 @@ describe("tendies", () => {
     ];
 
     it("calculatePercentage() calculates percentage", () => {
-        expect(Tendies.calculateDailyPercentage(daily[0])).toEqual(100);
+        expect(Tendies.calculateDailyPercentage(daily[0])).toBeCloseTo(-1.43, 2);
     });
 
     it("daily() should get most recent stock numbers", async () => {
