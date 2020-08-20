@@ -12,8 +12,8 @@ export class Tendies {
      * @param close The closing stock price.
      * @param splitFactor The split factor.
      */
-    public static calculatePercentage(open: number, close: number, splitFactor: number): number {
-        return (((close * splitFactor) - open) / open) * 100;
+    public static calculateDailyPercentage(daily: Daily): number {
+        return ((daily.adjClose - daily.adjOpen) / daily.adjOpen) * 100;
     }
 
     /**
@@ -29,12 +29,12 @@ export class Tendies {
      */
     public static async blakesHappiness(): Promise<string> {
         return Tendies.daily('ROK').then((daily) => {
-            const percentChange = (daily.close - daily.open)/daily.open * 100;
+            const percentChange = Tendies.calculateDailyPercentage(daily);
 
             if (percentChange > 0) {
                 return `ROK closed +${percentChange.toFixed(1)}% today, Blake thanks you for your hard work.`;
             } else if (percentChange < 0) {
-                return `ROK closed -${percentChange.toFixed(1)}% today, please thank Blake for his generosity if you still have a job.`;
+                return `ROK closed ${percentChange.toFixed(1)}% today, please thank Blake for his generosity if you still have a job.`;
             } else {
                 return `ROK closed EVEN today, Blake is disappointed by your simulaneous lack of both gumption and ineptitude.`
             }
@@ -43,9 +43,7 @@ export class Tendies {
 
     public static async currentTendies(ticker: string): Promise<string> {
         return Tendies.daily(ticker).then((daily) => {
-            const open = daily.open;
-            const close = daily.close;
-            const percentChange = (close - open)/open * 100;
+            const percentChange = Tendies.calculateDailyPercentage(daily);
 
             if (percentChange >= -1 && percentChange < 1) {
                 return 'https://tenor.com/view/cmon-do-something-original-cmon-something-original-poke-gif-16424397';
