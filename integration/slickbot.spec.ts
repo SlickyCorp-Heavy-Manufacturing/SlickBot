@@ -142,4 +142,18 @@ describe('slickbot', () => {
                 done();
             });
     }, 15000);
-})
+
+    it('tendies should post todays stock change in meme format', (done) => {
+        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
+        testChannel.send('!tendies TSLA');
+
+        _lastMessage
+            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
+            .pipe(filter(msg => msg.content.includes('https://tenor.com')))
+            .pipe(take(1))
+            .subscribe( msg => {
+                expect(msg.content).toContain('https://tenor.com')
+                done();
+            });
+    }, 15000);
+});
