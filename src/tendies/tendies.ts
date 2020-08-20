@@ -34,7 +34,7 @@ export class Tendies {
             if (percentChange > 0) {
                 return `ROK closed +${percentChange.toFixed(1)}% today, Blake thanks you for your hard work.`;
             } else if (percentChange < 0) {
-                return `ROK closed -${percentChange.toFixed(1)}% today, please thank Blake for his generosity by the fact that you still have a job.`;
+                return `ROK closed -${percentChange.toFixed(1)}% today, please thank Blake for his generosity if you still have a job.`;
             } else {
                 return `ROK closed EVEN today, Blake is disappointed by your simulaneous lack of both gumption and ineptitude.`
             }
