@@ -9,6 +9,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
+            "preLaunchTask": "npm: build",
             "program": "${workspaceFolder}\\dist\\index.js"
         },
         {
