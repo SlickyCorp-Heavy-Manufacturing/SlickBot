@@ -135,10 +135,10 @@ describe('slickbot', () => {
 
         _lastMessage
             .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('!covid')))
+            .pipe(filter(msg => msg.content.includes('Americans laid down')))
             .pipe(take(1))
             .subscribe( msg => {
-                expect(msg.content).toContain('Americans laid down their lives for Mike\'s tendies today.')
+                expect(msg.content).toMatch(/\d+ Americans laid down their lives for Mike's tendies today./)
                 done();
             });
     }, 15000);
