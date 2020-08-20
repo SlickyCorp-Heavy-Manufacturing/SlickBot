@@ -60,9 +60,11 @@ describe('slickbot', () => {
         _lastMessage
             .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
             .pipe(filter(msg => msg.content.includes('slaps')))
+            .pipe(filter(msg => msg.reactions.exists('emoji', '🐟')))
             .pipe(take(1))
             .subscribe( msg => {
                 expect(msg.content).toContain('slaps');
+                expect(msg.reactions.exists('emoji', '🐟')).toBeTruthy();
                 done();
             });
     });
