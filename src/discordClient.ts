@@ -21,6 +21,9 @@ export class DiscordClient {
                 client.on('ready', () => {
                     this.discordClient = client;
                     console.info(`Logged in as ${client.user.tag}!`);
+
+                    client.user.setActivity(this.note())
+
                     resolve();
                 });
             })
@@ -32,5 +35,16 @@ export class DiscordClient {
 
     public get client(): Discord.Client {
         return this.discordClient;
+    }
+
+    private note(): string {
+        const commit = process.env.HEROKU_SLUG_COMMIT;
+        const releaseDate = process.env.HEROKU_RELEASE_CREATED_AT;
+
+        if(commit) {
+            return `${commit} created at ${releaseDate}`;
+        } else {
+            return 'haha you dont test in prod';
+        }
     }
 }

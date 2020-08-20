@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import { escapeMarkdown } from '../utils'
-import languages from 'langu-list'
-import got from 'got'
+import localeCode from 'iso-639-1'
+import got from 'got' 
 
 // just cache all the operations rather than pulling them from the service.  
 import data from './operations.json'
@@ -70,12 +70,12 @@ public static search(nameKey:string, myArray:any, prop:string) {
         var nextArgIsLanguage = false;
         args.forEach((arg: string) => {
             if (nextArgIsLanguage) {
-                var langCode = languages.getLanguageCode(arg);
-                if(langCode == undefined ) {
-                    if(languages.getLanguageName(arg)) {
-                        langCode = arg
+                langCode = localeCode.getCode(arg);
+                if(langCode == '' ) {
+                    if(localeCode.validate(arg)) {
+                        langCode = arg;
                     } else {
-                        langCode = FOAAS.DEFAULT_LANGUAGE
+                        langCode = FOAAS.DEFAULT_LANGUAGE;
                     }
                 }
                 nextArgIsLanguage = false;
