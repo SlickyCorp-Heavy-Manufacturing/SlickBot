@@ -36,7 +36,7 @@ export class Meme {
     private static findTemplate(name: string): meme {
         const template = this._templateNames.get(name)
         if(!template) {
-            return Meme._memes[69] //hehe its bad luck brian 
+            return Meme._memes[68] //hehe its bad luck brian 
         }
         return Meme._memes.find( x => x.name === template[0][1])
     }
