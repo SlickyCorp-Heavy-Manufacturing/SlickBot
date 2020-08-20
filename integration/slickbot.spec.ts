@@ -64,7 +64,7 @@ describe('slickbot', () => {
             .pipe(take(1))
             .subscribe( msg => {
                 expect(msg.content).toContain('slaps');
-                expect(msg.reactions.exists('emoji', '🐟')).toBeTruthy();
+                expect(msg.reactions).toContain('🐟');
                 done();
             });
     });
