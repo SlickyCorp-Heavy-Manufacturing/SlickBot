@@ -128,4 +128,18 @@ describe('slickbot', () => {
                 done();
             });
     }, 15000);
+
+    it('covid should post todays new covid deaths', (done) => {
+        const testChannel = findChannelByName(_userClient.client, 'covid-tendies')
+        testChannel.send('!covid');
+
+        _lastMessage
+            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
+            .pipe(filter(msg => msg.content.includes('!covid')))
+            .pipe(take(1))
+            .subscribe( msg => {
+                expect(msg.content).toContain('Americans laid down their lives for Mike\'s tendies today.')
+                done();
+            });
+    }, 15000);
 })
