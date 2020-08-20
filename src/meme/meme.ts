@@ -36,7 +36,7 @@ export class Meme {
     private static findTemplate(name: string): meme {
         const template = this._templateNames.get(name)
         if(!template) {
-            return Meme._memes[68] //hehe its bad luck brian 
+            return Meme._memes[69] //hehe its bad luck brian 
         }
         return Meme._memes.find( x => x.name === template[0][1])
     }
@@ -57,14 +57,13 @@ export class Meme {
 
         const args = yargs.options({
             template: { type: 'string', default: `pigeon` },
-            box1: { type: 'string' },
+            box1: { type: 'string', default: ' ' },
             box2: { type: 'string' },
             box3: { type: 'string' },
             box4: { type: 'string' },
             box5: { type: 'string' },
             box6: { type: 'string' },
         }).parse(msg.content)
-
 
         let captions = [
             args.box1,
@@ -78,7 +77,7 @@ export class Meme {
         captions = captions.filter( x => x);
         const template = this.findTemplate(args.template)
 
-        if(captions.length != template.box_count) {
+        if(captions.length > template.box_count) {
             return `${template.name} requires ${template.box_count} strings`
         }
         
