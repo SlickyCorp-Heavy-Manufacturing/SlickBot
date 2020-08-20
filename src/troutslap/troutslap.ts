@@ -1,4 +1,4 @@
-import Discord, { DMChannel } from 'discord.js';
+import Discord, { DMChannel, Message } from 'discord.js';
 import { escapeMarkdown } from '../utils'
 
 export class Troutslap {
@@ -9,7 +9,7 @@ export class Troutslap {
                 // Assign a random trout
                 // Reply in the publicly messaged channel.
                 const slapMessage = `_slaps everyone with a ${Troutslap.randomTrout()}_`;
-                msg.channel.send(slapMessage)
+                msg.channel.send(slapMessage).then((dmes: Discord.Message) => dmes.react('🐟'))
                     .catch(console.error);
             }
             else if (msg.mentions.users.size > 0) {
@@ -18,7 +18,7 @@ export class Troutslap {
                     // Assign them a random trout
                     // Reply in the publicly messaged channel.
                     const slapMessage = `_slaps ${escapeMarkdown(user.username)} around with a ${Troutslap.randomTrout()}_`
-                    msg.channel.send(slapMessage)
+                    msg.channel.send(slapMessage).then((dmes: Discord.Message) => dmes.react('🐟'))
                         .catch(console.error);
                 });
             }
