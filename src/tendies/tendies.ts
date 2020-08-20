@@ -32,9 +32,9 @@ export class Tendies {
             const percentChange = Tendies.calculateDailyPercentage(daily);
 
             if (percentChange > 0) {
-                return `ROK closed +${percentChange.toFixed(1)}% today, Blake thanks you for your hard work.`;
+                return `ROK closed up (+${percentChange.toFixed(1)}% :chart_with_upwards_trend:) today, Blake thanks you for his profit off your labor.`;
             } else if (percentChange < 0) {
-                return `ROK closed ${percentChange.toFixed(1)}% today, please thank Blake for his generosity if you still have a job.`;
+                return `ROK closed down (${percentChange.toFixed(1)}% :chart_with_downwards_trend:) today, please thank Blake for his generosity if you still have a job.`;
             } else {
                 return `ROK closed EVEN today, Blake is disappointed by your simulaneous lack of both gumption and ineptitude.`
             }

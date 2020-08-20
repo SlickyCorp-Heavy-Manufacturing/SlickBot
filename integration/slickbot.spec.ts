@@ -79,7 +79,7 @@ describe('slickbot', () => {
                 expect(msg.content).toContain('.png')
                 done();
             });
-    }, 10000);
+    }, 20000);
 
     it('xkcd should post todays xkcd', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
@@ -93,7 +93,7 @@ describe('slickbot', () => {
                 expect(msg.content).toContain('.png')
                 done();
             });
-    }, 10000);
+    }, 20000);
 
     it('help should post help', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
