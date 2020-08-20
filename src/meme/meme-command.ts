@@ -4,7 +4,7 @@ import { Meme } from './meme';
 
 export const MemeCommand: ICommand = {
     name: '!meme',
-    helpDescription: '!meme --template \"this do pigeon\" --box1 \"text box\" --box2 \"asdf\" --box3 \"asdf\"',
+    helpDescription: 'A way to impress your friends with memeology.\n\nSYNOPSIS\n\t!meme [--template \"this do pigeon\"]\n\t[--box1 \"text box\"] [--box2 \"asdf\"] [--box3 \"asdf\"]\n\nOPTIONS\n\t--template\n\t\tFuzzy searches for provided meme name\n\n\t--box{N}\n\t\tStarting with N=1, provide the text you want to display.\n\nHISTORY\n\n\t1990,1991 - Originally written by a bot on a hot and windy August afternoon.\n',
     showInHelp: true,
     trigger: (msg: Message) => msg.content.startsWith('!meme'), 
     command: (msg: Message) => { Meme.getImage(msg).then( message => msg.reply(message)) },
