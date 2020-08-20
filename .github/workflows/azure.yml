@@ -26,6 +26,8 @@ env:
   NODE_VERSION: '10.x'                # set this to the node version to use
   TOKEN: ${{ secrets.TEST_TOKEN }}
   TEST_USER_TOKEN: ${{ secrets.TEST_USER_TOKEN }}
+  IMGFLIP_USER: ${{ secrets.IMGFLIP_USER }}
+  IMGFLIP_PASS: ${{ secrets.IMGFLIP_PASS }}
 
 jobs:
   build-and-deploy:
@@ -43,5 +45,5 @@ jobs:
         # deploy to Azure Web App.
         npm install
         npm run build --if-present
-        npm run test --if-present
+        npm run test:coverage --if-present
         npm run test:integration

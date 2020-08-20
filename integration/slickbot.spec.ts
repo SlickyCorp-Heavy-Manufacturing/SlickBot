@@ -73,27 +73,14 @@ describe('slickbot', () => {
 
         _lastMessage
             .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('.png')))
+            .pipe(filter(msg => msg.content.includes('https://imgs.xkcd.com')))
             .pipe(take(1))
             .subscribe( msg => {
-                expect(msg.content).toContain('.png')
+                expect(msg.content).toContain('https://imgs.xkcd.com')
                 done();
             });
-    }, 20000);
+    }, 10000);
 
-    it('xkcd should post todays xkcd', (done) => {
-        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
-        testChannel.send('!xkcd today');
-
-        _lastMessage
-            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('.png')))
-            .pipe(take(1))
-            .subscribe( msg => {
-                expect(msg.content).toContain('.png')
-                done();
-            });
-    }, 20000);
 
     it('help should post help', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
@@ -156,4 +143,19 @@ describe('slickbot', () => {
                 done();
             });
     }, 15000);
+
+    it('!meme should post a meme', (done) => {
+        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
+        testChannel.send('!meme --template "asdf --box1 "box1"');
+
+        _lastMessage
+            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
+            .pipe(filter(msg => msg.content.includes('https://i.imgflip.com')))
+            .pipe(take(1))
+            .subscribe( msg => {
+                expect(msg.content).toContain('https://i.imgflip.com')
+                done();
+            });
+    }, 15000);
+
 });
