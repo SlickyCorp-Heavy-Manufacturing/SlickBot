@@ -4,9 +4,13 @@ import nock from 'nock';
 import { Covid } from './covid';
 
 describe("covid", () => {
-    it("usDaily() should get US daily numbers", async () => {
-      const usDaily = [
-        {
+  it("usDaily() should get US daily numbers", async () => {
+    nock('https://api.covidtracking.com')
+      .get('/v1/us/current.json')
+      .reply(
+        200,
+        [
+          {
             "date": 20200819,
             "states": 56,
             "positive": 5502927,
@@ -32,14 +36,11 @@ describe("covid", () => {
             "positiveIncrease": 45103,
             "totalTestResultsIncrease": 680934,
             "hash": "9024bc2f59199a950c965babefbfac6f6c8948eb"
-        },
-      ];
-      
-    nock('https://covidtracking.com')
-      .get('/api/us/daily')
-      .reply(200, usDaily);
+          },
+        ]
+      );
 
-      const usDailyNumbers = await Covid.usDaily();
-      expect(usDailyNumbers).toBe('1416 Americans laid down their lives for Mike\'s tendies today.')
-    });
+    const usDailyNumbers = await Covid.usDaily();
+    expect(usDailyNumbers).toBe('1416 Americans laid down their lives for Mike\'s tendies today.')
+  });
 });
