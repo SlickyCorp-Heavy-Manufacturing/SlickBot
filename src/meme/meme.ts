@@ -6,13 +6,15 @@ import { Message } from 'discord.js';
 
 import FuzzySet from 'fuzzyset.js';
 
+import meme_list from './meme-list.json';
+
 interface meme {
-    box_count: number;
-    height: number;
     id: string;
     name: string;
-    url: string;
-    width: number;
+    box_count: number;
+    url?: string;
+    height?: number;
+    width?: number;
 }
 
 export class Meme {
@@ -26,8 +28,9 @@ export class Meme {
             password: process.env.IMGFLIP_PASS
         })
         if (!Meme._memes) {
-            Meme._memes = await imgflip.memes();
-            this._templateNames = FuzzySet(Meme._memes.map( x => x.name))
+            Meme._memes = [...await imgflip.memes(), ...meme_list];
+            console.log(Meme._memes);
+            this._templateNames = FuzzySet(Meme._memes.map( x => x.name));
         }
 
         return imgflip;
