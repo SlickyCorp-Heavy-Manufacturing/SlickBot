@@ -7,11 +7,5 @@ export const TendiesCommand: ICommand = {
     helpDescription: 'Bot will respond with the tendie data or random stock if no symbol specified. Usage: !tendies [SYMBOL]',
     showInHelp: true,
     trigger: (msg: Message) => msg.content.startsWith('!tendies'), 
-    command: async (msg: Message): Promise<void> => {
-        try {
-            msg.channel.send(await Tendies.currentTendies(msg.content.replace('!tendies', '').trim()))
-        } catch (error) {
-            return error.message;
-        }
-    },
+    command: (msg: Message) => Tendies.tendies(msg.content.replace('!tendies', '').trim()).then((value: string) => msg.channel.send(value)),
 }

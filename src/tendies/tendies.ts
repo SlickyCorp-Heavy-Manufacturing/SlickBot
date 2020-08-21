@@ -60,7 +60,7 @@ export class Tendies {
      * Get the current stock price change and a humerous gif.
      * @param symbol The ticker symbol.
      */
-    public static async currentTendies(symbol?: string): Promise<string> {
+    public static async tendies(symbol?: string): Promise<string> {
         // Grab a random US stock if none given
         let symbolValue = symbol;
         if (!symbolValue) {
@@ -75,11 +75,10 @@ export class Tendies {
         // Detailed message
         let details: string;
         if (percentChange > 0) {
-            details = `**${symbol}:** +${priceChange.toFixed(2)} (${percentChange.toFixed(2)}%) :chart_with_upwards_trend:`;
+            details = `**${symbol}:** +${priceChange.toFixed(2)} (${percentChange.toFixed(2)}%) :chart_with_upwards_trend:\n`;
         } else {
-            details = `**${symbol}:** ${priceChange.toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:`;
+            details = `**${symbol}:** ${priceChange.toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:\n`;
         }
-        return Promise.resolve(details);
 
         // Humerous gif
         if (percentChange >= -1 && percentChange < 1) {
