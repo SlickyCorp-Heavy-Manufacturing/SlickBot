@@ -11,7 +11,7 @@ describe("tendies", () => {
         "l": 226.03,
         "o": 227.44,
         "pc": 228.68,
-        "t": 1597969605
+        "t": 1597969605,
     };
     const stocks: Stock[] = [
         {
@@ -19,19 +19,28 @@ describe("tendies", () => {
             "description": "VIRGIN GALACTIC HOLDINGS INC",
             "displaySymbol": "SPCE",
             "symbol": "SPCE",
-            "type": "EQS"
+            "type": "EQS",
         },
         {
             "currency": "USD",
             "description": "TESLA INC",
             "displaySymbol": "TSLA",
             "symbol": "TSLA",
-            "type": "EQS"
+            "type": "EQS",
         },
-    ]
+    ];
+    const zeroQuote: Quote = {
+        "c": 0.0,
+        "h": 0.0,
+        "l": 0.0,
+        "o": 0.0,
+        "pc": 0.0,
+        "t": 1597969605,
+    }
 
     it("calculateQuotePercentage() calculates percentage", () => {
         expect(Tendies.calculateQuotePercentage(quote)).toBeCloseTo(-0.81, 2);
+        expect(Tendies.calculateQuotePercentage(zeroQuote)).toBeCloseTo(0.0, 2);
     });
 
     it("quote() should get most recent stock numbers", async () => {
