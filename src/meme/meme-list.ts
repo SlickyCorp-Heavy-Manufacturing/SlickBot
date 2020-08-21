@@ -1,3 +1,6 @@
+import * as types from './types';
+
+export const meme_list =
 [
     {
         "id": "252600902",

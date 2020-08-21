@@ -6,19 +6,11 @@ import { Message } from 'discord.js';
 
 import FuzzySet from 'fuzzyset.js';
 
-import meme_list from './meme-list.json';
-
-interface meme {
-    id: string;
-    name: string;
-    box_count: number;
-    url?: string;
-    height?: number;
-    width?: number;
-}
+import * as types from './types';
+import * as memes from './meme-list';
 
 export class Meme {
-    private static _memes: meme[];
+    private static _memes: types.meme[];
     private static _templateNames: FuzzySet;
 
     private static async login(): Promise<Imgflip> {
@@ -28,7 +20,7 @@ export class Meme {
             password: process.env.IMGFLIP_PASS
         })
         if (!Meme._memes) {
-            Meme._memes = [...await imgflip.memes(), ...meme_list];
+            Meme._memes = [...await imgflip.memes(), ...memes.meme_list];
             console.log(Meme._memes);
             this._templateNames = FuzzySet(Meme._memes.map( x => x.name));
         }
@@ -36,7 +28,7 @@ export class Meme {
         return imgflip;
     }
 
-    private static findTemplate(name: string): meme {
+    private static findTemplate(name: string): types.meme {
         const template = this._templateNames.get(name)
         if(!template) {
             return Meme._memes[69] //hehe its bad luck brian 
