@@ -21,7 +21,6 @@ export class Meme {
         })
         if (!Meme._memes) {
             Meme._memes = [...await imgflip.memes(), ...memes.meme_list];
-            console.log(Meme._memes);
             this._templateNames = FuzzySet(Meme._memes.map( x => x.name));
         }
 
