@@ -167,15 +167,16 @@ describe('slickbot', () => {
     }, 15000);
 
     it('tendies should post a note if the stock wasn\'t found', (done) => {
-        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
-        testChannel.send('!tendies thisstockdoesnotexist');
+        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL);
+        const fakeStock = 'thisstockdoesnotexist';
+        testChannel.send(`!tendies ${fakeStock}`);
 
         _lastMessage
             .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('thisstockdoesnotexist')))
+            .pipe(filter(msg => msg.content.includes(fakeStock.toUpperCase())))
             .pipe(take(1))
             .subscribe( msg => {
-                expect(msg.content).toBe('Ticker symbol \'thisstockdoesnotexist\' was not found.');
+                expect(msg.content).toBe(`Ticker symbol \'${fakeStock.toUpperCase()}\' was not found.`);
                 done();
             });
     }, 15000);
