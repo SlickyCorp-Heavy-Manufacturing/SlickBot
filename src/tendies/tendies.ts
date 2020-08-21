@@ -13,7 +13,7 @@ export class Tendies {
      */
     public static calculateQuotePercentage(quote: Quote): number {
         // (current - previousClose) / previousClose * 100
-        return (quote.c - quote.pc) / quote.pc * 100;
+        return quote.pc === 0 ? 0.0 : (quote.c - quote.pc) / quote.pc * 100;
     }
 
     /**
@@ -83,7 +83,7 @@ export class Tendies {
         if (percentChange > 0) {
             details = `**${symbolValue}:** +${priceChange.toFixed(2)} (${percentChange.toFixed(2)}%) :chart_with_upwards_trend:\n`;
         } else {
-            details = `**${symbolValue}:** ${priceChange.toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:\n`;
+            details = `**${symbolValue}:** -${Math.abs(priceChange).toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:\n`;
         }
 
         // Humerous gif
