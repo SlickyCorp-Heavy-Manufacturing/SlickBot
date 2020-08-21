@@ -10,3 +10,4 @@ export function escapeMarkdown(text: String): String {
   var escaped = unescaped.replace(/(\*|_|`|~|\\)/g, '\\$1'); // escape *, _, `, ~, \
   return escaped;
 }
+

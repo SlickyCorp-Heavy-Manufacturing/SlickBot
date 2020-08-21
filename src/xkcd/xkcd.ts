@@ -11,7 +11,7 @@ export const XKCDCommand: ICommand = {
     helpDescription: 'Bot will post xkcd. or todays by appending today',
     showInHelp: true,
     trigger: (msg: Message) => msg.content.startsWith('!xkcd'), 
-    command: (msg: Message) => {
+    command: async (msg: Message) => {
         let xkcd_link: string;
         if(msg.content.includes('today')) {
             xkcd_link = "https://xkcd.com/info.0.json"
@@ -19,10 +19,8 @@ export const XKCDCommand: ICommand = {
             const number = getRandomNumber(0, 2000);
             xkcd_link = `https://xkcd.com/${number}/info.0.json`;
         }
-        got(xkcd_link, {responseType: 'json'}).then( (value) => {
-            var image = (value.body as any).img;
-            msg.channel.send(image)
-        });
- 
+        const value = await got(xkcd_link, {responseType: 'json'});
+        var image = (value.body as any).img;
+        await msg.channel.send(image);
     },
 }

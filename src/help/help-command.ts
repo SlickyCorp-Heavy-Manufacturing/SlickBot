@@ -13,5 +13,6 @@ export const HelpCommand: ICommand = {
             retVal += `${command.name} - ${command.helpDescription}\n`;
         });
         msg.channel.send(retVal);
+        return Promise.resolve();
     },
 }

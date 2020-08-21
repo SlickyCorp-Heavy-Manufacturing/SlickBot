@@ -6,5 +6,7 @@ export const PingCommand: ICommand = {
     helpDescription: 'Bot will reply to a user\'s ping with a pong',
     showInHelp: true,
     trigger: (msg: Message) => msg.content === 'ping', 
-    command: (msg: Message) => msg.channel.send('pong'),
+    command: async (msg: Message) => {
+        await msg.channel.send('pong');
+    }
 }

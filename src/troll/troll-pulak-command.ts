@@ -6,5 +6,7 @@ export const TrollPulakCommand: ICommand = {
     helpDescription: '',
     showInHelp: false,
     trigger: (msg: Message) => msg.author.username === 'Pulak' && (msg.channel as TextChannel).name === 'thing-i-would-buy', 
-    command: (msg: Message) => msg.channel.send('https://i.redd.it/ng2ewzvfado21.jpg'),
+    command: async (msg: Message) => {
+        await msg.channel.send('https://i.redd.it/ng2ewzvfado21.jpg');
+    }
 }

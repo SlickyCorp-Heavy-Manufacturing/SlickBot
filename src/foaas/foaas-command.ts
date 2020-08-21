@@ -7,5 +7,8 @@ export const FoffCommand: ICommand = {
     helpDescription: 'Bot will say a random f*&k off message',
     showInHelp: true,
     trigger: (msg: Message) => msg.content.startsWith('!foff'), 
-    command: (msg: Message) => FOAAS.foff(msg).then((value: string) => msg.channel.send(value)),
+    command: async (msg: Message) => {
+        const value = await FOAAS.foff(msg);
+        msg.channel.send(value);
+    },
 }
