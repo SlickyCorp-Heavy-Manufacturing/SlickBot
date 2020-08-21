@@ -9,7 +9,7 @@ export const TendiesCommand: ICommand = {
     trigger: (msg: Message) => msg.content.startsWith('!tendies'), 
     command: async (msg: Message): Promise<void> => {
         try {
-            msg.channel.send(Tendies.currentTendies(msg.content.replace('!tendies', '').trim()))
+            msg.channel.send(await Tendies.currentTendies(msg.content.replace('!tendies', '').trim()))
         } catch (error) {
             return error.message;
         }

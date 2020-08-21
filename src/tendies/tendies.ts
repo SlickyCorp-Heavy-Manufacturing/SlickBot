@@ -75,28 +75,28 @@ export class Tendies {
         // Detailed message
         let details: string;
         if (percentChange > 0) {
-            details = `**${symbol}:** +${priceChange.toFixed(2)} (${percentChange.toFixed(2)}%) :chart_with_upwards_trend:`;
+            details = `**${symbol}:** +${priceChange.toFixed(2)} (${percentChange.toFixed(2)}%) :chart_with_upwards_trend:\n`;
         } else {
-            details = `**${symbol}:** ${priceChange.toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:`;
+            details = `**${symbol}:** ${priceChange.toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:\n`;
         }
 
         // Humerous gif
         if (percentChange >= -1 && percentChange < 1) {
-            return Promise.resolve(`${details}\nhttps://tenor.com/view/cmon-do-something-original-cmon-something-original-poke-gif-16424397`);
+            return Promise.resolve(`${details}https://tenor.com/view/cmon-do-something-original-cmon-something-original-poke-gif-16424397`);
         } else if (percentChange >= 1 && percentChange < 5) {
-            return Promise.resolve(`${details}\nhttps://tenor.com/view/stonks-up-stongs-meme-stocks-gif-15715298`);
+            return Promise.resolve(`${details}https://tenor.com/view/stonks-up-stongs-meme-stocks-gif-15715298`);
         } else if (percentChange >= 5 && percentChange < 10) {
-            return Promise.resolve(`${details}\nhttps://tenor.com/view/wsb-wall-street-bets-hands-up-cool-shades-gif-16964384`);
+            return Promise.resolve(`${details}https://tenor.com/view/wsb-wall-street-bets-hands-up-cool-shades-gif-16964384`);
         } else if (percentChange >= 10) {
-            return Promise.resolve(`${details}\nhttps://tenor.com/view/jpow-jerome-powell-money-printing-covid-bailout-bailout-gif-16865595`);
+            return Promise.resolve(`${details}https://tenor.com/view/jpow-jerome-powell-money-printing-covid-bailout-bailout-gif-16865595`);
         } else if (percentChange >= -5 && percentChange < -1) {
-            return Promise.resolve(`${details}\nhttps://tenor.com/view/not-stonks-profit-down-sad-frown-arms-crossed-gif-15684535`);
+            return Promise.resolve(`${details}https://tenor.com/view/not-stonks-profit-down-sad-frown-arms-crossed-gif-15684535`);
         } else if (percentChange >= -10 && percentChange < -5) {
-            return Promise.resolve(`${details}\nhttps://gfycat.com/classicmadhornedtoad`);
+            return Promise.resolve(`${details}https://gfycat.com/classicmadhornedtoad`);
         } else if (percentChange < -10) {
-            return Promise.resolve(`${details}\nhttps://tenor.com/view/elmo-gif-9112913`);
+            return Promise.resolve(`${details}https://tenor.com/view/elmo-gif-9112913`);
         } else {
-            return Promise.resolve(`${details}\nhttps://tenor.com/view/what-the-fuck-wtf-blink182-gif-4982401`);
+            return Promise.resolve(`${details}https://tenor.com/view/what-the-fuck-wtf-blink182-gif-4982401`);
         }
     }
 
