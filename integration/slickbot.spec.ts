@@ -197,4 +197,18 @@ describe('slickbot', () => {
             });
     }, 15000);
 
+    it('!draw-meme should post a meme', (done) => {
+        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
+        testChannel.send('!draw-meme');
+
+        _lastMessage
+            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
+            .pipe(filter(msg => msg.attachments.size > 0))
+            .pipe(take(1))
+            .subscribe( msg => {
+                expect(msg.attachments.size > 0)
+                done();
+            });
+    }, 15000);
+
 });
