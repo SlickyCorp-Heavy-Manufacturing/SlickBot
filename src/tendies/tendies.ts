@@ -80,9 +80,9 @@ export class Tendies {
         // Detailed message
         let details: string;
         if (percentChange > 0) {
-            details = `**${symbol}:** +${priceChange.toFixed(2)} (${percentChange.toFixed(2)}%) :chart_with_upwards_trend:\n`;
+            details = `**${symbolValue}:** +${priceChange.toFixed(2)} (${percentChange.toFixed(2)}%) :chart_with_upwards_trend:\n`;
         } else {
-            details = `**${symbol}:** ${priceChange.toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:\n`;
+            details = `**${symbolValue}:** ${priceChange.toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:\n`;
         }
 
         // Humerous gif

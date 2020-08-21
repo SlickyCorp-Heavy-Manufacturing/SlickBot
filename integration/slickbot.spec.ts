@@ -142,7 +142,7 @@ describe('slickbot', () => {
 
         _lastMessage
             .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('**TSLA**: ')))
+            .pipe(filter(msg => msg.content.includes('TSLA')))
             .pipe(take(1))
             .subscribe( msg => {
                 expect(msg.content).toMatch(/\*\*TSLA:\*\*\s(\+|\-)\d+\.\d+\s\(\d+\.\d+%\)\s:chart_with_(upwards|downwards)_trend:/gm);
@@ -157,7 +157,7 @@ describe('slickbot', () => {
 
         _lastMessage
             .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => /^\*\*[A-Z\.\+\-\=\^]+\*\*:\s(\+|\-)\d+\.\d+\s/gm.test(msg.content)))
+            .pipe(filter(msg => /^(\*\*)?[A-Z\.\+\-\=\^]+(\*\*)?:\s/gm.test(msg.content)))
             .pipe(take(1))
             .subscribe( msg => {
                 expect(msg.content).toMatch(/^\*\*[A-Z\.\+\-\=\^]+\*\*:\s(\+|\-)\d+\.\d+\s\(\d+\.\d+%\)\s:chart_with_(upwards|downwards)_trend:/m);
