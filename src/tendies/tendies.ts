@@ -68,7 +68,12 @@ export class Tendies {
         }
 
         // Get the quote
-        let quote = await Tendies.quote(symbol);
+        let quote;
+        try {
+            quote = await Tendies.quote(symbolValue);
+        } catch (error) {
+            return Promise.resolve(error.message ? error.message : `Unknown error fetching quote for '${symbolValue}`);
+        }
         const priceChange = quote.c - quote.pc;
         const percentChange = Tendies.calculateQuotePercentage(quote);
 
