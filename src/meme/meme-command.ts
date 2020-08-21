@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 import { ICommand } from '../icommand';
 import { Meme } from './meme';
+import { DrawMeme } from './draw-meme';
 
 export const MemeCommand: ICommand = {
     name: '!meme',
@@ -8,8 +9,9 @@ export const MemeCommand: ICommand = {
     showInHelp: true,
     trigger: (msg: Message) => msg.content.startsWith('!meme'), 
     command: async (msg: Message) => { 
-      const value = await Meme.getImage(msg);
-      await msg.reply(value);
+      // const value = await Meme.getImage(msg);
+      // await msg.reply(value);
+      await DrawMeme.meme(msg);
     },
 }
 
@@ -19,7 +21,8 @@ export const MemeSearchCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!meme-search'), 
   command: async (msg: Message) => {
-     const message = await Meme.getImage(msg);
-     await msg.reply(message);
+     //const message = await Meme.getImage(msg);
+     //await msg.reply(message);
+     await DrawMeme.meme(msg);
     },
 }
