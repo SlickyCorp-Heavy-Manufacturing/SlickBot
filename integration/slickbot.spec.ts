@@ -28,6 +28,12 @@ describe('slickbot', () => {
         });
 
     }, 10000);
+
+    afterAll( async () => {
+        // Destory clients
+        await _userClient.client.destroy();
+        await _buttUnderTest.client.destroy();
+    }, 10000);
     
     it('ping should post pong', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
@@ -130,16 +136,46 @@ describe('slickbot', () => {
             });
     }, 15000);
 
-    it('tendies should post todays stock change in meme format', (done) => {
+    it('tendies should post given stock change in meme format', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
         testChannel.send('!tendies TSLA');
 
         _lastMessage
             .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('https://tenor.com')))
+            .pipe(filter(msg => msg.content.includes('TSLA')))
             .pipe(take(1))
             .subscribe( msg => {
-                expect(msg.content).toContain('https://tenor.com')
+                expect(msg.content).toMatch(/\*\*TSLA:\*\*\s(\+|\-)\d+\.\d+\s\(\d+\.\d+%\)\s:chart_with_(upwards|downwards)_trend:/gm);
+                expect(msg.content).toContain('https://tenor.com');
+                done();
+            });
+    }, 15000);
+
+    it('tendies should post a random stock if none specified', (done) => {
+        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
+        testChannel.send('!tendies');
+
+        _lastMessage
+            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
+            .pipe(filter(msg => /^(\*\*)?[A-Z\.\+\-\=\^]+:(\*\*)?\s/gm.test(msg.content)))
+            .pipe(take(1))
+            .subscribe( msg => {
+                expect(msg.content).toMatch(/^\*\*[A-Z\.\+\-\=\^]+:\*\*\s(\+|\-)\d+\.\d+\s\(\d+\.\d+%\)\s:chart_with_(upwards|downwards)_trend:/m);
+                expect(msg.content).toContain('https://tenor.com');
+                done();
+            });
+    }, 15000);
+
+    it('tendies should post a note if the stock wasn\'t found', (done) => {
+        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
+        testChannel.send('!tendies thisstockdoesnotexist');
+
+        _lastMessage
+            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
+            .pipe(filter(msg => msg.content.includes('thisstockdoesnotexist')))
+            .pipe(take(1))
+            .subscribe( msg => {
+                expect(msg.content).toBe('Ticker symbol \'thisstockdoesnotexist\' was not found.');
                 done();
             });
     }, 15000);

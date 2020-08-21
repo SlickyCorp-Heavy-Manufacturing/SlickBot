@@ -28,6 +28,7 @@ env:
   TEST_USER_TOKEN: ${{ secrets.TEST_USER_TOKEN }}
   IMGFLIP_USER: ${{ secrets.IMGFLIP_USER }}
   IMGFLIP_PASS: ${{ secrets.IMGFLIP_PASS }}
+  FINNHUB_TOKEN: ${{ secrets.FINNHUB_TOKEN }}
 
 jobs:
   build-and-deploy:
