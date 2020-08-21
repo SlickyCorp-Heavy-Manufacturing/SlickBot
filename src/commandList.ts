@@ -11,6 +11,7 @@ import { FoffCommand } from './foaas/foaas-command';
 import { TendiesCommand } from './tendies';
 import { CovidCommand } from './covid/covid-command';
 import { NiceReaction } from './reactions'
+import { DevNullCommand } from './dev_null/dev-null-command';
 
 export const commandList: ICommand[] = [
     HelpCommand,
@@ -26,4 +27,5 @@ export const commandList: ICommand[] = [
     TendiesCommand,
     CovidCommand,
     NiceReaction,
+    DevNullCommand,
 ];
