@@ -139,7 +139,8 @@ describe('slickbot', () => {
             .pipe(filter(msg => msg.content.includes('https://tenor.com')))
             .pipe(take(1))
             .subscribe( msg => {
-                expect(msg.content).toContain('https://tenor.com')
+                expect(msg.content).toContain('TSLA');
+                expect(msg.content).toContain('https://tenor.com');
                 done();
             });
     }, 15000);
