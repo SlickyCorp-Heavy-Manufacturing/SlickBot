@@ -13,7 +13,7 @@ export class Tendies {
      */
     public static calculateQuotePercentage(quote: Quote): number {
         // (current - previousClose) / previousClose * 100
-        return (quote.c - quote.pc) / quote.pc * 100;
+        return quote.pc === 0 ? 0.0 : (quote.c - quote.pc) / quote.pc * 100;
     }
 
     /**
