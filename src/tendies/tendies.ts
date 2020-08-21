@@ -1,5 +1,5 @@
 
-import got, { Response } from 'got';
+import got from 'got';
 
 import { Quote, Stock } from './tendies-types';
 
@@ -75,10 +75,11 @@ export class Tendies {
         // Detailed message
         let details: string;
         if (percentChange > 0) {
-            details = `**${symbol}:** +${priceChange.toFixed(2)} (${percentChange.toFixed(2)}%) :chart_with_upwards_trend:\n`;
+            details = `**${symbol}:** +${priceChange.toFixed(2)} (${percentChange.toFixed(2)}%) :chart_with_upwards_trend:`;
         } else {
-            details = `**${symbol}:** ${priceChange.toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:\n`;
+            details = `**${symbol}:** ${priceChange.toFixed(2)} (${Math.abs(percentChange).toFixed(2)}%) :chart_with_downwards_trend:`;
         }
+        return Promise.resolve(details);
 
         // Humerous gif
         if (percentChange >= -1 && percentChange < 1) {
