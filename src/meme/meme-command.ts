@@ -9,9 +9,8 @@ export const MemeCommand: ICommand = {
     showInHelp: true,
     trigger: (msg: Message) => msg.content.startsWith('!meme'), 
     command: async (msg: Message) => { 
-      // const value = await Meme.getImage(msg);
-      // await msg.reply(value);
-      await DrawMeme.meme(msg);
+      const value = await Meme.getImage(msg);
+      await msg.reply(value);
     },
 }
 
@@ -21,8 +20,17 @@ export const MemeSearchCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!meme-search'), 
   command: async (msg: Message) => {
-     //const message = await Meme.getImage(msg);
-     //await msg.reply(message);
-     await DrawMeme.meme(msg);
+     const message = await Meme.getImage(msg);
+     await msg.reply(message);
     },
+}
+
+export const DrawMemeCommand: ICommand = {
+  name: '!meme-draw',
+  helpDescription: '!meme-draw',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!meme-draw'), 
+  command: async (msg: Message) => {
+    await DrawMeme.meme(msg);
+  },
 }

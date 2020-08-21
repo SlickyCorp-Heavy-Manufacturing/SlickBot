@@ -3,10 +3,17 @@ import * as yargs from 'yargs';
 // @ts-ignore
 import Imgflip from 'imgflip';
 import { Message } from 'discord.js';
-import { meme } from './imeme';
 
 import FuzzySet from 'fuzzyset.js';
 
+interface meme {
+    box_count: number;
+    height: number;
+    id: string;
+    name: string;
+    url: string;
+    width: number;
+}
 
 export class Meme {
     private static _memes: meme[];
