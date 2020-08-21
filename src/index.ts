@@ -27,7 +27,9 @@ discordClient.init().then( () => {
   
   discordClient.client.on('message', (msg: Discord.Message) => {
     const commands = commandList.filter((command) => command.trigger(msg));
-    commands.forEach((command): void => command.command(msg));
+    Promise.all(commands.map(async (command) => {
+      command.command(msg)
+    })).then();
   });
   
   scheduledPosts.forEach((scheduledPost) => {

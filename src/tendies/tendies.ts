@@ -43,17 +43,16 @@ export class Tendies {
      * Calculate Blake's happiness.
      */
     public static async blakesHappiness(): Promise<string> {
-        return Tendies.quote('ROK').then((quote) => {
-            const percentChange = Tendies.calculateQuotePercentage(quote);
+        const quote = await Tendies.quote('ROK');
+        const percentChange = Tendies.calculateQuotePercentage(quote);
 
-            if (percentChange > 0) {
-                return `ROK closed up (+${percentChange.toFixed(2)}% :chart_with_upwards_trend:) today, Blake thanks you for his profit off your labor.`;
-            } else if (percentChange < 0) {
-                return `ROK closed down (${percentChange.toFixed(2)}% :chart_with_downwards_trend:) today, please thank Blake for his generosity if you still have a job.`;
-            } else {
-                return `ROK closed EVEN today, Blake is disappointed by your simulaneous lack of both gumption and ineptitude.`
-            }
-        });
+        if (percentChange > 0) {
+            return `ROK closed up (+${percentChange.toFixed(2)}% :chart_with_upwards_trend:) today, Blake thanks you for his profit off your labor.`;
+        } else if (percentChange < 0) {
+            return `ROK closed down (${percentChange.toFixed(2)}% :chart_with_downwards_trend:) today, please thank Blake for his generosity if you still have a job.`;
+        } else {
+            return `ROK closed EVEN today, Blake is disappointed by your simulaneous lack of both gumption and ineptitude.`
+        }
     }
 
     /**
@@ -73,7 +72,7 @@ export class Tendies {
         try {
             quote = await Tendies.quote(symbolValue);
         } catch (error) {
-            return Promise.resolve(error.message ? error.message : `Unknown error fetching quote for '${symbolValue}`);
+            return (error.message ? error.message : `Unknown error fetching quote for '${symbolValue}`);
         }
         const priceChange = quote.c - quote.pc;
         const percentChange = Tendies.calculateQuotePercentage(quote);
@@ -88,21 +87,21 @@ export class Tendies {
 
         // Humerous gif
         if (percentChange >= -1 && percentChange < 1) {
-            return Promise.resolve(`${details}https://tenor.com/view/cmon-do-something-original-cmon-something-original-poke-gif-16424397`);
+            return `${details}https://tenor.com/view/cmon-do-something-original-cmon-something-original-poke-gif-16424397`;
         } else if (percentChange >= 1 && percentChange < 5) {
-            return Promise.resolve(`${details}https://tenor.com/view/stonks-up-stongs-meme-stocks-gif-15715298`);
+            return `${details}https://tenor.com/view/stonks-up-stongs-meme-stocks-gif-15715298`;
         } else if (percentChange >= 5 && percentChange < 10) {
-            return Promise.resolve(`${details}https://tenor.com/view/wsb-wall-street-bets-hands-up-cool-shades-gif-16964384`);
+            return `${details}https://tenor.com/view/wsb-wall-street-bets-hands-up-cool-shades-gif-16964384`;
         } else if (percentChange >= 10) {
-            return Promise.resolve(`${details}https://tenor.com/view/jpow-jerome-powell-money-printing-covid-bailout-bailout-gif-16865595`);
+            return `${details}https://tenor.com/view/jpow-jerome-powell-money-printing-covid-bailout-bailout-gif-16865595`;
         } else if (percentChange >= -5 && percentChange < -1) {
-            return Promise.resolve(`${details}https://tenor.com/view/not-stonks-profit-down-sad-frown-arms-crossed-gif-15684535`);
+            return `${details}https://tenor.com/view/not-stonks-profit-down-sad-frown-arms-crossed-gif-15684535`;
         } else if (percentChange >= -10 && percentChange < -5) {
-            return Promise.resolve(`${details}https://gfycat.com/classicmadhornedtoad`);
+            return `${details}https://gfycat.com/classicmadhornedtoad`;
         } else if (percentChange < -10) {
-            return Promise.resolve(`${details}https://tenor.com/view/elmo-gif-9112913`);
+            return `${details}https://tenor.com/view/elmo-gif-9112913`;
         } else {
-            return Promise.resolve(`${details}https://tenor.com/view/what-the-fuck-wtf-blink182-gif-4982401`);
+            return `${details}https://tenor.com/view/what-the-fuck-wtf-blink182-gif-4982401`;
         }
     }
 

@@ -6,10 +6,10 @@ export const NiceReaction: ICommand = {
     helpDescription: '',
     showInHelp: false,
     trigger: (msg: Message) => (msg.content.includes('69') && !msg.content.startsWith('http')), 
-    command: (msg: Message) => {
-        msg.react('🇳')
-        .then(() => msg.react('🇮'))
-        .then(() => msg.react('🇨'))
-        .then(() => msg.react('🇪'))
+    command: async (msg: Message) => {
+        await msg.react('🇳');
+        await msg.react('🇮');
+        await msg.react('🇨');
+        await msg.react('🇪');
     },
 }

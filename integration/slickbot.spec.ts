@@ -24,7 +24,9 @@ describe('slickbot', () => {
             _lastMessage.next(msg);
 
             const commands = commandList.filter((command) => command.trigger(msg));
-            commands.forEach((command): void => command.command(msg));
+            Promise.all(commands.map(async (command) => {
+                command.command(msg)
+              })).then();
         });
 
     }, 10000);

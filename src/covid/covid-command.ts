@@ -8,9 +8,8 @@ export const CovidCommand: ICommand = {
     helpDescription: 'Return the new daily deaths from covid today.',
     showInHelp: true,
     trigger: (msg: Message) => msg.content.startsWith('!covid') && (msg.channel as TextChannel).name === 'covid-tendies', 
-    command: (msg: Message) => {
-        Covid.usDaily().then((usDaily) => {
-            msg.channel.send(usDaily);
-        });
+    command: async (msg: Message) => {
+        const usDaily = await Covid.usDaily()
+        msg.channel.send(usDaily);
     },
 }

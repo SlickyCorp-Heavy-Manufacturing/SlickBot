@@ -2,25 +2,25 @@ import Discord, { DMChannel } from 'discord.js';
 import { escapeMarkdown } from '../utils'
 
 export class Troutslap {
-    public static slap(msg: Discord.Message) {
+    public static async slap(msg: Discord.Message): Promise<void> {
         if (msg.channel.type == "text") {
             // If @everyone or @here...
             if (msg.mentions.everyone) {                  
                 // Assign a random trout
                 // Reply in the publicly messaged channel.
                 const slapMessage = `_slaps everyone with a ${Troutslap.randomTrout()}_`;
-                msg.channel.send(slapMessage)
+                await msg.channel.send(slapMessage)
                     .catch(console.error);
             }
             else if (msg.mentions.users.size > 0) {
                 // For each person,
-                msg.mentions.users.forEach(function(user, userstr) {
+                await Promise.all(msg.mentions.users.map(user => {
                     // Assign them a random trout
                     // Reply in the publicly messaged channel.
                     const slapMessage = `_slaps ${escapeMarkdown(user.username)} around with a ${Troutslap.randomTrout()}_`
-                    msg.channel.send(slapMessage)
+                    return msg.channel.send(slapMessage)
                         .catch(console.error);
-                });
+                }))
             }
             else {
                 Troutslap.dmUsage(msg);
