@@ -66,6 +66,7 @@ export class Tendies {
         if (!symbolValue) {
             symbolValue = await Tendies.randomStock('US');
         }
+        symbolValue = symbolValue.toUpperCase();
 
         // Get the quote
         let quote;
