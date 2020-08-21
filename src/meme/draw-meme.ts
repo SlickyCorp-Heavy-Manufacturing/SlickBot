@@ -8,7 +8,7 @@ export class DrawMeme {
     public static async meme(msg: Message): Promise<void> {
         const fnt = pureimage.registerFont('SourceSansPro-Regular.ttf','Source Sans Pro');
         
-        new Promise( (resolve) => {
+        const filename = await new Promise<String>( (resolve) => {
             fnt.load(() => {
                 var img = pureimage.make(200,200);
                 var ctx = img.getContext('2d');
@@ -17,12 +17,12 @@ export class DrawMeme {
                 ctx.fillText("ABC", 80, 80);
     
                 pureimage.encodePNGToStream(img, fs.createWriteStream('out.png')).then( () => {
-                    resolve();
+                    resolve('out.png');
                 })
             });
         });
 
-        await msg.channel.send({ files: ['out.png'] });
+        await msg.channel.send({ files: [filename] });
         fs.unlink('out.png', () => {});
     }
 }

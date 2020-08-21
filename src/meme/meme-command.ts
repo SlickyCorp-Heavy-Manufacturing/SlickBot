@@ -29,7 +29,7 @@ export const DrawMemeCommand: ICommand = {
   name: '!meme-draw',
   helpDescription: '!meme-draw',
   showInHelp: true,
-  trigger: (msg: Message) => msg.content.startsWith('!meme-draw'), 
+  trigger: (msg: Message) => msg.content.startsWith('!draw-meme'), 
   command: async (msg: Message) => {
     await DrawMeme.meme(msg);
   },
