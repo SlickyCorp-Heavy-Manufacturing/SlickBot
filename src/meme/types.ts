@@ -1,7 +1,7 @@
 export interface meme {
     id: string;
     name: string;
-    box_count: number;
+    boxCount: number;
     url?: string;
     height?: number;
     width?: number;

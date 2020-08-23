@@ -1,1 +1,1 @@
-export { XKCDCommand } from "./xkcd";
+export { XKCDCommand } from './xkcd';
