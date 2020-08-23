@@ -3,7 +3,8 @@ import Discord from 'discord.js';
 export class DiscordClient {
     private discordClient: Discord.Client;
 
-    private token?: string;
+    constructor(private token?: string) {
+    }
 
     public init(): Promise<Discord.Client> {
       if (!this.discordClient) {

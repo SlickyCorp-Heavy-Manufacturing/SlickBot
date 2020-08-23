@@ -25,6 +25,8 @@
         // the rule and use the typescript compiler checks.
         "no-unused-vars": "off",
         "no-console": "off",
+        "no-useless-constructor": "off",
+        "no-empty-function": "off",
         "import/extensions": ["error", "ignorePackages", { "ts": "never" }],
         "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
         "import/prefer-default-export": "off"
