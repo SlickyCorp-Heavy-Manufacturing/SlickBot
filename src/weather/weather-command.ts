@@ -1,14 +1,14 @@
-import { Message } from "discord.js";
-import { ICommand } from "../icommand";
-import { Weather } from "./weather";
+import { Message } from 'discord.js';
+import { ICommand } from '../icommand';
+import { Weather } from './weather';
 
 export const WeatherCommand: ICommand = {
-    name: '!weather',
-    helpDescription: 'Bot will respond with the weather',
-    showInHelp: true,
-    trigger: (msg: Message) => msg.content === '!weather', 
-    command: async (msg: Message) => {
-        const value = await Weather.currentWeather();
-        await msg.channel.send(value);
-    },
-}
+  name: '!weather',
+  helpDescription: 'Bot will respond with the weather',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content === '!weather',
+  command: async (msg: Message) => {
+    const value = await Weather.currentWeather();
+    await msg.channel.send(value);
+  },
+};

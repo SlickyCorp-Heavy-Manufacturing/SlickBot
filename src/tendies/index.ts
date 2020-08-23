@@ -1,1 +1,1 @@
-export { TendiesCommand } from "./tendies-command";
+export { TendiesCommand } from './tendies-command';

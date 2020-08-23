@@ -9,7 +9,7 @@ export interface Quote {
     o: number,
     pc: number,
     t: number,
-};
+}
 
 export interface Stock {
     currency: string,
@@ -17,4 +17,4 @@ export interface Stock {
     displaySymbol: string,
     symbol: string,
     type: string
-};
+}

@@ -1,2 +1,2 @@
-export { WeatherCommand } from "./weather-command";
+export { WeatherCommand } from './weather-command';
 export { scheduledWeatherPosts } from './scheduledWeatherPosts';

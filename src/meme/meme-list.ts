@@ -1,9 +1,9 @@
 import * as types from './types';
 
-export const meme_list: types.meme[] = [
-    {
-        "id": "252600902",
-        "name": "Always has been",
-        "box_count": 2
-    }
+export const memeList: types.meme[] = [
+  {
+    id: '252600902',
+    name: 'Always has been',
+    boxCount: 2,
+  },
 ];
