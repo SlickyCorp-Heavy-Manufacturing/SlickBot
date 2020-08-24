@@ -43,7 +43,7 @@ export class Meme {
       }).parse(msg.content);
 
       const template = this.findTemplate(args.template);
-      return `${template.name} boxes ${template.boxCount}`;
+      return `${template.name} boxes ${template.box_count}`;
     }
 
     public static async getImage(msg: Message): Promise<String> {
@@ -71,8 +71,8 @@ export class Meme {
       captions = captions.filter((x) => x);
       const template = this.findTemplate(args.template);
 
-      if (captions.length > template.boxCount) {
-        return `${template.name} requires ${template.boxCount} strings`;
+      if (captions.length > template.box_count) {
+        return `${template.name} requires ${template.box_count} strings`;
       }
 
       const img = await imgflip.meme(template.id, {

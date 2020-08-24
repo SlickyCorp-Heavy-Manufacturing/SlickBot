@@ -4,6 +4,6 @@ export const memeList: types.meme[] = [
   {
     id: '252600902',
     name: 'Always has been',
-    boxCount: 2,
+    box_count: 2,
   },
 ];
