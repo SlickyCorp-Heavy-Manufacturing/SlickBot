@@ -28,7 +28,7 @@ export class Troutslap {
         }
       // if user sucks, foff
       } else {
-        const value = await FOAAS.foff(msg);
+        const value = await FOAAS.foff(msg, msg.author.username);
         msg.channel.send(value).catch(console.error);
       }
     } else {
