@@ -5,7 +5,7 @@ export const NiceReaction: ICommand = {
   name: 'nice reaction',
   helpDescription: '',
   showInHelp: false,
-  trigger: (msg: Message) => (msg.content.includes('69') && !msg.content.startsWith('http')),
+  trigger: (msg: Message) => new RegExp('\\b69\\b').test(msg.content),
   command: async (msg: Message) => {
     await msg.react('🇳');
     await msg.react('🇮');
