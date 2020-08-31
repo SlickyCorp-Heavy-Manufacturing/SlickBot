@@ -13,3 +13,13 @@ export const NiceReaction: ICommand = {
     await msg.react('🇪');
   },
 };
+
+export const ChulasRecation: ICommand = {
+  name: 'Chulas reaction',
+  helpDescription: '',
+  showInHelp: false,
+  trigger: (msg: Message) => msg.author.username === 'chulas',
+  command: async (msg: Message) => {
+    await msg.react('🤦‍♂️');
+  },
+};
