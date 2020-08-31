@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint --fix src/**/*.ts",
     "test": "jasmine-ts --config=jasmine-ts.json",
     "test:integration": "jasmine-ts --config=jasmine-ts-integration.json",
     "test:coverage": "ts-node node_modules/nyc/bin/nyc.js npm test",

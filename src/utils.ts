@@ -11,10 +11,9 @@ export function escapeMarkdown(text: String): String {
 }
 
 export function isSlickBotEmployee(user: string): Boolean {
-  var SLICK_BOT_EMPLOYEES = ['TestSlickBot', 'TestUserBot', 'SlickBot', 'darrellDAbarrel', '[EliteTerrorist]AbeLincoln', '7u7k0w5k1', 'biternosintaph', 's_kow', 'freedeau', 'krische', 'Pulak']  
-  if(SLICK_BOT_EMPLOYEES.indexOf(user) == -1) {
+  const SLICK_BOT_EMPLOYEES = ['TestSlickBot', 'TestUserBot', 'SlickBot', 'darrellDAbarrel', '[EliteTerrorist]AbeLincoln', '7u7k0w5k1', 'biternosintaph', 's_kow', 'freedeau', 'krische', 'Pulak'];
+  if (SLICK_BOT_EMPLOYEES.indexOf(user) == -1) {
     return false;
-  } else {
-    return true;
   }
+  return true;
 }
