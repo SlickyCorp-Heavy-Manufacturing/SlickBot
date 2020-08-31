@@ -1,27 +1,35 @@
 import Discord, { DMChannel } from 'discord.js';
-import { escapeMarkdown } from '../utils';
+import { escapeMarkdown, isSlickBotEmployee } from '../utils';
+import { FOAAS } from '../foaas/foaas';
 
 export class Troutslap {
   public static async slap(msg: Discord.Message): Promise<void> {
     if (msg.channel.type === 'text') {
-      // If @everyone or @here...
-      if (msg.mentions.everyone) {
-        // Assign a random trout
-        // Reply in the publicly messaged channel.
-        const slapMessage = `_slaps everyone with a ${Troutslap.randomTrout()}_`;
-        await msg.channel.send(slapMessage)
-          .catch(console.error);
-      } else if (msg.mentions.users.size > 0) {
-        // For each person,
-        await Promise.all(msg.mentions.users.map((user) => {
-          // Assign them a random trout
+      // If user is cool enough to troutslap
+      if (isSlickBotEmployee(msg.author.username)) {
+        // If @everyone or @here...
+        if (msg.mentions.everyone) {
+          // Assign a random trout
           // Reply in the publicly messaged channel.
-          const slapMessage = `_slaps ${escapeMarkdown(user.username)} around with a ${Troutslap.randomTrout()}_`;
-          return msg.channel.send(slapMessage)
+          const slapMessage = `_slaps everyone with a ${Troutslap.randomTrout()}_`;
+          await msg.channel.send(slapMessage)
             .catch(console.error);
-        }));
+        } else if (msg.mentions.users.size > 0) {
+          // For each person,
+          await Promise.all(msg.mentions.users.map((user) => {
+            // Assign them a random trout
+            // Reply in the publicly messaged channel.
+            const slapMessage = `_slaps ${escapeMarkdown(user.username)} around with a ${Troutslap.randomTrout()}_`;
+            return msg.channel.send(slapMessage)
+              .catch(console.error);
+          }));
+        } else {
+          Troutslap.dmUsage(msg);
+        }
+      // if user sucks, foff
       } else {
-        Troutslap.dmUsage(msg);
+        const value = await FOAAS.foff(msg);
+        msg.channel.send(value).catch(console.error);
       }
     } else {
       Troutslap.dmUsage(msg);
