@@ -31,7 +31,7 @@ export class FOAAS {
       return myArray.find((item) => item[prop] === nameKey);
     }
 
-    public static async foff(msg:Message, user:string=undefined): Promise<string> {
+    public static async foff(msg:Message, user:string = undefined): Promise<string> {
       const args = msg.content.slice().trim().split(/ +/);
       const command = args.shift().toLowerCase();
 
@@ -40,8 +40,8 @@ export class FOAAS {
       const insultData = FOAAS.randomFO();
       let insultUrl = insultData.url;
 
-      var name = '';
-      if (user == undefined) {
+      let name = '';
+      if (user === undefined) {
         name = FOAAS.getNameFromMessage(msg);
       } else {
         name = user;
