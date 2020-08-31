@@ -11,7 +11,7 @@ export function escapeMarkdown(text: String): String {
 }
 
 export function isSlickBotEmployee(user: string): Boolean {
-  var SLICK_BOT_EMPLOYEES = ['darrellDAbarrel', '[EliteTerrorist]AbeLincoln', '7u7k0w5k1', 'biternosintaph', 's_kow', 'freedeau', 'krische']  
+  var SLICK_BOT_EMPLOYEES = ['TestSlickBot', 'SlickBot', 'darrellDAbarrel', '[EliteTerrorist]AbeLincoln', '7u7k0w5k1', 'biternosintaph', 's_kow', 'freedeau', 'krische']  
   if(SLICK_BOT_EMPLOYEES.indexOf(user) == -1) {
     return false;
   } else {
