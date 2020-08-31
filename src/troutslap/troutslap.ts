@@ -1,6 +1,5 @@
 import Discord, { DMChannel } from 'discord.js';
-import { escapeMarkdown } from '../utils';
-import { isSlickBotEmployee } from '../utils';
+import { escapeMarkdown, isSlickBotEmployee } from '../utils';
 import { FOAAS } from '../foaas/foaas';
 
 export class Troutslap {
