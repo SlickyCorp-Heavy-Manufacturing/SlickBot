@@ -148,7 +148,7 @@ describe('slickbot', () => {
             .pipe(take(1))
             .subscribe( msg => {
                 expect(msg.content).toMatch(/\*\*TSLA:\*\*\s(\+|\-)\d+\.\d+\s\(\d+\.\d+%\)\s:chart_with_(upwards|downwards)_trend:/gm);
-                expect(msg.content).toContain('https://tenor.com');
+                expect(msg.content).toContain('https://gfycat');
                 done();
             });
     }, 15000);
