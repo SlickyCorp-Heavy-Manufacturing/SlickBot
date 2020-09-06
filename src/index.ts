@@ -22,6 +22,10 @@ app.listen(port, () => {
   console.info('App Listening');
 });
 
+process.on('unhandledRejection', (reason, p) => {
+  console.log(`caught your junk ${reason} ${p}`);
+});
+
 const discordClient = new DiscordClient();
 discordClient.init().then(() => {
   discordClient.client.on('message', (msg: Discord.Message) => {

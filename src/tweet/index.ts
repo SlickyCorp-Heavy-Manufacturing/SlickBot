@@ -1,0 +1,1 @@
+export { TrompoCommand } from './trompou';
