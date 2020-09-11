@@ -9,12 +9,13 @@ export class Translate {
 
     private static readonly FUN_TRANSLATIONS: string = 'https://api.funtranslations.com/translate/klingon.json';
 
-    public static readonly DEFAULT_KLINGON_REPLY: string = 'Here in Rikers Stellar Quarters we strive to promote a culture of inclusion. To better accomadate our guests from Kronos, the previous message has been translated to Klingon:\n';
+    public static readonly DEFAULT_KLINGON_REPLY: string = 'Klingon translation:\n';
 
     public static async translateToKlingon(message: string): Promise<string> {
+      const everything_but_bangklingon = message.substr("!klingon ".length);
       const response = await got.post(Translate.FUN_TRANSLATIONS, {
         json: {
-          text: message,
+          text: everything_but_bangklingon,
         },
         responseType: 'json',
       });
