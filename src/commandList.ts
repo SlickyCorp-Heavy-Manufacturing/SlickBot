@@ -8,7 +8,7 @@ import { XKCDCommand } from './xkcd';
 import { MemeCommand, MemeSearchCommand, DrawMemeCommand } from './meme';
 import { KlingonCommand } from './translate/klingon-command';
 import { FoffCommand } from './foaas/foaas-command';
-import { TendiesCommand } from './tendies';
+import { TendiesCommand, SpyCommand } from './tendies';
 import { CovidCommand } from './covid/covid-command';
 import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
@@ -34,4 +34,5 @@ export const commandList: ICommand[] = [
   DrawMemeCommand,
   TrompoCommand,
   RocketManCommand,
+  SpyCommand,
 ];
