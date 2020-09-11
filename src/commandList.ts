@@ -6,7 +6,7 @@ import { TrollPulakCommand } from './troll/troll-pulak-command';
 import { TroutslapCommand } from './troutslap/troutslap-command';
 import { XKCDCommand } from './xkcd';
 import { MemeCommand, MemeSearchCommand, DrawMemeCommand } from './meme';
-import { KlingonCommand } from './translate/klingon-command';
+import { KlingonCommand } from './klingon/klingon-command';
 import { FoffCommand } from './foaas/foaas-command';
 import { TendiesCommand } from './tendies';
 import { CovidCommand } from './covid/covid-command';
