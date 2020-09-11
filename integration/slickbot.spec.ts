@@ -168,7 +168,7 @@ describe('slickbot', () => {
             });
     }, 15000);
 
-    it('tendies should post a note if the stock wasn\'t found', (done) => {
+    xit('tendies should post a note if the stock wasn\'t found', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL);
         const fakeStock = 'thisstockdoesnotexist';
         testChannel.send(`!tendies ${fakeStock}`);
