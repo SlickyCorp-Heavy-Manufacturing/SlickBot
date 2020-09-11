@@ -12,8 +12,7 @@ import { TendiesCommand, SpyCommand } from './tendies';
 import { CovidCommand } from './covid/covid-command';
 import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
-import { TrompoCommand } from './tweet';
-import { RocketManCommand } from './tweet';
+import { TrompoCommand, RocketManCommand } from './tweet';
 
 export const commandList: ICommand[] = [
   HelpCommand,
