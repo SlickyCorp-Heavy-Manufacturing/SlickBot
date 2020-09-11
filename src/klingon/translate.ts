@@ -12,10 +12,10 @@ export class Translate {
     public static readonly DEFAULT_KLINGON_REPLY: string = 'Klingon translation:\n';
 
     public static async translateToKlingon(message: string): Promise<string> {
-      const everything_but_bangklingon = message.substr("!klingon ".length);
+      const everythingButBangKlingon = message.substr('!klingon '.length);
       const response = await got.post(Translate.FUN_TRANSLATIONS, {
         json: {
-          text: everything_but_bangklingon,
+          text: everythingButBangKlingon,
         },
         responseType: 'json',
       });
