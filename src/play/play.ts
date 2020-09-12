@@ -1,5 +1,6 @@
 import * as yargs from 'yargs';
 import { Message } from 'discord.js';
+
 const ytdl = require('ytdl-core-discord');
 
 export class Play {
@@ -20,7 +21,7 @@ export class Play {
       const stream = await ytdl(args.url, { type: 'opus', filter: 'audioonly' });
       const dispatcher = connection.play(stream);
 
-      //dispatcher.on("debug", console.log);
+      // dispatcher.on("debug", console.log);
       dispatcher.on('error', console.error);
 
       dispatcher.on('finish', () => voiceChannel.leave());
