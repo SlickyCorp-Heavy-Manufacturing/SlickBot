@@ -7,6 +7,7 @@ import { TroutslapCommand } from './troutslap/troutslap-command';
 import { XKCDCommand } from './xkcd';
 import { MemeCommand, MemeSearchCommand, DrawMemeCommand } from './meme';
 import { KlingonCommand } from './klingon/klingon-command';
+import { PlayCommand } from './play/play-command';
 import { FoffCommand } from './foaas/foaas-command';
 import { TendiesCommand, SpyCommand } from './tendies';
 import { CovidCommand } from './covid/covid-command';
@@ -34,4 +35,5 @@ export const commandList: ICommand[] = [
   TrompoCommand,
   RocketManCommand,
   SpyCommand,
+  PlayCommand,
 ];
