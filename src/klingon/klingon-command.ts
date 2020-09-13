@@ -8,7 +8,7 @@ export const KlingonCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!klingon'),
   command: async (msg: Message) => {
-    const value = Translate.translateToKlingon(msg.cleanContent);
-    await msg.channel.send(Translate.DEFAULT_KLINGON_REPLY + value);
+    const value: string = await Translate.translateToKlingon(msg.cleanContent);
+    await msg.channel.send(value);
   },
 };
