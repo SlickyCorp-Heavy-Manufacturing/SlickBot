@@ -13,6 +13,7 @@ import { TendiesCommand, SpyCommand } from './tendies';
 import { CovidCommand } from './covid/covid-command';
 import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
+import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
 import { TrompoCommand, RocketManCommand } from './tweet';
 
 export const commandList: ICommand[] = [
@@ -32,6 +33,8 @@ export const commandList: ICommand[] = [
   ChulasRecation,
   DevNullCommand,
   DrawMemeCommand,
+  FlavorForecastCommand,
+  FlavorOfTheDayCommand,
   TrompoCommand,
   RocketManCommand,
   SpyCommand,
