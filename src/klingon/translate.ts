@@ -13,14 +13,54 @@ export class Translate {
 
     public static async translateToKlingon(message: string): Promise<string> {
       const everythingButBangKlingon = message.substr('!klingon '.length);
-      const response = await got.post(Translate.FUN_TRANSLATIONS, {
+      
+      const response = got.post(Translate.FUN_TRANSLATIONS, {
         json: {
           text: everythingButBangKlingon,
         },
-        responseType: 'json',
+        timeout: 10000,
+        responseType: 'json'
       });
-        // console.log(response);
-      const translation = (response.body as any).contents.translated;
-      return translation;
+      
+      try {
+        await response;
+        let translation: string = Translate.DEFAULT_KLINGON_REPLY + Translate.parseResults(response);
+        return translation;
+      }
+      catch (e) {
+        if (e instanceof got.ReadError) {
+          return `Read Error`;
+        }
+        else if (e instanceof got.HTTPError) {
+          return `HTTP Error ${e.response.statusCode}: ${e.response.statusMessage}`;
+        }
+        else if (e instanceof got.MaxRedirectsError) {
+          return `Max Redirects Error ${e.response.statusCode}: ${e.response.statusMessage}, URL: ${e.response.redirectUrls}`;
+        }
+        else if (e instanceof got.UnsupportedProtocolError) {
+          return 'Unsupported Protocol Error';
+        }
+        else if (e instanceof got.TimeoutError) {
+          return 'Request timed out; waited more than 10s';
+        }
+        else {
+          throw e;
+        }
+      }
+    }
+    
+    private static parseResults(response: any): string {
+      if (!response.body) {
+        throw new Error('!klingon: parseResults: The response did not error but did not have a .body object. Did the API change?');
+      }
+      else if (!response.body.contents) {
+        throw new Error('!klingon: parseResults: The response did not error but did not have a .body.contents object.');
+      }
+      else if (!response.body.contents.translated) {
+        throw new Error('!klingon: parseResults: The response did not error but did not have a .body.contents.translated object.');
+      }
+      else {
+        return response.body.contents.translated;
+      }
     }
 }
