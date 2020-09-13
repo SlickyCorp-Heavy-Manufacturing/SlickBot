@@ -12,6 +12,7 @@ import { TendiesCommand } from './tendies';
 import { CovidCommand } from './covid/covid-command';
 import { NiceReaction } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
+import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -29,4 +30,6 @@ export const commandList: ICommand[] = [
   NiceReaction,
   DevNullCommand,
   DrawMemeCommand,
+  FlavorForecastCommand,
+  FlavorOfTheDayCommand,
 ];
