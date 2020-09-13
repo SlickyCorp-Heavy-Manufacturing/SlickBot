@@ -27,18 +27,19 @@ export class Translate {
         const translation = Translate.DEFAULT_KLINGON_REPLY + Translate.parseResults(response);
         return translation;
       } catch (e) {
-        if (e instanceof got.ReadError) {
-          return `Read Error`;
-        } else if (e instanceof got.HTTPError) {
-          return `HTTP Error ${e.response.statusCode}: ${e.response.statusMessage}`;
-        } else if (e instanceof got.MaxRedirectsError) {
-          return `Max Redirects Error ${e.response.statusCode}: ${e.response.statusMessage}, URL: ${e.response.redirectUrls}`;
-        } else if (e instanceof got.UnsupportedProtocolError) {
-          return 'Unsupported Protocol Error';
-        } else if (e instanceof got.TimeoutError) {
-          return 'Request timed out; waited more than 10s';
-        } else {
-          throw e;
+        switch (e.constructor) {
+          case got.ReadError:
+            return 'Read Error';
+          case got.HTTPError:
+            return `HTTP Error ${e.response.statusCode}: ${e.response.statusMessage}`;
+          case got.MaxRedirectsError:
+            return `Max Redirects Error ${e.response.statusCode}: ${e.response.statusMessage}, URL: ${e.response.redirectUrls}`;
+          case got.UnsupportedProtocolError:
+            return 'Unsupported Protocol Error';
+          case got.TimeoutError:
+            return 'Request timed out; waited more than 10s';
+          default:
+            throw e;
         }
       }
     }
