@@ -1,14 +1,14 @@
 import got from 'got';
 
-export interface FlavorForecast {
-  date: string;
-  flavors: Flavor[];
-}
-
 export interface Flavor {
   flavor: string;
   description: string;
   image: string;
+}
+
+export interface FlavorForecast {
+  date: string;
+  flavors: Flavor[];
 }
 
 export class KoppsFlavorForecast {

@@ -6,13 +6,15 @@ import { TrollPulakCommand } from './troll/troll-pulak-command';
 import { TroutslapCommand } from './troutslap/troutslap-command';
 import { XKCDCommand } from './xkcd';
 import { MemeCommand, MemeSearchCommand, DrawMemeCommand } from './meme';
-import { KlingonCommand } from './translate/klingon-command';
+import { KlingonCommand } from './klingon/klingon-command';
+import { PlayCommand } from './play/play-command';
 import { FoffCommand } from './foaas/foaas-command';
-import { TendiesCommand } from './tendies';
+import { TendiesCommand, SpyCommand } from './tendies';
 import { CovidCommand } from './covid/covid-command';
-import { NiceReaction } from './reactions';
+import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
 import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
+import { TrompoCommand, RocketManCommand } from './tweet';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -28,8 +30,13 @@ export const commandList: ICommand[] = [
   TendiesCommand,
   CovidCommand,
   NiceReaction,
+  ChulasRecation,
   DevNullCommand,
   DrawMemeCommand,
   FlavorForecastCommand,
   FlavorOfTheDayCommand,
+  TrompoCommand,
+  RocketManCommand,
+  SpyCommand,
+  PlayCommand,
 ];

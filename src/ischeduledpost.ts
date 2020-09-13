@@ -1,5 +1,7 @@
+import Discord from 'discord.js';
+
 export interface IScheduledPost {
     cronDate: string;
     channel: string;
-    getMessage: () => Promise<string>;
+    getMessage: (client: Discord.Client) => Promise<string>;
 }

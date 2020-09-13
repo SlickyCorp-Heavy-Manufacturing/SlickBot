@@ -22,6 +22,10 @@ app.listen(port, () => {
   console.info('App Listening');
 });
 
+process.on('unhandledRejection', (reason, p) => {
+  console.log(`caught your junk ${reason} ${p}`);
+});
+
 const discordClient = new DiscordClient();
 discordClient.init().then(() => {
   discordClient.client.on('message', (msg: Discord.Message) => {
@@ -33,7 +37,7 @@ discordClient.init().then(() => {
 
   scheduledPosts.forEach((scheduledPost) => {
     schedule.scheduleJob({ rule: scheduledPost.cronDate, tz: 'America/Chicago' }, () => {
-      scheduledPost.getMessage().then((value: string) => {
+      scheduledPost.getMessage(discordClient.client).then((value: string) => {
         const channel = findChannelByName(discordClient.client, scheduledPost.channel);
         channel.send(value);
       });
