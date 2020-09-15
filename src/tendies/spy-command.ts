@@ -10,7 +10,9 @@ export const SpyCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!spy'),
   command: async (msg: Message) => {
     await captureWebsite.file('https://finviz.com/map.ashx', 'screenshot.png', {
-      element: 'canvas.chart',
+    width: 1200,
+    height: 3000,  
+    element: 'canvas.chart',
       launchOptions: {
         args: [
           '--no-sandbox',
