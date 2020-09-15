@@ -10,9 +10,32 @@ export const SpyCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!spy'),
   command: async (msg: Message) => {
     await captureWebsite.file('https://finviz.com/map.ashx', 'screenshot.png', {
-    width: 1200,
-    height: 3000,  
-    element: 'canvas.chart',
+      width: 1200,
+      height: 3000,
+      element: 'canvas.chart',
+      launchOptions: {
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+        ],
+      },
+    });
+
+    await msg.channel.send({ files: ['screenshot.png'] });
+    fs.unlink('screenshot.png', () => {});
+  },
+};
+
+export const EtfCommand: ICommand = {
+  name: '!etf',
+  helpDescription: 'Bot will respond with a box chart of all etfs',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!etf'),
+  command: async (msg: Message) => {
+    await captureWebsite.file('https://finviz.com/map.ashx?t=etf', 'screenshot.png', {
+      width: 1200,
+      height: 3000,
+      element: 'canvas.chart',
       launchOptions: {
         args: [
           '--no-sandbox',
