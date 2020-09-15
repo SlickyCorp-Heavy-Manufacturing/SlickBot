@@ -11,4 +11,9 @@ export const memeList: types.meme[] = [
     name: 'Silence',
     box_count: 2,
   },
+  {
+    id: '21719478',
+    name: 'PEPPERIDGE FARMS REMEMBERS',
+    box_count: 2,
+  },
 ];

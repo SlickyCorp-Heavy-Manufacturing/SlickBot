@@ -13,14 +13,46 @@ export class Translate {
 
     public static async translateToKlingon(message: string): Promise<string> {
       const everythingButBangKlingon = message.substr('!klingon '.length);
-      const response = await got.post(Translate.FUN_TRANSLATIONS, {
+
+      const response = got.post(Translate.FUN_TRANSLATIONS, {
         json: {
           text: everythingButBangKlingon,
         },
+        timeout: 10000,
         responseType: 'json',
       });
-        // console.log(response);
-      const translation = (response.body as any).contents.translated;
-      return translation;
+
+      try {
+        await response;
+        const translation = Translate.DEFAULT_KLINGON_REPLY + Translate.parseResults(response);
+        return translation;
+      } catch (e) {
+        switch (e.constructor) {
+          case got.ReadError:
+            return 'Read Error';
+          case got.HTTPError:
+            return `HTTP Error ${e.response.statusCode}: ${e.response.statusMessage}`;
+          case got.MaxRedirectsError:
+            return `Max Redirects Error ${e.response.statusCode}: ${e.response.statusMessage}, URL: ${e.response.redirectUrls}`;
+          case got.UnsupportedProtocolError:
+            return 'Unsupported Protocol Error';
+          case got.TimeoutError:
+            return 'Request timed out; waited more than 10s';
+          default:
+            throw e;
+        }
+      }
+    }
+
+    private static parseResults(response: any): string {
+      if (!response.body) {
+        throw new Error('!klingon: parseResults: The response did not error but did not have a .body object. Did the API change?');
+      } else if (!response.body.contents) {
+        throw new Error('!klingon: parseResults: The response did not error but did not have a .body.contents object.');
+      } else if (!response.body.contents.translated) {
+        throw new Error('!klingon: parseResults: The response did not error but did not have a .body.contents.translated object.');
+      } else {
+        return response.body.contents.translated;
+      }
     }
 }
