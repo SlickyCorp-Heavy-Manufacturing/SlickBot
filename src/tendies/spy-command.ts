@@ -11,7 +11,7 @@ export const SpyCommand: ICommand = {
   command: async (msg: Message) => {
     await captureWebsite.file('https://finviz.com/map.ashx', 'screenshot.png', {
       width: 1200,
-      height: 3000,
+      height: 2000,
       element: 'canvas.chart',
       launchOptions: {
         args: [
@@ -34,7 +34,7 @@ export const EtfCommand: ICommand = {
   command: async (msg: Message) => {
     await captureWebsite.file('https://finviz.com/map.ashx?t=etf', 'screenshot.png', {
       width: 1200,
-      height: 3000,
+      height: 2000,
       element: 'canvas.chart',
       launchOptions: {
         args: [
