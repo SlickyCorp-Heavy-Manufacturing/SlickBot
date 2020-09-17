@@ -17,6 +17,9 @@ export const RocketManCommand: ICommand = {
       nickname: 'elonmusk',
       avatar: 'https://pbs.twimg.com/profile_images/1295975423654977537/dHw9JcrK_400x400.jpg',
       text,
+      retweets: 420,
+      retweetsWithComments: 0,
+      likes: 69,
     });
   },
 };
