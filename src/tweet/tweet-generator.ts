@@ -18,6 +18,7 @@ export class TweetGen {
 
     public static async tweet(msg: Message, tweet: Tweet): Promise<void> {
       await captureWebsite.file(TweetGen.fakeTweetUri, 'screenshot.png', {
+        height: 1200,
         element: '.tweet',
         beforeScreenshot: async (page) => {
           await TweetGen.setValue(page, 'input#nickname', tweet.nickname);
