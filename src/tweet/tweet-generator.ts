@@ -1,7 +1,6 @@
-import * as captureWebsite from 'capture-website';
 import { Message } from 'discord.js';
 import fs from 'fs';
-import { Page } from 'puppeteer';
+import got from 'got/dist/source';
 
 export interface Tweet {
     nickname: string;
@@ -14,50 +13,21 @@ export interface Tweet {
 }
 
 export class TweetGen {
-    private static readonly fakeTweetUri: string = 'https://lluiscamino.github.io/fake-tweet/';
-
     public static async tweet(msg: Message, tweet: Tweet): Promise<void> {
-      await captureWebsite.file(TweetGen.fakeTweetUri, 'screenshot.png', {
-        height: 1200,
-        element: '.tweet',
-        beforeScreenshot: async (page) => {
-          await TweetGen.setValue(page, 'input#nickname', tweet.nickname);
-          await TweetGen.setValue(page, 'input#name', tweet.name);
-          await TweetGen.setValue(page, 'input#avatar', tweet.avatar);
-          await page.select('select#display', 'lightsout');
+      const response = await got.get('https://website-snapshot.azurewebsites.net/tweet', 
+        {
+          searchParams: {
+            nickname: tweet.nickname,
+            name: tweet.name,
+            avatar: tweet.avatar,
+            text: tweet.text,
+          },
+          responseType: 'text',
+        }
+      )
 
-          const date = new Date();
-          await TweetGen.setValue(page, 'input#date',
-            date.toLocaleString('en-US', { timeZone: 'America/Chicago' }));
-
-          await TweetGen.setValue(page, 'textarea#text', tweet.text);
-
-          if (tweet.retweets) {
-            await TweetGen.setValue(page, 'input#retweets', tweet.retweets.toString());
-          }
-          if (tweet.retweetsWithComments) {
-            await TweetGen.setValue(page, 'input#retweetsWithComments', tweet.retweetsWithComments.toString());
-          }
-          if (tweet.likes) {
-            await TweetGen.setValue(page, 'input#likes', tweet.likes.toString());
-          }
-        },
-        launchOptions: {
-          args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-          ],
-        },
-      });
-
+      fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64'});
       await msg.channel.send({ files: ['screenshot.png'] });
       fs.unlink('screenshot.png', () => {});
-    }
-
-    private static async setValue(page: Page, selector: string, value: string) {
-      await page.evaluate((selectorName) => {
-        document.querySelector(selectorName).value = '';
-      }, selector);
-      await page.type(selector, value);
     }
 }
