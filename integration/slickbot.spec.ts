@@ -138,7 +138,7 @@ describe('slickbot', () => {
             });
     }, 15000);
 
-    it('tendies should post given stock change in meme format', (done) => {
+    xit('tendies should post given stock change in meme format', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
         testChannel.send('!tendies TSLA');
 
