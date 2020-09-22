@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import fs from 'fs';
-import { ICommand } from '../icommand';
 import got from 'got/dist/source';
+import { ICommand } from '../icommand';
 
 export const SpyCommand: ICommand = {
   name: '!spy',
@@ -9,9 +9,9 @@ export const SpyCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!spy'),
   command: async (msg: Message) => {
-    const response = await got.get('https://website-snapshot.azurewebsites.net/spy', {responseType: 'text'})
+    const response = await got.get('https://website-snapshot.azurewebsites.net/spy', { responseType: 'text' });
 
-    fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64'});
+    fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64' });
     await msg.channel.send({ files: ['screenshot.png'] });
     fs.unlink('screenshot.png', () => {});
   },
@@ -23,9 +23,9 @@ export const EtfCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!etf'),
   command: async (msg: Message) => {
-    const response = await got.get('https://website-snapshot.azurewebsites.net/etf', {responseType: 'text'})
+    const response = await got.get('https://website-snapshot.azurewebsites.net/etf', { responseType: 'text' });
 
-    fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64'});
+    fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64' });
     await msg.channel.send({ files: ['screenshot.png'] });
     fs.unlink('screenshot.png', () => {});
   },

@@ -13,23 +13,21 @@ export interface Tweet {
 }
 
 export class TweetGen {
-    public static async tweet(msg: Message, tweet: Tweet): Promise<void> {
+  public static async tweet(msg: Message, tweet: Tweet): Promise<void> {
+    const response = await got.get('https://website-snapshot.azurewebsites.net/tweet',
+      {
+        searchParams: {
+          nickname: tweet.nickname,
+          name: tweet.name,
+          avatar: tweet.avatar,
+          text: tweet.text,
+        },
+        responseType: 'text',
+      });
 
-      const response = await got.get('https://website-snapshot.azurewebsites.net/tweet', 
-        {
-          searchParams: {
-            nickname: tweet.nickname,
-            name: tweet.name,
-            avatar: tweet.avatar,
-            text: tweet.text,
-          },
-          responseType: 'text',
-        }
-      )
+    fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64' });
 
-      fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64'});
-
-      await msg.channel.send({ files: ['screenshot.png'] });
-      fs.unlink('screenshot.png', () => {});
-    }
+    await msg.channel.send({ files: ['screenshot.png'] });
+    fs.unlink('screenshot.png', () => {});
+  }
 }
