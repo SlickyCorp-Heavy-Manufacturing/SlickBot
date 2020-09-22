@@ -14,6 +14,7 @@ export interface Tweet {
 
 export class TweetGen {
     public static async tweet(msg: Message, tweet: Tweet): Promise<void> {
+
       const response = await got.get('https://website-snapshot.azurewebsites.net/tweet', 
         {
           searchParams: {
@@ -27,6 +28,7 @@ export class TweetGen {
       )
 
       fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64'});
+
       await msg.channel.send({ files: ['screenshot.png'] });
       fs.unlink('screenshot.png', () => {});
     }
