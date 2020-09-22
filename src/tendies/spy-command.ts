@@ -1,7 +1,7 @@
-import * as captureWebsite from 'capture-website';
 import { Message } from 'discord.js';
 import fs from 'fs';
 import { ICommand } from '../icommand';
+import got from 'got/dist/source';
 
 export const SpyCommand: ICommand = {
   name: '!spy',
@@ -9,18 +9,9 @@ export const SpyCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!spy'),
   command: async (msg: Message) => {
-    await captureWebsite.file('https://finviz.com/map.ashx', 'screenshot.png', {
-      width: 1200,
-      height: 2000,
-      element: 'canvas.chart',
-      launchOptions: {
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-        ],
-      },
-    });
+    const response = await got.get('https://website-snapshot.azurewebsites.net/spy', {responseType: 'text'})
 
+    fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64'});
     await msg.channel.send({ files: ['screenshot.png'] });
     fs.unlink('screenshot.png', () => {});
   },
@@ -32,18 +23,9 @@ export const EtfCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!etf'),
   command: async (msg: Message) => {
-    await captureWebsite.file('https://finviz.com/map.ashx?t=etf', 'screenshot.png', {
-      width: 1200,
-      height: 2000,
-      element: 'canvas.chart',
-      launchOptions: {
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-        ],
-      },
-    });
+    const response = await got.get('https://website-snapshot.azurewebsites.net/etf', {responseType: 'text'})
 
+    fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64'});
     await msg.channel.send({ files: ['screenshot.png'] });
     fs.unlink('screenshot.png', () => {});
   },
