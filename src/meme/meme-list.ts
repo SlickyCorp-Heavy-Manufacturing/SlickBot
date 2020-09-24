@@ -16,4 +16,9 @@ export const memeList: types.meme[] = [
     name: 'PEPPERIDGE FARMS REMEMBERS',
     box_count: 2,
   },
+  {
+    id: '268849264',
+    name: 'Among us',
+    box_count: 2,
+  },
 ];
