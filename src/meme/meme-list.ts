@@ -20,5 +20,5 @@ export const memeList: types.meme[] = [
     id: '268849264',
     name: 'Among us',
     box_count: 2,
-  }
+  },
 ];
