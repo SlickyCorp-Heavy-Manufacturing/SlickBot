@@ -15,6 +15,7 @@ import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
 import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
 import { TrompoCommand, RocketManCommand } from './tweet';
+import { DevOpsCommand } from './devops/devops';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -40,4 +41,5 @@ export const commandList: ICommand[] = [
   SpyCommand,
   EtfCommand,
   PlayCommand,
+  DevOpsCommand,
 ];
