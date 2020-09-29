@@ -13,7 +13,6 @@ export const DevOpsCommand: ICommand = {
       msg.client.users.cache.find((user) => user.username === 'freedeau'),
     ].filter((user) => user !== undefined);
 
-    
     msg.channel.send(`<@${_sample(devopsUsers).id}> devops01-${Math.floor(Math.random() * 90000) + 10000} has been created and assigned to you`);
     return Promise.resolve();
   },
