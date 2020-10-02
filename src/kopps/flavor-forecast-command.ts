@@ -9,13 +9,19 @@ export const FlavorForecastCommand: ICommand = {
   trigger: (msg: Message) => msg.content === '!flavor-forecast',
   command: async (msg: Message) => {
     const forecasts = await KoppsFlavorForecast.flavorForecast();
+    const NUM_DAYS_TO_SHOW = 3;
 
     // Respond with each day seperately, since discord has a message size limit
-    const forecastMessages = forecasts.map((dayForecast: FlavorForecast) => {
-      let forecast = `${dayForecast.date}\n`;
-      forecast += dayForecast.flavors.map((flavor: Flavor) => `  ${flavor.flavor} - ${flavor.description}`).join('\n');
-      return forecast;
-    }).map((forecast: string) => msg.channel.send(forecast));
+    const forecastMessages = forecasts
+      .slice(0, NUM_DAYS_TO_SHOW)
+      .map((dayForecast: FlavorForecast) => {
+        let forecast = `**${dayForecast.date}**\n`;
+        forecast += dayForecast.flavors
+          .map((flavor: Flavor) => `> _${flavor.flavor}_: ${flavor.description}`)
+          .join('\n');
+        return forecast;
+      })
+      .map((forecast: string) => msg.channel.send(forecast));
 
     forecastMessages.reduce(
       (promiseChain, currentPromise) => promiseChain.then((chainResults) => currentPromise.then(
