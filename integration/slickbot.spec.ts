@@ -70,7 +70,7 @@ describe('slickbot', () => {
             .pipe(filter(msg => msg.content.includes('slaps')))
             .pipe(take(1))
             .subscribe( msg => {
-                expect(msg.content).toContain('slaps everyone');
+                expect(msg.content).toContain('slaps @everyone');
                 done();
             });
     });
