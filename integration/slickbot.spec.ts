@@ -70,7 +70,35 @@ describe('slickbot', () => {
             .pipe(filter(msg => msg.content.includes('slaps')))
             .pipe(take(1))
             .subscribe( msg => {
-                expect(msg.content).toContain('slaps');
+                expect(msg.content).toContain('slaps everyone');
+                done();
+            });
+    });
+
+    it('troutslap should slap one non at-able object', (done) => {
+        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
+        testChannel.send('!troutslap you');
+
+        _lastMessage
+            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
+            .pipe(filter(msg => msg.content.includes('slaps')))
+            .pipe(take(1))
+            .subscribe( msg => {
+                expect(msg.content).toContain('slaps you');
+                done();
+            });
+    });
+
+    it('troutslap should slap multiple non at-able objects', (done) => {
+        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
+        testChannel.send('!troutslap your whole family, your cow, you');
+
+        _lastMessage
+            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
+            .pipe(filter(msg => msg.content.includes('slaps')))
+            .pipe(take(3))
+            .subscribe( msg => {
+                expect(msg.content).toMatch(/slaps your whole family|slaps your cow|slaps you/);
                 done();
             });
     });
