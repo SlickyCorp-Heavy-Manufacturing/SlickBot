@@ -6,7 +6,7 @@ export const DevOpsCommand: ICommand = {
   name: '@devops',
   helpDescription: 'gets help from devops',
   showInHelp: true,
-  trigger: (msg: Message) => msg.cleanContent.startsWith('@devops'),
+  trigger: (msg: Message) => msg.cleanContent.toLocaleLowerCase().startsWith('@devops'),
   command: (msg: Message) => {
     const devopsUsers = [
       msg.client.users.cache.find((user) => user.username === 'krische'),
