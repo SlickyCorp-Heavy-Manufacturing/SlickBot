@@ -7,13 +7,16 @@ export const DevOpsCommand: ICommand = {
   helpDescription: 'gets help from devops',
   showInHelp: true,
   trigger: (msg: Message) => msg.cleanContent.toLocaleLowerCase().startsWith('@devops'),
-  command: (msg: Message) => {
+  command: async (msg: Message) => {
+    // Create list of DevOps users
     const devopsUsers = [
       msg.client.users.cache.find((user) => user.username === 'krische'),
       msg.client.users.cache.find((user) => user.username === 'freedeau'),
     ].filter((user) => user !== undefined);
 
-    msg.channel.send(`<@${_sample(devopsUsers).id}> devops01-${Math.floor(Math.random() * 90000) + 10000} has been created and assigned to you`);
-    return Promise.resolve();
+    const id = `DevOps01-${Math.floor(Math.random() * 9000) + 1000}`;
+    const description = `As a DevOps customer, ${msg.cleanContent.replace(/^\@devops\s*/i, '')}`;
+    const points = _sample([2, 3, 5, 8, 13]);
+    await msg.channel.send(`<@${_sample(devopsUsers).id}> ${id} (${points} points) has been created and assigned to you.\n> ${description}`);
   },
 };
