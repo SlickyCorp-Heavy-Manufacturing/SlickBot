@@ -29,7 +29,7 @@ export class DevOpsStory {
       .map((username) => msg.client.users.cache.find((user) => user.username === username))
       .filter((user) => user !== undefined);
 
-    const id = `DevOps01-${Math.floor(Math.random() * 9000) + 1000}`;
+    const id = `DEVOPS01-${Math.floor(Math.random() * 9000) + 1000}`;
     const description = `As a DevOps customer, ${msg.cleanContent.replace(/^@devops\s*/i, '')}`;
     const points = _sample([2, 3, 5, 8, 13]);
 

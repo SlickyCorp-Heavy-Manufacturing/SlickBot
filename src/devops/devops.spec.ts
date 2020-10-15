@@ -20,9 +20,8 @@ describe('devops', () => {
     const story = DevOpsStory.fromMessage(msg);
 
     expect(story.assignee.id).toMatch(/krische|freedeau/);
-    expect(story.description).toEqual('how do build form?');
-    expect(story.id).toBeGreaterThanOrEqual(1000);
-    expect(story.id).toBeLessThanOrEqual(9999);
+    expect(story.description).toEqual('As a DevOps customer, how do build form?');
+    expect(story.id).toMatch(/DEVOPS01-[1-9]\d\d\d/);
     expect(story.points).toMatch(/2|3|5|8|13/);
   });
 });
