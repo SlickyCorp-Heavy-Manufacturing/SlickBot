@@ -2,23 +2,15 @@ import { Message, User } from 'discord.js';
 import { sample as _sample } from 'lodash';
 import { ICommand } from '../icommand';
 
-export const DevOpsCommand: ICommand = {
-  name: '@devops',
-  helpDescription: 'gets help from devops',
-  showInHelp: true,
-  trigger: (msg: Message) => msg.cleanContent.toLocaleLowerCase().startsWith('@devops'),
-  command: async (msg: Message) => {
-    const story = DevOpsStory.fromMessage(msg);
-    await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
-  },
-};
-
 export class DevOpsStory {
   private static readonly DEVOPS_USERS = ['krische', 'freedeau'];
 
   public readonly assignee: User;
+
   public readonly description: string;
+
   public readonly id: string;
+  
   public readonly points: number;
 
   constructor(assignee: User, description: string, id: string, points: number) {
@@ -33,7 +25,9 @@ export class DevOpsStory {
    * @param msg The Discord message
    */
   public static fromMessage(msg: Message): DevOpsStory {
-    const potentialAssignees = this.DEVOPS_USERS.map((username: string) => msg.client.users.cache.find((user) => user.username === username)).filter((user) => user !== undefined);
+    const potentialAssignees = this.DEVOPS_USERS.map((username: string) => {
+      return msg.client.users.cache.find((user) => user.username === username);
+    }).filter((user) => user !== undefined);
 
     const id = `DevOps01-${Math.floor(Math.random() * 9000) + 1000}`;
     const description = `As a DevOps customer, ${msg.cleanContent.replace(/^@devops\s*/i, '')}`;
@@ -42,3 +36,17 @@ export class DevOpsStory {
     return new DevOpsStory(_sample(potentialAssignees), description, id, points);
   }
 }
+
+export const DevOpsCommand: ICommand = {
+  name: '@devops',
+  helpDescription: 'gets help from devops',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.cleanContent.toLocaleLowerCase().startsWith('@devops'),
+  command: async (msg: Message) => {
+    const story = DevOpsStory.fromMessage(msg);
+    await msg.channel.send(
+      `<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and ` + 
+      `assigned to you.\n> ${story.description}`
+      );
+  },
+};
