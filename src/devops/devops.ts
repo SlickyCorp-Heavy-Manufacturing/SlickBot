@@ -10,7 +10,7 @@ export class DevOpsStory {
   public readonly description: string;
 
   public readonly id: string;
-  
+
   public readonly points: number;
 
   constructor(assignee: User, description: string, id: string, points: number) {
@@ -25,9 +25,9 @@ export class DevOpsStory {
    * @param msg The Discord message
    */
   public static fromMessage(msg: Message): DevOpsStory {
-    const potentialAssignees = this.DEVOPS_USERS.map((username: string) => {
-      return msg.client.users.cache.find((user) => user.username === username);
-    }).filter((user) => user !== undefined);
+    const potentialAssignees = this.DEVOPS_USERS
+      .map((username) => msg.client.users.cache.find((user) => user.username === username))
+      .filter((user) => user !== undefined);
 
     const id = `DevOps01-${Math.floor(Math.random() * 9000) + 1000}`;
     const description = `As a DevOps customer, ${msg.cleanContent.replace(/^@devops\s*/i, '')}`;
@@ -44,9 +44,6 @@ export const DevOpsCommand: ICommand = {
   trigger: (msg: Message) => msg.cleanContent.toLocaleLowerCase().startsWith('@devops'),
   command: async (msg: Message) => {
     const story = DevOpsStory.fromMessage(msg);
-    await msg.channel.send(
-      `<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and ` + 
-      `assigned to you.\n> ${story.description}`
-      );
+    await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
   },
 };
