@@ -14,7 +14,7 @@ export interface Tweet {
 
 export class TweetGen {
   public static async tweet(msg: Message, tweet: Tweet): Promise<void> {
-    const response = await got.get('https://website-snapshot.azurewebsites.net/tweet',
+    const response = await got.get('http://website-snapshot.centralus.azurecontainer.io:8080/tweet',
       {
         searchParams: {
           nickname: tweet.nickname,
