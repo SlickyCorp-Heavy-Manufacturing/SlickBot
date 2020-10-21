@@ -9,7 +9,7 @@ export const SpyCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!spy'),
   command: async (msg: Message) => {
-    const response = await got.get('https://website-snapshot.azurewebsites.net/spy', { responseType: 'text' });
+    const response = await got.get('http://website-snapshot.centralus.azurecontainer.io:8080/spy', { responseType: 'text' });
 
     fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64' });
     await msg.channel.send({ files: ['screenshot.png'] });
@@ -23,7 +23,7 @@ export const EtfCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!etf'),
   command: async (msg: Message) => {
-    const response = await got.get('https://website-snapshot.azurewebsites.net/etf', { responseType: 'text' });
+    const response = await got.get('http://website-snapshot.centralus.azurecontainer.io:8080/etf', { responseType: 'text' });
 
     fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64' });
     await msg.channel.send({ files: ['screenshot.png'] });
