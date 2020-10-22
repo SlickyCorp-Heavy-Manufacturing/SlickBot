@@ -15,24 +15,27 @@ export interface Tweet {
 
 export class TweetGen {
   public static async tweet(msg: Message, tweet: Tweet): Promise<void> {
-    await withFile(async (tmpFile) => {
-      const response = await got.get(
-        'http://website-snapshot.centralus.azurecontainer.io:8080/tweet',
-        {
-          searchParams: {
-            nickname: tweet.nickname,
-            name: tweet.name,
-            avatar: tweet.avatar,
-            text: tweet.text,
-            retweets: tweet.retweets,
-            retweetsWithComments: tweet.retweetsWithComments,
-            likes: tweet.likes,
+    await withFile(
+      async (tmpFile) => {
+        const response = await got.get(
+          'http://website-snapshot.centralus.azurecontainer.io:8080/tweet',
+          {
+            searchParams: {
+              nickname: tweet.nickname,
+              name: tweet.name,
+              avatar: tweet.avatar,
+              text: tweet.text,
+              retweets: tweet.retweets,
+              retweetsWithComments: tweet.retweetsWithComments,
+              likes: tweet.likes,
+            },
+            responseType: 'buffer',
           },
-          responseType: 'buffer',
-        },
-      );
-      fs.writeFileSync(tmpFile.path, response.body);
-      await msg.channel.send({ files: [tmpFile.path] });
-    });
+        );
+        fs.writeFileSync(tmpFile.path, response.body);
+        await msg.channel.send({ files: [tmpFile.path] });
+      },
+      { postfix: '.png' }
+    );
   }
 }
