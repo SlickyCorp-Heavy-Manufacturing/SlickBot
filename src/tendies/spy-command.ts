@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import fs from 'fs';
 import got from 'got/dist/source';
-import { withFile } from 'tmp-promise'
+import { withFile } from 'tmp-promise';
 
 import { ICommand } from '../icommand';
 

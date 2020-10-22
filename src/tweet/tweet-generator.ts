@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import fs from 'fs';
 import got from 'got/dist/source';
-import { withFile } from 'tmp-promise'
+import { withFile } from 'tmp-promise';
 
 export interface Tweet {
   nickname: string;
@@ -29,7 +29,7 @@ export class TweetGen {
             likes: tweet.likes,
           },
           responseType: 'buffer',
-        }
+        },
       );
       fs.writeFileSync(tmpFile.path, response.body);
       await msg.channel.send({ files: [tmpFile.path] });
