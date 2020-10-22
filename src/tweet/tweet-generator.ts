@@ -35,7 +35,7 @@ export class TweetGen {
         fs.writeFileSync(tmpFile.path, response.body);
         await msg.channel.send({ files: [tmpFile.path] });
       },
-      { postfix: '.png' }
+      { postfix: '.png' },
     );
   }
 }
