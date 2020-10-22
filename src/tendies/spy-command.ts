@@ -1,6 +1,8 @@
 import { Message } from 'discord.js';
 import fs from 'fs';
 import got from 'got/dist/source';
+import { withFile } from 'tmp-promise'
+
 import { ICommand } from '../icommand';
 
 export const SpyCommand: ICommand = {
@@ -9,11 +11,11 @@ export const SpyCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!spy'),
   command: async (msg: Message) => {
-    const response = await got.get('http://website-snapshot.centralus.azurecontainer.io:8080/spy', { responseType: 'text' });
-
-    fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64' });
-    await msg.channel.send({ files: ['screenshot.png'] });
-    fs.unlink('screenshot.png', () => {});
+    await withFile(async (tmpFile) => {
+      const response = await got.get('http://website-snapshot.centralus.azurecontainer.io:8080/spy', { responseType: 'buffer' });
+      fs.writeFileSync(tmpFile.path, response.body);
+      await msg.channel.send({ files: [tmpFile.path] });
+    });
   },
 };
 
@@ -23,10 +25,10 @@ export const EtfCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!etf'),
   command: async (msg: Message) => {
-    const response = await got.get('http://website-snapshot.centralus.azurecontainer.io:8080/etf', { responseType: 'text' });
-
-    fs.writeFileSync('screenshot.png', response.body, { encoding: 'base64' });
-    await msg.channel.send({ files: ['screenshot.png'] });
-    fs.unlink('screenshot.png', () => {});
+    await withFile(async (tmpFile) => {
+      const response = await got.get('http://website-snapshot.centralus.azurecontainer.io:8080/etf', { responseType: 'buffer' });
+      fs.writeFileSync(tmpFile.path, response.body);
+      await msg.channel.send({ files: [tmpFile.path] });
+    });
   },
 };
