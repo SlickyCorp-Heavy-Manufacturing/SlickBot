@@ -1,7 +1,7 @@
 import { Message, TextChannel } from 'discord.js';
+import { DateTime } from 'luxon';
 import { ICommand } from '../icommand';
 import { Covid } from './covid';
-import { DateTime } from 'luxon'
 
 export const CovidCommand: ICommand = {
   name: '!covid',
