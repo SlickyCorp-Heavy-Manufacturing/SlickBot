@@ -1,5 +1,9 @@
 import 'jasmine';
 import nock from 'nock';
+import { DateTime } from 'luxon';
+
+// from https://www.census.gov/data/datasets/time-series/demo/popest/2010s-counties-total.html
+import * as dhsTestData from './dhs_2020-10-27.json';
 
 import { Covid } from './covid';
 
@@ -45,26 +49,26 @@ describe('covid', () => {
   });
 
   it('getDHSData() should provide new WI daily numbers', async () => {
-    var fs = require('fs');
-    var testfile = './dhs_2020-10-27.json';
-    var testdata = {};
-    fs.readFile(testfile, 'utf8', function (err, data) {
-      if (err) {
-          console.log('Error: ' + err);
-          return;
-      }
-  
-      testdata = JSON.parse(data);
-    });
-
-    nock('https://api.covidtracking.com')
-      .get('/v1/us/current.json')
+    const server = 'https://dhsgis.wi.gov'
+    const uri = '/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query'
+    const startDate = DateTime.utc(2020, 10, 27);
+    const endDate = DateTime.utc(2020, 10, 28);
+    nock(`${server}`)
+      .get(`${uri}`)
+      .query(
+        {
+          where: `DATE BETWEEN ${startDate} AND ${endDate}`,
+          outFields: 'NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO',
+          outSR: '4326',
+          f: 'json'
+        }
+      )
       .reply(
         200,
-        testdata,
+        dhsTestData
       );
-
-      const getDHSData = await Covid.getDHSData();
-      expect(getDHSData).toBe(testdata);
+    
+    const getDHSData = await Covid.getDHSData(startDate, endDate);
+    expect(getDHSData).toEqual(dhsTestData);
   });
 });
