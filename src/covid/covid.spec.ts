@@ -43,4 +43,28 @@ describe('covid', () => {
     const usDailyNumbers = await Covid.usDaily();
     expect(usDailyNumbers).toBe('1416 Americans laid down their lives for Mike\'s tendies today.');
   });
+
+  it('getDHSData() should provide new WI daily numbers', async () => {
+    var fs = require('fs');
+    var testfile = './dhs_2020-10-27.json';
+    var testdata = {};
+    fs.readFile(testfile, 'utf8', function (err, data) {
+      if (err) {
+          console.log('Error: ' + err);
+          return;
+      }
+  
+      testdata = JSON.parse(data);
+    });
+
+    nock('https://api.covidtracking.com')
+      .get('/v1/us/current.json')
+      .reply(
+        200,
+        testdata,
+      );
+
+      const getDHSData = await Covid.getDHSData();
+      expect(getDHSData).toBe(testdata);
+  });
 });
