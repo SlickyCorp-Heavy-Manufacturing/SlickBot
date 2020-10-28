@@ -37,8 +37,11 @@ export class Covid {
 
     // From https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-by-county/geoservice?orderBy=GEOID
     static WI_COVID_API_URL = 'https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query';
+
     static WI_COVID_API_WHERE_DATE = 'where=DATE BETWEEN ';
+
     static WI_COVID_API_FIELDS = '&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO&outSR=4326';
+
     static WI_COVID_API_TYPE = '&f=json';
 
     private static countiesToMd(counties: Object): string {
@@ -49,21 +52,21 @@ export class Covid {
       const dateString = `DATE BETWEEN ${startDate} AND ${endDate}`;
       const outFieldsString = 'NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO';
       const outSRString = '4326';
-      const apiTypeString = 'json'
-      
+      const apiTypeString = 'json';
+
       const results = await got(
-        this.WI_COVID_API_URL, 
+        this.WI_COVID_API_URL,
         {
           searchParams:
           {
             where: dateString,
             outFields: outFieldsString,
             outSR: outSRString,
-            f: apiTypeString
-          }
-        }
+            f: apiTypeString,
+          },
+        },
       );
-      
+
       return results.body;
     }
 

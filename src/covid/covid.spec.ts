@@ -49,8 +49,8 @@ describe('covid', () => {
   });
 
   it('getDHSData() should provide new WI daily numbers', async () => {
-    const server = 'https://dhsgis.wi.gov'
-    const uri = '/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query'
+    const server = 'https://dhsgis.wi.gov';
+    const uri = '/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query';
     const startDate = DateTime.utc(2020, 10, 27);
     const endDate = DateTime.utc(2020, 10, 28);
     nock(`${server}`)
@@ -60,14 +60,14 @@ describe('covid', () => {
           where: `DATE BETWEEN ${startDate} AND ${endDate}`,
           outFields: 'NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO',
           outSR: '4326',
-          f: 'json'
-        }
+          f: 'json',
+        },
       )
       .reply(
         200,
-        dhsTestData
+        dhsTestData,
       );
-    
+
     const getDHSData = await Covid.getDHSData(startDate, endDate);
     expect(getDHSData).toEqual(dhsTestData);
   });
