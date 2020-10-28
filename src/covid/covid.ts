@@ -36,11 +36,15 @@ export class Covid {
     }
 
     // From https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-by-county/geoservice?orderBy=GEOID
-    static WI_COVID_API_URL = 'https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query';
+    static WI_COVID_API_SERVER = 'https://dhsgis.wi.gov';
+    
+    static WI_COVID_API_URL = '/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query';
 
-    static WI_COVID_API_WHERE_DATE = 'where=DATE BETWEEN ';
+    static WI_COVID_API_WHERE_DATE = '?where=DATE BETWEEN ';
 
-    static WI_COVID_API_FIELDS = '&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO&outSR=4326';
+    static WI_COVID_API_FIELDS = '&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO'
+    
+    static WI_COVID_API_OUTSR = '&outSR=4326';
 
     static WI_COVID_API_TYPE = '&f=json';
 
@@ -48,26 +52,41 @@ export class Covid {
       return '';
     }
 
-    public static async getDHSData(startDate: DateTime, endDate: DateTime): Promise<string> {
-      const dateString = `DATE BETWEEN ${startDate} AND ${endDate}`;
-      const outFieldsString = 'NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO';
-      const outSRString = '4326';
-      const apiTypeString = 'json';
+    public static datesToURI(startDate: DateTime, endDate: DateTime): string {
+      const strStartDate = '\'' + startDate.toISO() + '\'';
+      const strEndDate = '\'' + endDate.toISO() + '\'';
+      const retString = strStartDate + ' AND ' + strEndDate;
 
-      const results = await got(
-        this.WI_COVID_API_URL,
-        {
-          searchParams:
-          {
-            where: dateString,
-            outFields: outFieldsString,
-            outSR: outSRString,
-            f: apiTypeString,
-          },
-        },
-      );
+      return retString;
+    }
 
-      return results.body;
+    public static fullDHSUri(startDate: DateTime, endDate: DateTime): string {
+      const fullUri =
+      Covid.WI_COVID_API_SERVER +
+      Covid.WI_COVID_API_URL +
+      Covid.WI_COVID_API_WHERE_DATE +
+      Covid.datesToURI(startDate, endDate) +
+      // extra space needed per DHS spec
+      ' ' +
+      Covid.WI_COVID_API_FIELDS +
+      Covid.WI_COVID_API_OUTSR +
+      Covid.WI_COVID_API_TYPE;
+
+      const encoded = encodeURI(fullUri);
+      
+      // Encoding doesn't string escape single quotes, so handle those manually.
+      const fixedUri = encoded.replace(/\'/g, "%27")
+      return fixedUri;
+    }
+
+    public static async getDHSData(startDate: DateTime, endDate: DateTime) {
+      // Because the DHS URL format does not follow std. query parameters, you cannot pass query parameters like normal.
+      // Must pass the entire URI as one string. See https://github.com/sindresorhus/got/issues/1509
+      const results = await got(this.fullDHSUri(startDate, endDate));
+
+      // This is a Got() Reponse, which must be handled by the caller.
+      // I could not find a way to validate that with Typescript types.
+      return results;
     }
 
     private static newWiCases(): Number {
