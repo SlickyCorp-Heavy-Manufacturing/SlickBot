@@ -70,566 +70,6 @@
     "features": [
         {
             "attributes": {
-                "NAME": "Bayfield",
-                "DATE": 1603825200000,
-                "POSITIVE": 225,
-                "POS_NEW": 4,
-                "NEGATIVE": 3931,
-                "NEG_NEW": 23,
-                "DEATHS": 2,
-                "DTH_NEW": 1,
-                "TEST_NEW": 27,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Clark",
-                "DATE": 1603825200000,
-                "POSITIVE": 867,
-                "POS_NEW": 41,
-                "NEGATIVE": 6892,
-                "NEG_NEW": 55,
-                "DEATHS": 15,
-                "DTH_NEW": 0,
-                "TEST_NEW": 96,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Columbia",
-                "DATE": 1603825200000,
-                "POSITIVE": 1761,
-                "POS_NEW": 43,
-                "NEGATIVE": 19246,
-                "NEG_NEW": 65,
-                "DEATHS": 5,
-                "DTH_NEW": 0,
-                "TEST_NEW": 108,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Dodge",
-                "DATE": 1603825200000,
-                "POSITIVE": 4051,
-                "POS_NEW": 106,
-                "NEGATIVE": 28271,
-                "NEG_NEW": 107,
-                "DEATHS": 27,
-                "DTH_NEW": 0,
-                "TEST_NEW": 213,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Door",
-                "DATE": 1603825200000,
-                "POSITIVE": 780,
-                "POS_NEW": 25,
-                "NEGATIVE": 9025,
-                "NEG_NEW": 157,
-                "DEATHS": 5,
-                "DTH_NEW": 0,
-                "TEST_NEW": 182,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Dunn",
-                "DATE": 1603825200000,
-                "POSITIVE": 1039,
-                "POS_NEW": 22,
-                "NEGATIVE": 11098,
-                "NEG_NEW": 81,
-                "DEATHS": 1,
-                "DTH_NEW": 0,
-                "TEST_NEW": 103,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Fond du Lac",
-                "DATE": 1603825200000,
-                "POSITIVE": 4461,
-                "POS_NEW": 337,
-                "NEGATIVE": 29072,
-                "NEG_NEW": 187,
-                "DEATHS": 20,
-                "DTH_NEW": 1,
-                "TEST_NEW": 524,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "La Crosse",
-                "DATE": 1603825200000,
-                "POSITIVE": 4187,
-                "POS_NEW": 84,
-                "NEGATIVE": 32175,
-                "NEG_NEW": 294,
-                "DEATHS": 20,
-                "DTH_NEW": 0,
-                "TEST_NEW": 378,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Langlade",
-                "DATE": 1603825200000,
-                "POSITIVE": 954,
-                "POS_NEW": 53,
-                "NEGATIVE": 4732,
-                "NEG_NEW": 47,
-                "DEATHS": 9,
-                "DTH_NEW": 0,
-                "TEST_NEW": 100,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Milwaukee",
-                "DATE": 1603825200000,
-                "POSITIVE": 40143,
-                "POS_NEW": 985,
-                "NEGATIVE": 312475,
-                "NEG_NEW": 1688,
-                "DEATHS": 578,
-                "DTH_NEW": 7,
-                "TEST_NEW": 2673,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Monroe",
-                "DATE": 1603825200000,
-                "POSITIVE": 1111,
-                "POS_NEW": 26,
-                "NEGATIVE": 12458,
-                "NEG_NEW": 50,
-                "DEATHS": 4,
-                "DTH_NEW": 0,
-                "TEST_NEW": 76,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Racine",
-                "DATE": 1603825200000,
-                "POSITIVE": 7299,
-                "POS_NEW": 295,
-                "NEGATIVE": 77428,
-                "NEG_NEW": 267,
-                "DEATHS": 112,
-                "DTH_NEW": 5,
-                "TEST_NEW": 562,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Richland",
-                "DATE": 1603825200000,
-                "POSITIVE": 458,
-                "POS_NEW": 9,
-                "NEGATIVE": 6864,
-                "NEG_NEW": 8,
-                "DEATHS": 8,
-                "DTH_NEW": 0,
-                "TEST_NEW": 17,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Rock",
-                "DATE": 1603825200000,
-                "POSITIVE": 5077,
-                "POS_NEW": 154,
-                "NEGATIVE": 47714,
-                "NEG_NEW": 284,
-                "DEATHS": 44,
-                "DTH_NEW": 2,
-                "TEST_NEW": 438,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Trempealeau",
-                "DATE": 1603825200000,
-                "POSITIVE": 1006,
-                "POS_NEW": 16,
-                "NEGATIVE": 7943,
-                "NEG_NEW": 44,
-                "DEATHS": 2,
-                "DTH_NEW": 0,
-                "TEST_NEW": 60,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Vilas",
-                "DATE": 1603825200000,
-                "POSITIVE": 555,
-                "POS_NEW": 12,
-                "NEGATIVE": 5741,
-                "NEG_NEW": 61,
-                "DEATHS": 5,
-                "DTH_NEW": 0,
-                "TEST_NEW": 73,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Walworth",
-                "DATE": 1603825200000,
-                "POSITIVE": 3385,
-                "POS_NEW": 30,
-                "NEGATIVE": 28377,
-                "NEG_NEW": 136,
-                "DEATHS": 38,
-                "DTH_NEW": 1,
-                "TEST_NEW": 166,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Winnebago",
-                "DATE": 1603825200000,
-                "POSITIVE": 8726,
-                "POS_NEW": 173,
-                "NEGATIVE": 54635,
-                "NEG_NEW": 701,
-                "DEATHS": 59,
-                "DTH_NEW": 3,
-                "TEST_NEW": 874,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Crawford",
-                "DATE": 1603825200000,
-                "POSITIVE": 328,
-                "POS_NEW": 5,
-                "NEGATIVE": 5116,
-                "NEG_NEW": 33,
-                "DEATHS": 0,
-                "DTH_NEW": 0,
-                "TEST_NEW": 38,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Dane",
-                "DATE": 1603825200000,
-                "POSITIVE": 14560,
-                "POS_NEW": 255,
-                "NEGATIVE": 237168,
-                "NEG_NEW": 1230,
-                "DEATHS": 48,
-                "DTH_NEW": 0,
-                "TEST_NEW": 1485,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Eau Claire",
-                "DATE": 1603825200000,
-                "POSITIVE": 3442,
-                "POS_NEW": 122,
-                "NEGATIVE": 29473,
-                "NEG_NEW": 448,
-                "DEATHS": 12,
-                "DTH_NEW": 0,
-                "TEST_NEW": 570,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Forest",
-                "DATE": 1603825200000,
-                "POSITIVE": 464,
-                "POS_NEW": 15,
-                "NEGATIVE": 2469,
-                "NEG_NEW": 54,
-                "DEATHS": 10,
-                "DTH_NEW": 0,
-                "TEST_NEW": 69,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Iron",
-                "DATE": 1603825200000,
-                "POSITIVE": 190,
-                "POS_NEW": 6,
-                "NEGATIVE": 1758,
-                "NEG_NEW": 6,
-                "DEATHS": 4,
-                "DTH_NEW": 2,
-                "TEST_NEW": 12,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Jefferson",
-                "DATE": 1603825200000,
-                "POSITIVE": 2697,
-                "POS_NEW": 76,
-                "NEGATIVE": 24253,
-                "NEG_NEW": 186,
-                "DEATHS": 11,
-                "DTH_NEW": 1,
-                "TEST_NEW": 262,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Kenosha",
-                "DATE": 1603825200000,
-                "POSITIVE": 4958,
-                "POS_NEW": 9,
-                "NEGATIVE": 47925,
-                "NEG_NEW": 290,
-                "DEATHS": 76,
-                "DTH_NEW": 0,
-                "TEST_NEW": 299,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Kewaunee",
-                "DATE": 1603825200000,
-                "POSITIVE": 1069,
-                "POS_NEW": 35,
-                "NEGATIVE": 5080,
-                "NEG_NEW": 16,
-                "DEATHS": 7,
-                "DTH_NEW": 1,
-                "TEST_NEW": 51,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Lafayette",
-                "DATE": 1603825200000,
-                "POSITIVE": 531,
-                "POS_NEW": 17,
-                "NEGATIVE": 4357,
-                "NEG_NEW": 19,
-                "DEATHS": 1,
-                "DTH_NEW": 0,
-                "TEST_NEW": 36,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Lincoln",
-                "DATE": 1603825200000,
-                "POSITIVE": 783,
-                "POS_NEW": 27,
-                "NEGATIVE": 6792,
-                "NEG_NEW": 44,
-                "DEATHS": 10,
-                "DTH_NEW": 3,
-                "TEST_NEW": 71,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Marquette",
-                "DATE": 1603825200000,
-                "POSITIVE": 607,
-                "POS_NEW": 5,
-                "NEGATIVE": 4105,
-                "NEG_NEW": 10,
-                "DEATHS": 2,
-                "DTH_NEW": 0,
-                "TEST_NEW": 15,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Oconto",
-                "DATE": 1603825200000,
-                "POSITIVE": 2090,
-                "POS_NEW": 27,
-                "NEGATIVE": 11539,
-                "NEG_NEW": 42,
-                "DEATHS": 14,
-                "DTH_NEW": 1,
-                "TEST_NEW": 69,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Ozaukee",
-                "DATE": 1603825200000,
-                "POSITIVE": 2209,
-                "POS_NEW": 67,
-                "NEGATIVE": 24667,
-                "NEG_NEW": 204,
-                "DEATHS": 24,
-                "DTH_NEW": 1,
-                "TEST_NEW": 271,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Pierce",
-                "DATE": 1603825200000,
-                "POSITIVE": 693,
-                "POS_NEW": 12,
-                "NEGATIVE": 9747,
-                "NEG_NEW": 46,
-                "DEATHS": 7,
-                "DTH_NEW": 0,
-                "TEST_NEW": 58,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Polk",
-                "DATE": 1603825200000,
-                "POSITIVE": 548,
-                "POS_NEW": 11,
-                "NEGATIVE": 11349,
-                "NEG_NEW": 52,
-                "DEATHS": 3,
-                "DTH_NEW": 1,
-                "TEST_NEW": 63,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Portage",
-                "DATE": 1603825200000,
-                "POSITIVE": 2730,
-                "POS_NEW": 57,
-                "NEGATIVE": 17422,
-                "NEG_NEW": 141,
-                "DEATHS": 21,
-                "DTH_NEW": 2,
-                "TEST_NEW": 198,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Price",
-                "DATE": 1603825200000,
-                "POSITIVE": 355,
-                "POS_NEW": 3,
-                "NEGATIVE": 3623,
-                "NEG_NEW": 19,
-                "DEATHS": 2,
-                "DTH_NEW": 1,
-                "TEST_NEW": 22,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Sauk",
-                "DATE": 1603825200000,
-                "POSITIVE": 1732,
-                "POS_NEW": 89,
-                "NEGATIVE": 24740,
-                "NEG_NEW": 91,
-                "DEATHS": 7,
-                "DTH_NEW": 0,
-                "TEST_NEW": 180,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Sawyer",
-                "DATE": 1603825200000,
-                "POSITIVE": 372,
-                "POS_NEW": 3,
-                "NEGATIVE": 5407,
-                "NEG_NEW": 28,
-                "DEATHS": 3,
-                "DTH_NEW": 0,
-                "TEST_NEW": 31,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Sheboygan",
-                "DATE": 1603825200000,
-                "POSITIVE": 4697,
-                "POS_NEW": 107,
-                "NEGATIVE": 29796,
-                "NEG_NEW": 180,
-                "DEATHS": 26,
-                "DTH_NEW": 2,
-                "TEST_NEW": 287,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Washburn",
-                "DATE": 1603825200000,
-                "POSITIVE": 242,
-                "POS_NEW": 12,
-                "NEGATIVE": 3764,
-                "NEG_NEW": 19,
-                "DEATHS": 2,
-                "DTH_NEW": 0,
-                "TEST_NEW": 31,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Waukesha",
-                "DATE": 1603825200000,
-                "POSITIVE": 12186,
-                "POS_NEW": 310,
-                "NEGATIVE": 104757,
-                "NEG_NEW": 575,
-                "DEATHS": 119,
-                "DTH_NEW": 6,
-                "TEST_NEW": 885,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
                 "NAME": "Ashland",
                 "DATE": 1603825200000,
                 "POSITIVE": 274,
@@ -639,90 +79,6 @@
                 "DEATHS": 3,
                 "DTH_NEW": 0,
                 "TEST_NEW": 28,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Brown",
-                "DATE": 1603825200000,
-                "POSITIVE": 15103,
-                "POS_NEW": 515,
-                "NEGATIVE": 92691,
-                "NEG_NEW": 594,
-                "DEATHS": 93,
-                "DTH_NEW": 4,
-                "TEST_NEW": 1109,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Buffalo",
-                "DATE": 1603825200000,
-                "POSITIVE": 262,
-                "POS_NEW": 9,
-                "NEGATIVE": 3152,
-                "NEG_NEW": 23,
-                "DEATHS": 3,
-                "DTH_NEW": 0,
-                "TEST_NEW": 32,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Burnett",
-                "DATE": 1603825200000,
-                "POSITIVE": 308,
-                "POS_NEW": 11,
-                "NEGATIVE": 3623,
-                "NEG_NEW": 24,
-                "DEATHS": 6,
-                "DTH_NEW": 0,
-                "TEST_NEW": 35,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Chippewa",
-                "DATE": 1603825200000,
-                "POSITIVE": 1581,
-                "POS_NEW": 48,
-                "NEGATIVE": 18568,
-                "NEG_NEW": 181,
-                "DEATHS": 11,
-                "DTH_NEW": 0,
-                "TEST_NEW": 229,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Florence",
-                "DATE": 1603825200000,
-                "POSITIVE": 210,
-                "POS_NEW": 0,
-                "NEGATIVE": 1135,
-                "NEG_NEW": 7,
-                "DEATHS": 6,
-                "DTH_NEW": -1,
-                "TEST_NEW": 7,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Grant",
-                "DATE": 1603825200000,
-                "POSITIVE": 1833,
-                "POS_NEW": 24,
-                "NEGATIVE": 16564,
-                "NEG_NEW": 58,
-                "DEATHS": 30,
-                "DTH_NEW": 1,
-                "TEST_NEW": 82,
                 "GEO": "County"
             }
         },
@@ -742,197 +98,85 @@
         },
         {
             "attributes": {
-                "NAME": "Jackson",
+                "NAME": "Sheboygan",
                 "DATE": 1603825200000,
-                "POSITIVE": 472,
-                "POS_NEW": 8,
-                "NEGATIVE": 7371,
-                "NEG_NEW": 10,
-                "DEATHS": 1,
-                "DTH_NEW": 0,
-                "TEST_NEW": 18,
+                "POSITIVE": 4697,
+                "POS_NEW": 107,
+                "NEGATIVE": 29796,
+                "NEG_NEW": 180,
+                "DEATHS": 26,
+                "DTH_NEW": 2,
+                "TEST_NEW": 287,
                 "GEO": "County"
             }
         },
         {
             "attributes": {
-                "NAME": "Juneau",
+                "NAME": "Brown",
                 "DATE": 1603825200000,
-                "POSITIVE": 774,
+                "POSITIVE": 15103,
+                "POS_NEW": 515,
+                "NEGATIVE": 92691,
+                "NEG_NEW": 594,
+                "DEATHS": 93,
+                "DTH_NEW": 4,
+                "TEST_NEW": 1109,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Forest",
+                "DATE": 1603825200000,
+                "POSITIVE": 464,
                 "POS_NEW": 15,
-                "NEGATIVE": 10704,
-                "NEG_NEW": 12,
-                "DEATHS": 4,
+                "NEGATIVE": 2469,
+                "NEG_NEW": 54,
+                "DEATHS": 10,
                 "DTH_NEW": 0,
-                "TEST_NEW": 27,
+                "TEST_NEW": 69,
                 "GEO": "County"
             }
         },
         {
             "attributes": {
-                "NAME": "Manitowoc",
+                "NAME": "Lincoln",
                 "DATE": 1603825200000,
-                "POSITIVE": 2764,
-                "POS_NEW": 68,
-                "NEGATIVE": 19353,
-                "NEG_NEW": 143,
-                "DEATHS": 11,
+                "POSITIVE": 783,
+                "POS_NEW": 27,
+                "NEGATIVE": 6792,
+                "NEG_NEW": 44,
+                "DEATHS": 10,
+                "DTH_NEW": 3,
+                "TEST_NEW": 71,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Price",
+                "DATE": 1603825200000,
+                "POSITIVE": 355,
+                "POS_NEW": 3,
+                "NEGATIVE": 3623,
+                "NEG_NEW": 19,
+                "DEATHS": 2,
                 "DTH_NEW": 1,
-                "TEST_NEW": 211,
+                "TEST_NEW": 22,
                 "GEO": "County"
             }
         },
         {
             "attributes": {
-                "NAME": "Outagamie",
+                "NAME": "Washburn",
                 "DATE": 1603825200000,
-                "POSITIVE": 9176,
-                "POS_NEW": 189,
-                "NEGATIVE": 54410,
-                "NEG_NEW": 516,
-                "DEATHS": 72,
-                "DTH_NEW": 9,
-                "TEST_NEW": 705,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Pepin",
-                "DATE": 1603825200000,
-                "POSITIVE": 140,
-                "POS_NEW": 7,
-                "NEGATIVE": 1836,
-                "NEG_NEW": 20,
-                "DEATHS": 0,
-                "DTH_NEW": 0,
-                "TEST_NEW": 27,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Rusk",
-                "DATE": 1603825200000,
-                "POSITIVE": 205,
-                "POS_NEW": 6,
-                "NEGATIVE": 2992,
-                "NEG_NEW": 21,
-                "DEATHS": 1,
-                "DTH_NEW": 0,
-                "TEST_NEW": 27,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "St. Croix",
-                "DATE": 1603825200000,
-                "POSITIVE": 1806,
-                "POS_NEW": 31,
-                "NEGATIVE": 20946,
-                "NEG_NEW": 113,
-                "DEATHS": 11,
-                "DTH_NEW": 0,
-                "TEST_NEW": 144,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Taylor",
-                "DATE": 1603825200000,
-                "POSITIVE": 475,
-                "POS_NEW": 0,
-                "NEGATIVE": 3710,
-                "NEG_NEW": 33,
-                "DEATHS": 7,
-                "DTH_NEW": 0,
-                "TEST_NEW": 33,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Vernon",
-                "DATE": 1603825200000,
-                "POSITIVE": 495,
-                "POS_NEW": 10,
-                "NEGATIVE": 8461,
-                "NEG_NEW": 39,
+                "POSITIVE": 242,
+                "POS_NEW": 12,
+                "NEGATIVE": 3764,
+                "NEG_NEW": 19,
                 "DEATHS": 2,
                 "DTH_NEW": 0,
-                "TEST_NEW": 49,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Washington",
-                "DATE": 1603825200000,
-                "POSITIVE": 4367,
-                "POS_NEW": 86,
-                "NEGATIVE": 33433,
-                "NEG_NEW": 213,
-                "DEATHS": 42,
-                "DTH_NEW": 0,
-                "TEST_NEW": 299,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Waushara",
-                "DATE": 1603825200000,
-                "POSITIVE": 1009,
-                "POS_NEW": 29,
-                "NEGATIVE": 8064,
-                "NEG_NEW": 37,
-                "DEATHS": 5,
-                "DTH_NEW": 0,
-                "TEST_NEW": 66,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Wood",
-                "DATE": 1603825200000,
-                "POSITIVE": 1679,
-                "POS_NEW": 45,
-                "NEGATIVE": 18690,
-                "NEG_NEW": 157,
-                "DEATHS": 9,
-                "DTH_NEW": 0,
-                "TEST_NEW": 202,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Adams",
-                "DATE": 1603825200000,
-                "POSITIVE": 502,
-                "POS_NEW": 36,
-                "NEGATIVE": 5029,
-                "NEG_NEW": 39,
-                "DEATHS": 5,
-                "DTH_NEW": 0,
-                "TEST_NEW": 75,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Barron",
-                "DATE": 1603825200000,
-                "POSITIVE": 1093,
-                "POS_NEW": 31,
-                "NEGATIVE": 12014,
-                "NEG_NEW": 59,
-                "DEATHS": 6,
-                "DTH_NEW": 0,
-                "TEST_NEW": 90,
+                "TEST_NEW": 31,
                 "GEO": "County"
             }
         },
@@ -952,6 +196,62 @@
         },
         {
             "attributes": {
+                "NAME": "Lafayette",
+                "DATE": 1603825200000,
+                "POSITIVE": 531,
+                "POS_NEW": 17,
+                "NEGATIVE": 4357,
+                "NEG_NEW": 19,
+                "DEATHS": 1,
+                "DTH_NEW": 0,
+                "TEST_NEW": 36,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Pepin",
+                "DATE": 1603825200000,
+                "POSITIVE": 140,
+                "POS_NEW": 7,
+                "NEGATIVE": 1836,
+                "NEG_NEW": 20,
+                "DEATHS": 0,
+                "DTH_NEW": 0,
+                "TEST_NEW": 27,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Trempealeau",
+                "DATE": 1603825200000,
+                "POSITIVE": 1006,
+                "POS_NEW": 16,
+                "NEGATIVE": 7943,
+                "NEG_NEW": 44,
+                "DEATHS": 2,
+                "DTH_NEW": 0,
+                "TEST_NEW": 60,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Wood",
+                "DATE": 1603825200000,
+                "POSITIVE": 1679,
+                "POS_NEW": 45,
+                "NEGATIVE": 18690,
+                "NEG_NEW": 157,
+                "DEATHS": 9,
+                "DTH_NEW": 0,
+                "TEST_NEW": 202,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
                 "NAME": "Douglas",
                 "DATE": 1603825200000,
                 "POSITIVE": 774,
@@ -966,85 +266,141 @@
         },
         {
             "attributes": {
-                "NAME": "Green Lake",
+                "NAME": "Iron",
                 "DATE": 1603825200000,
-                "POSITIVE": 741,
-                "POS_NEW": 16,
-                "NEGATIVE": 5194,
-                "NEG_NEW": 19,
-                "DEATHS": 3,
-                "DTH_NEW": 1,
-                "TEST_NEW": 35,
+                "POSITIVE": 190,
+                "POS_NEW": 6,
+                "NEGATIVE": 1758,
+                "NEG_NEW": 6,
+                "DEATHS": 4,
+                "DTH_NEW": 2,
+                "TEST_NEW": 12,
                 "GEO": "County"
             }
         },
         {
             "attributes": {
-                "NAME": "Iowa",
+                "NAME": "La Crosse",
                 "DATE": 1603825200000,
-                "POSITIVE": 466,
-                "POS_NEW": 8,
-                "NEGATIVE": 7025,
-                "NEG_NEW": 23,
+                "POSITIVE": 4187,
+                "POS_NEW": 84,
+                "NEGATIVE": 32175,
+                "NEG_NEW": 294,
+                "DEATHS": 20,
+                "DTH_NEW": 0,
+                "TEST_NEW": 378,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Monroe",
+                "DATE": 1603825200000,
+                "POSITIVE": 1111,
+                "POS_NEW": 26,
+                "NEGATIVE": 12458,
+                "NEG_NEW": 50,
+                "DEATHS": 4,
+                "DTH_NEW": 0,
+                "TEST_NEW": 76,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Rock",
+                "DATE": 1603825200000,
+                "POSITIVE": 5077,
+                "POS_NEW": 154,
+                "NEGATIVE": 47714,
+                "NEG_NEW": 284,
+                "DEATHS": 44,
+                "DTH_NEW": 2,
+                "TEST_NEW": 438,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Adams",
+                "DATE": 1603825200000,
+                "POSITIVE": 502,
+                "POS_NEW": 36,
+                "NEGATIVE": 5029,
+                "NEG_NEW": 39,
+                "DEATHS": 5,
+                "DTH_NEW": 0,
+                "TEST_NEW": 75,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Eau Claire",
+                "DATE": 1603825200000,
+                "POSITIVE": 3442,
+                "POS_NEW": 122,
+                "NEGATIVE": 29473,
+                "NEG_NEW": 448,
+                "DEATHS": 12,
+                "DTH_NEW": 0,
+                "TEST_NEW": 570,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "St. Croix",
+                "DATE": 1603825200000,
+                "POSITIVE": 1806,
+                "POS_NEW": 31,
+                "NEGATIVE": 20946,
+                "NEG_NEW": 113,
+                "DEATHS": 11,
+                "DTH_NEW": 0,
+                "TEST_NEW": 144,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Dunn",
+                "DATE": 1603825200000,
+                "POSITIVE": 1039,
+                "POS_NEW": 22,
+                "NEGATIVE": 11098,
+                "NEG_NEW": 81,
                 "DEATHS": 1,
                 "DTH_NEW": 0,
-                "TEST_NEW": 31,
+                "TEST_NEW": 103,
                 "GEO": "County"
             }
         },
         {
             "attributes": {
-                "NAME": "Marathon",
+                "NAME": "Langlade",
                 "DATE": 1603825200000,
-                "POSITIVE": 4620,
-                "POS_NEW": 125,
-                "NEGATIVE": 30970,
-                "NEG_NEW": 207,
-                "DEATHS": 53,
-                "DTH_NEW": 1,
-                "TEST_NEW": 332,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Marinette",
-                "DATE": 1603825200000,
-                "POSITIVE": 1709,
-                "POS_NEW": 59,
-                "NEGATIVE": 12072,
-                "NEG_NEW": 122,
-                "DEATHS": 12,
-                "DTH_NEW": 1,
-                "TEST_NEW": 181,
-                "GEO": "County"
-            }
-        },
-        {
-            "attributes": {
-                "NAME": "Menominee",
-                "DATE": 1603825200000,
-                "POSITIVE": 298,
-                "POS_NEW": 10,
-                "NEGATIVE": 3180,
-                "NEG_NEW": 8,
-                "DEATHS": 0,
+                "POSITIVE": 954,
+                "POS_NEW": 53,
+                "NEGATIVE": 4732,
+                "NEG_NEW": 47,
+                "DEATHS": 9,
                 "DTH_NEW": 0,
-                "TEST_NEW": 18,
+                "TEST_NEW": 100,
                 "GEO": "County"
             }
         },
         {
             "attributes": {
-                "NAME": "Oneida",
+                "NAME": "Ozaukee",
                 "DATE": 1603825200000,
-                "POSITIVE": 1222,
-                "POS_NEW": 14,
-                "NEGATIVE": 11325,
-                "NEG_NEW": 95,
-                "DEATHS": 14,
+                "POSITIVE": 2209,
+                "POS_NEW": 67,
+                "NEGATIVE": 24667,
+                "NEG_NEW": 204,
+                "DEATHS": 24,
                 "DTH_NEW": 1,
-                "TEST_NEW": 109,
+                "TEST_NEW": 271,
                 "GEO": "County"
             }
         },
@@ -1064,6 +420,146 @@
         },
         {
             "attributes": {
+                "NAME": "Burnett",
+                "DATE": 1603825200000,
+                "POSITIVE": 308,
+                "POS_NEW": 11,
+                "NEGATIVE": 3623,
+                "NEG_NEW": 24,
+                "DEATHS": 6,
+                "DTH_NEW": 0,
+                "TEST_NEW": 35,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Juneau",
+                "DATE": 1603825200000,
+                "POSITIVE": 774,
+                "POS_NEW": 15,
+                "NEGATIVE": 10704,
+                "NEG_NEW": 12,
+                "DEATHS": 4,
+                "DTH_NEW": 0,
+                "TEST_NEW": 27,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Outagamie",
+                "DATE": 1603825200000,
+                "POSITIVE": 9176,
+                "POS_NEW": 189,
+                "NEGATIVE": 54410,
+                "NEG_NEW": 516,
+                "DEATHS": 72,
+                "DTH_NEW": 9,
+                "TEST_NEW": 705,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Taylor",
+                "DATE": 1603825200000,
+                "POSITIVE": 475,
+                "POS_NEW": 0,
+                "NEGATIVE": 3710,
+                "NEG_NEW": 33,
+                "DEATHS": 7,
+                "DTH_NEW": 0,
+                "TEST_NEW": 33,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Winnebago",
+                "DATE": 1603825200000,
+                "POSITIVE": 8726,
+                "POS_NEW": 173,
+                "NEGATIVE": 54635,
+                "NEG_NEW": 701,
+                "DEATHS": 59,
+                "DTH_NEW": 3,
+                "TEST_NEW": 874,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Door",
+                "DATE": 1603825200000,
+                "POSITIVE": 780,
+                "POS_NEW": 25,
+                "NEGATIVE": 9025,
+                "NEG_NEW": 157,
+                "DEATHS": 5,
+                "DTH_NEW": 0,
+                "TEST_NEW": 182,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Iowa",
+                "DATE": 1603825200000,
+                "POSITIVE": 466,
+                "POS_NEW": 8,
+                "NEGATIVE": 7025,
+                "NEG_NEW": 23,
+                "DEATHS": 1,
+                "DTH_NEW": 0,
+                "TEST_NEW": 31,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Kewaunee",
+                "DATE": 1603825200000,
+                "POSITIVE": 1069,
+                "POS_NEW": 35,
+                "NEGATIVE": 5080,
+                "NEG_NEW": 16,
+                "DEATHS": 7,
+                "DTH_NEW": 1,
+                "TEST_NEW": 51,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Menominee",
+                "DATE": 1603825200000,
+                "POSITIVE": 298,
+                "POS_NEW": 10,
+                "NEGATIVE": 3180,
+                "NEG_NEW": 8,
+                "DEATHS": 0,
+                "DTH_NEW": 0,
+                "TEST_NEW": 18,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Richland",
+                "DATE": 1603825200000,
+                "POSITIVE": 458,
+                "POS_NEW": 9,
+                "NEGATIVE": 6864,
+                "NEG_NEW": 8,
+                "DEATHS": 8,
+                "DTH_NEW": 0,
+                "TEST_NEW": 17,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
                 "NAME": "Waupaca",
                 "DATE": 1603825200000,
                 "POSITIVE": 2371,
@@ -1073,6 +569,510 @@
                 "DEATHS": 38,
                 "DTH_NEW": 0,
                 "TEST_NEW": 145,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Clark",
+                "DATE": 1603825200000,
+                "POSITIVE": 867,
+                "POS_NEW": 41,
+                "NEGATIVE": 6892,
+                "NEG_NEW": 55,
+                "DEATHS": 15,
+                "DTH_NEW": 0,
+                "TEST_NEW": 96,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Kenosha",
+                "DATE": 1603825200000,
+                "POSITIVE": 4958,
+                "POS_NEW": 9,
+                "NEGATIVE": 47925,
+                "NEG_NEW": 290,
+                "DEATHS": 76,
+                "DTH_NEW": 0,
+                "TEST_NEW": 299,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Oneida",
+                "DATE": 1603825200000,
+                "POSITIVE": 1222,
+                "POS_NEW": 14,
+                "NEGATIVE": 11325,
+                "NEG_NEW": 95,
+                "DEATHS": 14,
+                "DTH_NEW": 1,
+                "TEST_NEW": 109,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Sawyer",
+                "DATE": 1603825200000,
+                "POSITIVE": 372,
+                "POS_NEW": 3,
+                "NEGATIVE": 5407,
+                "NEG_NEW": 28,
+                "DEATHS": 3,
+                "DTH_NEW": 0,
+                "TEST_NEW": 31,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Dodge",
+                "DATE": 1603825200000,
+                "POSITIVE": 4051,
+                "POS_NEW": 106,
+                "NEGATIVE": 28271,
+                "NEG_NEW": 107,
+                "DEATHS": 27,
+                "DTH_NEW": 0,
+                "TEST_NEW": 213,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Rusk",
+                "DATE": 1603825200000,
+                "POSITIVE": 205,
+                "POS_NEW": 6,
+                "NEGATIVE": 2992,
+                "NEG_NEW": 21,
+                "DEATHS": 1,
+                "DTH_NEW": 0,
+                "TEST_NEW": 27,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Vilas",
+                "DATE": 1603825200000,
+                "POSITIVE": 555,
+                "POS_NEW": 12,
+                "NEGATIVE": 5741,
+                "NEG_NEW": 61,
+                "DEATHS": 5,
+                "DTH_NEW": 0,
+                "TEST_NEW": 73,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Bayfield",
+                "DATE": 1603825200000,
+                "POSITIVE": 225,
+                "POS_NEW": 4,
+                "NEGATIVE": 3931,
+                "NEG_NEW": 23,
+                "DEATHS": 2,
+                "DTH_NEW": 1,
+                "TEST_NEW": 27,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Dane",
+                "DATE": 1603825200000,
+                "POSITIVE": 14560,
+                "POS_NEW": 255,
+                "NEGATIVE": 237168,
+                "NEG_NEW": 1230,
+                "DEATHS": 48,
+                "DTH_NEW": 0,
+                "TEST_NEW": 1485,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Milwaukee",
+                "DATE": 1603825200000,
+                "POSITIVE": 40143,
+                "POS_NEW": 985,
+                "NEGATIVE": 312475,
+                "NEG_NEW": 1688,
+                "DEATHS": 578,
+                "DTH_NEW": 7,
+                "TEST_NEW": 2673,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Polk",
+                "DATE": 1603825200000,
+                "POSITIVE": 548,
+                "POS_NEW": 11,
+                "NEGATIVE": 11349,
+                "NEG_NEW": 52,
+                "DEATHS": 3,
+                "DTH_NEW": 1,
+                "TEST_NEW": 63,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Waushara",
+                "DATE": 1603825200000,
+                "POSITIVE": 1009,
+                "POS_NEW": 29,
+                "NEGATIVE": 8064,
+                "NEG_NEW": 37,
+                "DEATHS": 5,
+                "DTH_NEW": 0,
+                "TEST_NEW": 66,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Columbia",
+                "DATE": 1603825200000,
+                "POSITIVE": 1761,
+                "POS_NEW": 43,
+                "NEGATIVE": 19246,
+                "NEG_NEW": 65,
+                "DEATHS": 5,
+                "DTH_NEW": 0,
+                "TEST_NEW": 108,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Fond du Lac",
+                "DATE": 1603825200000,
+                "POSITIVE": 4461,
+                "POS_NEW": 337,
+                "NEGATIVE": 29072,
+                "NEG_NEW": 187,
+                "DEATHS": 20,
+                "DTH_NEW": 1,
+                "TEST_NEW": 524,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Jefferson",
+                "DATE": 1603825200000,
+                "POSITIVE": 2697,
+                "POS_NEW": 76,
+                "NEGATIVE": 24253,
+                "NEG_NEW": 186,
+                "DEATHS": 11,
+                "DTH_NEW": 1,
+                "TEST_NEW": 262,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Marquette",
+                "DATE": 1603825200000,
+                "POSITIVE": 607,
+                "POS_NEW": 5,
+                "NEGATIVE": 4105,
+                "NEG_NEW": 10,
+                "DEATHS": 2,
+                "DTH_NEW": 0,
+                "TEST_NEW": 15,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Portage",
+                "DATE": 1603825200000,
+                "POSITIVE": 2730,
+                "POS_NEW": 57,
+                "NEGATIVE": 17422,
+                "NEG_NEW": 141,
+                "DEATHS": 21,
+                "DTH_NEW": 2,
+                "TEST_NEW": 198,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Walworth",
+                "DATE": 1603825200000,
+                "POSITIVE": 3385,
+                "POS_NEW": 30,
+                "NEGATIVE": 28377,
+                "NEG_NEW": 136,
+                "DEATHS": 38,
+                "DTH_NEW": 1,
+                "TEST_NEW": 166,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Chippewa",
+                "DATE": 1603825200000,
+                "POSITIVE": 1581,
+                "POS_NEW": 48,
+                "NEGATIVE": 18568,
+                "NEG_NEW": 181,
+                "DEATHS": 11,
+                "DTH_NEW": 0,
+                "TEST_NEW": 229,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Grant",
+                "DATE": 1603825200000,
+                "POSITIVE": 1833,
+                "POS_NEW": 24,
+                "NEGATIVE": 16564,
+                "NEG_NEW": 58,
+                "DEATHS": 30,
+                "DTH_NEW": 1,
+                "TEST_NEW": 82,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Marinette",
+                "DATE": 1603825200000,
+                "POSITIVE": 1709,
+                "POS_NEW": 59,
+                "NEGATIVE": 12072,
+                "NEG_NEW": 122,
+                "DEATHS": 12,
+                "DTH_NEW": 1,
+                "TEST_NEW": 181,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Racine",
+                "DATE": 1603825200000,
+                "POSITIVE": 7299,
+                "POS_NEW": 295,
+                "NEGATIVE": 77428,
+                "NEG_NEW": 267,
+                "DEATHS": 112,
+                "DTH_NEW": 5,
+                "TEST_NEW": 562,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Washington",
+                "DATE": 1603825200000,
+                "POSITIVE": 4367,
+                "POS_NEW": 86,
+                "NEGATIVE": 33433,
+                "NEG_NEW": 213,
+                "DEATHS": 42,
+                "DTH_NEW": 0,
+                "TEST_NEW": 299,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Buffalo",
+                "DATE": 1603825200000,
+                "POSITIVE": 262,
+                "POS_NEW": 9,
+                "NEGATIVE": 3152,
+                "NEG_NEW": 23,
+                "DEATHS": 3,
+                "DTH_NEW": 0,
+                "TEST_NEW": 32,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Green Lake",
+                "DATE": 1603825200000,
+                "POSITIVE": 741,
+                "POS_NEW": 16,
+                "NEGATIVE": 5194,
+                "NEG_NEW": 19,
+                "DEATHS": 3,
+                "DTH_NEW": 1,
+                "TEST_NEW": 35,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Vernon",
+                "DATE": 1603825200000,
+                "POSITIVE": 495,
+                "POS_NEW": 10,
+                "NEGATIVE": 8461,
+                "NEG_NEW": 39,
+                "DEATHS": 2,
+                "DTH_NEW": 0,
+                "TEST_NEW": 49,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Barron",
+                "DATE": 1603825200000,
+                "POSITIVE": 1093,
+                "POS_NEW": 31,
+                "NEGATIVE": 12014,
+                "NEG_NEW": 59,
+                "DEATHS": 6,
+                "DTH_NEW": 0,
+                "TEST_NEW": 90,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Crawford",
+                "DATE": 1603825200000,
+                "POSITIVE": 328,
+                "POS_NEW": 5,
+                "NEGATIVE": 5116,
+                "NEG_NEW": 33,
+                "DEATHS": 0,
+                "DTH_NEW": 0,
+                "TEST_NEW": 38,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Marathon",
+                "DATE": 1603825200000,
+                "POSITIVE": 4620,
+                "POS_NEW": 125,
+                "NEGATIVE": 30970,
+                "NEG_NEW": 207,
+                "DEATHS": 53,
+                "DTH_NEW": 1,
+                "TEST_NEW": 332,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Pierce",
+                "DATE": 1603825200000,
+                "POSITIVE": 693,
+                "POS_NEW": 12,
+                "NEGATIVE": 9747,
+                "NEG_NEW": 46,
+                "DEATHS": 7,
+                "DTH_NEW": 0,
+                "TEST_NEW": 58,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Waukesha",
+                "DATE": 1603825200000,
+                "POSITIVE": 12186,
+                "POS_NEW": 310,
+                "NEGATIVE": 104757,
+                "NEG_NEW": 575,
+                "DEATHS": 119,
+                "DTH_NEW": 6,
+                "TEST_NEW": 885,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Florence",
+                "DATE": 1603825200000,
+                "POSITIVE": 210,
+                "POS_NEW": 0,
+                "NEGATIVE": 1135,
+                "NEG_NEW": 7,
+                "DEATHS": 6,
+                "DTH_NEW": -1,
+                "TEST_NEW": 7,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Jackson",
+                "DATE": 1603825200000,
+                "POSITIVE": 472,
+                "POS_NEW": 8,
+                "NEGATIVE": 7371,
+                "NEG_NEW": 10,
+                "DEATHS": 1,
+                "DTH_NEW": 0,
+                "TEST_NEW": 18,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Manitowoc",
+                "DATE": 1603825200000,
+                "POSITIVE": 2764,
+                "POS_NEW": 68,
+                "NEGATIVE": 19353,
+                "NEG_NEW": 143,
+                "DEATHS": 11,
+                "DTH_NEW": 1,
+                "TEST_NEW": 211,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Oconto",
+                "DATE": 1603825200000,
+                "POSITIVE": 2090,
+                "POS_NEW": 27,
+                "NEGATIVE": 11539,
+                "NEG_NEW": 42,
+                "DEATHS": 14,
+                "DTH_NEW": 1,
+                "TEST_NEW": 69,
+                "GEO": "County"
+            }
+        },
+        {
+            "attributes": {
+                "NAME": "Sauk",
+                "DATE": 1603825200000,
+                "POSITIVE": 1732,
+                "POS_NEW": 89,
+                "NEGATIVE": 24740,
+                "NEG_NEW": 91,
+                "DEATHS": 7,
+                "DTH_NEW": 0,
+                "TEST_NEW": 180,
                 "GEO": "County"
             }
         }
