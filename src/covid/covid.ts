@@ -48,7 +48,7 @@ export class Covid {
       return '';
     }
 
-    public static async getDHSData(startDate: DateTime, endDate: DateTime): Promise<Object> {
+    public static async getDHSData(startDate: DateTime, endDate: DateTime): Promise<string> {
       const dateString = `DATE BETWEEN ${startDate} AND ${endDate}`;
       const outFieldsString = 'NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO';
       const outSRString = '4326';

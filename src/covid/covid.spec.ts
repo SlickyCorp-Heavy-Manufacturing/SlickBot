@@ -69,6 +69,9 @@ describe('covid', () => {
       );
 
     const getDHSData = await Covid.getDHSData(startDate, endDate);
-    expect(getDHSData).toEqual(dhsTestData);
+    expect(JSON.parse(getDHSData)).toEqual(dhsTestData);
+
+    // const expectedURL = 'https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query?where=DATE%20BETWEEN%20%272020-10-27T00:00:00.000Z%27%20AND%20%272020-10-28T00:00:00.000Z%27%20&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO&outSR=4326&f=json'
+    // expect(dhsResponse).toEqual(expectedURL);
   });
 });
