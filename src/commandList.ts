@@ -11,6 +11,7 @@ import { PlayCommand } from './play/play-command';
 import { FoffCommand } from './foaas/foaas-command';
 import { TendiesCommand, SpyCommand, EtfCommand } from './tendies';
 import { CovidCommand } from './covid/covid-command';
+import { CovidWiCommand } from './covid/covid-command';
 import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
 import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
@@ -30,6 +31,7 @@ export const commandList: ICommand[] = [
   FoffCommand,
   TendiesCommand,
   CovidCommand,
+  CovidWiCommand,
   NiceReaction,
   ChulasRecation,
   DevNullCommand,
