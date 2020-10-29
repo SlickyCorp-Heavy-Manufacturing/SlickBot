@@ -13,25 +13,35 @@ export class Covid {
       });
     }
 
-    public static async wiDaily(): Promise<string> {
-      const YESTERDAY_IN_MS = 1603231200000;
-      const TODAY_IN_MS = 1603317600000;
+    public static async wiLeaderboard(): Promise<string> {
+      let startDate = DateTime.utc().startOf('day');
+      let endDate = DateTime.utc().endOf('day');
+      let response;
+      let dhsData: DHSData;
 
-      // const WI_CASE_RESULTS = got(`${Covid.WI_COVID_API}`);
+      let tries = 0;
+      while(tries < 5) {
+        response = await this.getDHSData(startDate, endDate);
+        dhsData = this.bodyToDHSData(response.body);
 
-      const retString = `
-      ${Covid.newWiCases()} Wisconsinites tested positive today for a total of ${Covid.totalWiCases()}.\n
-      Top five counties, new cases per capita:\n
-      ${Covid.countiesToMd(Covid.topFiveCountiesByNewCasesPerCapita())}\n
-      \n
-      ${Covid.newWiDeaths()} Wisconsinites died today for a total of ${Covid.totalWiDeaths()}.\n
-      Top five counties, new deaths per capita:\n
-      ${Covid.countiesToMd(Covid.topFiveCountiesByNewDeathsPerCapita())}`;
+        // Has the data for today been posted?
+        if (dhsData.features.length > 0) {
+          break;
+        }
+        else {
+          // Try the previous day.
+          startDate = startDate.minus({days: 1});
+          endDate = endDate.minus({days: 1});
+          tries++;
+        }
+      }
 
-      return got(`${Covid.COVID_API}/us/current.json`, { responseType: 'json' }).then((response) => {
-        const usDaily = response.body as UsDaily[];
-        return `${usDaily[0].deathIncrease} Americans laid down their lives for Mike's tendies today.`;
-      });
+      if (tries >= 5) {
+        return `Could not find DHS Data after 5 tries.`;
+      }
+
+      // At this point I should have data to parse. Let's do it.
+      return Covid.formatLeaderboard(startDate, endDate, dhsData);
     }
 
     // From https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-by-county/geoservice?orderBy=GEOID
@@ -90,6 +100,18 @@ export class Covid {
 
     public static bodyToDHSData(response_body: string): DHSData {
       return JSON.parse(response_body) as DHSData;
+    }
+
+    public static formatLeaderboard(startDate: DateTime, endDate: DateTime, dhsData: DHSData): string {
+      const retString = `
+      ${Covid.newWiCases()} Wisconsinites tested positive today for a total of ${Covid.totalWiCases()}.\n
+      Top five counties, new cases per capita:\n
+      ${Covid.countiesToMd(Covid.topFiveCountiesByNewCasesPerCapita())}\n
+      \n
+      ${Covid.newWiDeaths()} Wisconsinites died today for a total of ${Covid.totalWiDeaths()}.\n
+      Top five counties, new deaths per capita:\n
+      ${Covid.countiesToMd(Covid.topFiveCountiesByNewDeathsPerCapita())}`;
+      return retString;
     }
 
     private static newWiCases(): Number {
