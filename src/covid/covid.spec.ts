@@ -116,4 +116,22 @@ describe('covid', () => {
     const result = Covid.newWiCases(dhsTestData as DHSData);
     expect(result).toEqual(expectedResult);
   });
+
+  it('newWiDeaths() should sum all of the new deaths', async () => {
+    const expectedResult = 64;
+    const result = Covid.newWiDeaths(dhsTestData as DHSData);
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('totalWiCases() should sum all of the total cases', async () => {
+    const expectedResult = 206311;
+    const result = Covid.totalWiCases(dhsTestData as DHSData);
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('totalWiDeaths() should sum all of the total deaths', async () => {
+    const expectedResult = 1852;
+    const result = Covid.totalWiDeaths(dhsTestData as DHSData);
+    expect(result).toEqual(expectedResult);
+  });
 });

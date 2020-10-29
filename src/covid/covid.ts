@@ -115,32 +115,38 @@ export class Covid {
       dhsData: DHSData,
     ): string {
       const retString = `
-      ${Covid.newWiCases(dhsData)} Wisconsinites tested positive today for a total of ${Covid.totalWiCases()}.\n
+      ${Covid.newWiCases(dhsData)} Wisconsinites tested positive today for a total of ${Covid.totalWiCases(dhsData)}.\n
       Top five counties, new cases per capita:\n
       ${Covid.countiesToMd(Covid.topFiveCountiesByNewCasesPerCapita())}\n
       \n
-      ${Covid.newWiDeaths()} Wisconsinites died today for a total of ${Covid.totalWiDeaths()}.\n
+      ${Covid.newWiDeaths(dhsData)} Wisconsinites died today for a total of ${Covid.totalWiDeaths(dhsData)}.\n
       Top five counties, new deaths per capita:\n
       ${Covid.countiesToMd(Covid.topFiveCountiesByNewDeathsPerCapita())}`;
       return retString;
     }
 
     public static newWiCases(dhsData: DHSData): Number {
-      return dhsData.features.reduce(function (accumulator, county) {
-        return accumulator + county.attributes.POS_NEW;
-      }, 0);
+      return dhsData.features.reduce(
+        (accumulator, county) => accumulator + county.attributes.POS_NEW, 0,
+      );
     }
 
-    private static newWiDeaths(): Number {
-      return 1;
+    public static newWiDeaths(dhsData: DHSData): Number {
+      return dhsData.features.reduce(
+        (accumulator, county) => accumulator + county.attributes.DTH_NEW, 0,
+      );
     }
 
-    private static totalWiCases(): Number {
-      return 1;
+    public static totalWiCases(dhsData: DHSData): Number {
+      return dhsData.features.reduce(
+        (accumulator, county) => accumulator + county.attributes.POSITIVE, 0,
+      );
     }
 
-    private static totalWiDeaths(): Number {
-      return 1;
+    public static totalWiDeaths(dhsData: DHSData): Number {
+      return dhsData.features.reduce(
+        (accumulator, county) => accumulator + county.attributes.DEATHS, 0,
+      );
     }
 
     private static topFiveCountiesByNewCasesPerCapita(): Object {
