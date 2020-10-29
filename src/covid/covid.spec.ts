@@ -3,11 +3,10 @@ import nock from 'nock';
 import { DateTime } from 'luxon';
 import { DHSData } from './covid-types';
 
-// from https://www.census.gov/data/datasets/time-series/demo/popest/2010s-counties-total.html
+// From https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-by-county/geoservice?orderBy=GEOID
 import * as dhsTestData from './dhs_2020-10-27.json';
 
 import { Covid } from './covid';
-import { skipValidation } from 'yargs';
 
 describe('covid', () => {
   it('usDaily() should get US daily numbers', async () => {
@@ -54,16 +53,15 @@ describe('covid', () => {
     const startDate = DateTime.utc(2020, 10, 27);
     const endDate = DateTime.utc(2020, 10, 28);
 
-    const expectedString = '\'' + startDate.toISO() + '\' AND \'' + endDate.toISO() + '\'';
-
+    const expectedString = `'${startDate.toISO()}' AND '${endDate.toISO()}'`;
     expect(Covid.datesToURI(startDate, endDate)).toEqual(expectedString);
   });
 
   it('fullDHSUri should provide the URI string format expected by the DHS site', () => {
     const startDate = DateTime.utc(2020, 10, 27);
     const endDate = DateTime.utc(2020, 10, 28);
-    const results = Covid.fullDHSUri(startDate, endDate)
-    const expectedURL = 'https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query?where=DATE%20BETWEEN%20%272020-10-27T00:00:00.000Z%27%20AND%20%272020-10-28T00:00:00.000Z%27%20&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO&outSR=4326&f=json'
+    const results = Covid.fullDHSUri(startDate, endDate);
+    const expectedURL = 'https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query?where=DATE%20BETWEEN%20%272020-10-27T00:00:00.000Z%27%20AND%20%272020-10-28T00:00:00.000Z%27%20&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO&outSR=4326&f=json';
     expect(results).toEqual(expectedURL);
   });
 
@@ -72,19 +70,21 @@ describe('covid', () => {
     const endDate = DateTime.utc(2020, 10, 28);
     nock(`${Covid.WI_COVID_API_SERVER}`)
       .get(Covid.WI_COVID_API_URL)
-      
-      // Because the DHS URL format does not follow std. query parameters, you cannot mock it out fully.
-      // Either Nock complains that it can't find or format the query parameters, or Got complains that the URI is invalid.
-      // Passing true here allows us to respond regardless of the format of the input parameters, then I validate at the end.
+
+      // Because the DHS URL format does not follow std. query parameters,
+      //   you cannot mock it out fully.
+      // Either Nock complains that it can't find or format the query parameters,
+      //   or Got complains that the URI is invalid.
+      // Passing true here allows us to respond regardless of the format of the input parameters,
+      //   then I validate at the end.
       .query(true)
       .reply(
         200,
         dhsTestData,
       );
-    
+
     const dhsResponse = await Covid.getDHSData(startDate, endDate);
-    
-    const expectedURL = 'https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query?where=DATE%20BETWEEN%20%272020-10-27T00:00:00.000Z%27%20AND%20%272020-10-28T00:00:00.000Z%27%20&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO&outSR=4326&f=json'
+    const expectedURL = 'https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query?where=DATE%20BETWEEN%20%272020-10-27T00:00:00.000Z%27%20AND%20%272020-10-28T00:00:00.000Z%27%20&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO&outSR=4326&f=json';
     expect(dhsResponse.request.requestUrl).toEqual(expectedURL);
     expect(JSON.parse(dhsResponse.body)).toEqual(dhsTestData);
   });
@@ -94,16 +94,19 @@ describe('covid', () => {
     const endDate = DateTime.utc(2020, 10, 28);
     nock(`${Covid.WI_COVID_API_SERVER}`)
       .get(Covid.WI_COVID_API_URL)
-      
-      // Because the DHS URL format does not follow std. query parameters, you cannot mock it out fully.
-      // Either Nock complains that it can't find or format the query parameters, or Got complains that the URI is invalid.
-      // Passing true here allows us to respond regardless of the format of the input parameters, then I validate at the end.
+
+      // Because the DHS URL format does not follow std. query parameters,
+      //   you cannot mock it out fully.
+      // Either Nock complains that it can't find or format the query parameters,
+      //   or Got complains that the URI is invalid.
+      // Passing true here allows us to respond regardless of the format of the input parameters,
+      //   then I validate at the end.
       .query(true)
       .reply(
         200,
         dhsTestData,
       );
-    
+
     const dhsResponse = await Covid.getDHSData(startDate, endDate);
     expect(Covid.bodyToDHSData(dhsResponse.body)).toEqual(dhsTestData as DHSData);
   });
