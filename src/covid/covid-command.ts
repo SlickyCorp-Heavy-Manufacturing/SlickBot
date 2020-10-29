@@ -20,10 +20,11 @@ export const CovidWiCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!covidwi'),
   command: async (msg: Message) => {
-    const startDate = DateTime.utc(2020, 10, 27);
-    const endDate = DateTime.utc(2020, 10, 28);
+    // const startDate = DateTime.utc(2020, 10, 27);
+    // const endDate = DateTime.utc(2020, 10, 28);
 
-    const usDaily = await Covid.getDHSData(startDate, endDate);
-    msg.channel.send(usDaily);
+    // const usDaily = await Covid.getDHSData(startDate, endDate);
+    const leaderboardMsg = await Covid.wiLeaderboard();
+    msg.channel.send(leaderboardMsg);
   },
 };

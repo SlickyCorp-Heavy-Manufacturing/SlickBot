@@ -114,14 +114,15 @@ export class Covid {
       endDate: DateTime,
       dhsData: DHSData,
     ): string {
-      const retString = `
-      ${Covid.newWiCases(dhsData)} Wisconsinites tested positive today for a total of ${Covid.totalWiCases(dhsData)}.\n
-      Top five counties, new cases per capita:\n
-      ${Covid.countiesToMd(Covid.topFiveCountiesByNewCasesPerCapita())}\n
-      \n
-      ${Covid.newWiDeaths(dhsData)} Wisconsinites died today for a total of ${Covid.totalWiDeaths(dhsData)}.\n
-      Top five counties, new deaths per capita:\n
-      ${Covid.countiesToMd(Covid.topFiveCountiesByNewDeathsPerCapita())}`;
+      const retString = `__As of ${startDate.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}:__
+> **New Cases:** ${Covid.newWiCases(dhsData).toLocaleString()}
+> **Total Cases:** ${Covid.totalWiCases(dhsData).toLocaleString()}
+> **New Deaths:** ${Covid.newWiDeaths(dhsData).toLocaleString()}
+> **Total Deaths:** ${Covid.totalWiDeaths(dhsData).toLocaleString()}
+
+__County Leaderboard__
+> **New cases per capita:** TODO ${Covid.countiesToMd(Covid.topFiveCountiesByNewCasesPerCapita())}
+> **New deaths per capita:** TODO ${Covid.countiesToMd(Covid.topFiveCountiesByNewDeathsPerCapita())}`;
       return retString;
     }
 
