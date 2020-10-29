@@ -20,24 +20,26 @@ export class Covid {
       let dhsData: DHSData;
 
       let tries = 0;
-      while(tries < 5) {
+      while (tries < 5) {
+        // This is dependent on the previous loops, so disabling eslint.
+        // See https://eslint.org/docs/rules/no-await-in-loop
+        // eslint-disable-next-line no-await-in-loop
         response = await this.getDHSData(startDate, endDate);
         dhsData = this.bodyToDHSData(response.body);
 
         // Has the data for today been posted?
         if (dhsData.features.length > 0) {
           break;
-        }
-        else {
+        } else {
           // Try the previous day.
-          startDate = startDate.minus({days: 1});
-          endDate = endDate.minus({days: 1});
-          tries++;
+          startDate = startDate.minus({ days: 1 });
+          endDate = endDate.minus({ days: 1 });
+          tries += 1;
         }
       }
 
       if (tries >= 5) {
-        return `Could not find DHS Data after 5 tries.`;
+        return 'Could not find DHS Data after 5 tries.';
       }
 
       // At this point I should have data to parse. Let's do it.
@@ -46,13 +48,13 @@ export class Covid {
 
     // From https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-by-county/geoservice?orderBy=GEOID
     static WI_COVID_API_SERVER = 'https://dhsgis.wi.gov';
-    
+
     static WI_COVID_API_URL = '/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query';
 
     static WI_COVID_API_WHERE_DATE = '?where=DATE BETWEEN ';
 
     static WI_COVID_API_FIELDS = '&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO'
-    
+
     static WI_COVID_API_OUTSR = '&outSR=4326';
 
     static WI_COVID_API_TYPE = '&f=json';
@@ -62,35 +64,39 @@ export class Covid {
     }
 
     public static datesToURI(startDate: DateTime, endDate: DateTime): string {
-      const strStartDate = '\'' + startDate.toISO() + '\'';
-      const strEndDate = '\'' + endDate.toISO() + '\'';
-      const retString = strStartDate + ' AND ' + strEndDate;
+      const strStartDate = `'${startDate.toISO()}'`; // wrap in single quotes
+      const strEndDate = `'${endDate.toISO()}'`; // wrap in single quotes
+      const retString = `${strStartDate} AND ${strEndDate}`;
 
       return retString;
     }
 
     public static fullDHSUri(startDate: DateTime, endDate: DateTime): string {
-      const fullUri =
-      Covid.WI_COVID_API_SERVER +
-      Covid.WI_COVID_API_URL +
-      Covid.WI_COVID_API_WHERE_DATE +
-      Covid.datesToURI(startDate, endDate) +
+      // This string is very fragile and does not respond well to template strings.
+      // Turning off eslint here.
+      // eslint-disable-next-line prefer-template
+      const fullUri = Covid.WI_COVID_API_SERVER
+      + Covid.WI_COVID_API_URL
+      + Covid.WI_COVID_API_WHERE_DATE
+      + Covid.datesToURI(startDate, endDate)
       // extra space needed per DHS spec
-      ' ' +
-      Covid.WI_COVID_API_FIELDS +
-      Covid.WI_COVID_API_OUTSR +
-      Covid.WI_COVID_API_TYPE;
+      + ' '
+      + Covid.WI_COVID_API_FIELDS
+      + Covid.WI_COVID_API_OUTSR
+      + Covid.WI_COVID_API_TYPE;
 
       const encoded = encodeURI(fullUri);
-      
+
       // Encoding doesn't string escape single quotes, so handle those manually.
-      const fixedUri = encoded.replace(/\'/g, "%27")
+      const fixedUri = encoded.replace(/'/g, '%27');
       return fixedUri;
     }
 
     public static async getDHSData(startDate: DateTime, endDate: DateTime) {
-      // Because the DHS URL format does not follow std. query parameters, you cannot pass query parameters like normal.
-      // Must pass the entire URI as one string. See https://github.com/sindresorhus/got/issues/1509
+      // Because the DHS URL format does not follow std. query parameters,
+      //   you cannot pass query parameters like normal.
+      // Must pass the entire URI as one string.
+      // See https://github.com/sindresorhus/got/issues/1509
       const results = await got(this.fullDHSUri(startDate, endDate));
 
       // This is a Got() Reponse, which must be handled by the caller.
@@ -98,11 +104,15 @@ export class Covid {
       return results;
     }
 
-    public static bodyToDHSData(response_body: string): DHSData {
-      return JSON.parse(response_body) as DHSData;
+    public static bodyToDHSData(responseBody: string): DHSData {
+      return JSON.parse(responseBody) as DHSData;
     }
 
-    public static formatLeaderboard(startDate: DateTime, endDate: DateTime, dhsData: DHSData): string {
+    public static formatLeaderboard(
+      startDate: DateTime,
+      endDate: DateTime,
+      dhsData: DHSData,
+    ): string {
       const retString = `
       ${Covid.newWiCases()} Wisconsinites tested positive today for a total of ${Covid.totalWiCases()}.\n
       Top five counties, new cases per capita:\n
