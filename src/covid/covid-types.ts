@@ -25,3 +25,55 @@ export interface UsDaily {
     totalTestResultsIncrease: number
     hash: string
 }
+
+export interface DHSData {
+    displayFieldName: string;
+    fieldAliases: DHSDataAlias
+    fields: DHSDataFieldsArray;
+    features: DHSDataCountyArray;
+}
+
+export interface DHSDataAlias {
+    NAME: string;
+    DATE: string;
+    POSITIVE: string;
+    POS_NEW: string;
+    NEGATIVE: string;
+    NEG_NEW: string;
+    DEATHS: string;
+    DTH_NEW: string;
+    TEST_NEW: string;
+    GEO: string
+}
+
+export interface DHSDataFieldsArray {
+    [fields: number]: DHSDataField;
+}
+
+export interface DHSDataField {
+    name: string;
+    type: string;
+    alias: string;
+    length: number;
+}
+
+export interface DHSDataCountyArray {
+    [features: number]: DHSDataCounty;
+}
+
+export interface DHSDataCounty {
+    attributes: DHSDataCountyAttributes;
+}
+
+export interface DHSDataCountyAttributes {
+    "NAME": string;
+    "DATE": number;
+    "POSITIVE": number;
+    "POS_NEW": number;
+    "NEGATIVE": number;
+    "NEG_NEW": number;
+    "DEATHS": number;
+    "DTH_NEW": number;
+    "TEST_NEW": number;
+    "GEO": string;
+}

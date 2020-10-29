@@ -1,7 +1,6 @@
 import got from 'got';
 import { DateTime } from 'luxon';
-import { IncomingMessage } from 'http';
-import { UsDaily } from './covid-types';
+import { UsDaily, DHSData } from './covid-types';
 import * as wiPopulationData from './wi_county_pop_data_2019.json';
 
 export class Covid {
@@ -85,8 +84,12 @@ export class Covid {
       const results = await got(this.fullDHSUri(startDate, endDate));
 
       // This is a Got() Reponse, which must be handled by the caller.
-      // I could not find a way to validate that with Typescript types.
+      // You are expected to pass results.body to bodyToDHSData() for formed data.
       return results;
+    }
+
+    public static bodyToDHSData(response_body: string): DHSData {
+      return JSON.parse(response_body) as DHSData;
     }
 
     private static newWiCases(): Number {

@@ -1,6 +1,7 @@
 import 'jasmine';
 import nock from 'nock';
 import { DateTime } from 'luxon';
+import { DHSData } from './covid-types';
 
 // from https://www.census.gov/data/datasets/time-series/demo/popest/2010s-counties-total.html
 import * as dhsTestData from './dhs_2020-10-27.json';
@@ -86,5 +87,24 @@ describe('covid', () => {
     const expectedURL = 'https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query?where=DATE%20BETWEEN%20%272020-10-27T00:00:00.000Z%27%20AND%20%272020-10-28T00:00:00.000Z%27%20&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO&outSR=4326&f=json'
     expect(dhsResponse.request.requestUrl).toEqual(expectedURL);
     expect(JSON.parse(dhsResponse.body)).toEqual(dhsTestData);
+  });
+
+  it('bodyToDHSData() should give us typed data', async () => {
+    const startDate = DateTime.utc(2020, 10, 27);
+    const endDate = DateTime.utc(2020, 10, 28);
+    nock(`${Covid.WI_COVID_API_SERVER}`)
+      .get(Covid.WI_COVID_API_URL)
+      
+      // Because the DHS URL format does not follow std. query parameters, you cannot mock it out fully.
+      // Either Nock complains that it can't find or format the query parameters, or Got complains that the URI is invalid.
+      // Passing true here allows us to respond regardless of the format of the input parameters, then I validate at the end.
+      .query(true)
+      .reply(
+        200,
+        dhsTestData,
+      );
+    
+    const dhsResponse = await Covid.getDHSData(startDate, endDate);
+    expect(Covid.bodyToDHSData(dhsResponse.body)).toEqual(dhsTestData as DHSData);
   });
 });
