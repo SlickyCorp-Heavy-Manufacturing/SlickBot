@@ -115,7 +115,7 @@ export class Covid {
       dhsData: DHSData,
     ): string {
       const retString = `
-      ${Covid.newWiCases()} Wisconsinites tested positive today for a total of ${Covid.totalWiCases()}.\n
+      ${Covid.newWiCases(dhsData)} Wisconsinites tested positive today for a total of ${Covid.totalWiCases()}.\n
       Top five counties, new cases per capita:\n
       ${Covid.countiesToMd(Covid.topFiveCountiesByNewCasesPerCapita())}\n
       \n
@@ -125,8 +125,10 @@ export class Covid {
       return retString;
     }
 
-    private static newWiCases(): Number {
-      return 1;
+    public static newWiCases(dhsData: DHSData): Number {
+      return dhsData.features.reduce(function (accumulator, county) {
+        return accumulator + county.attributes.POS_NEW;
+      }, 0);
     }
 
     private static newWiDeaths(): Number {

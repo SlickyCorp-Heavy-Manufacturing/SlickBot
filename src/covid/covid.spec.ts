@@ -110,4 +110,10 @@ describe('covid', () => {
     const dhsResponse = await Covid.getDHSData(startDate, endDate);
     expect(Covid.bodyToDHSData(dhsResponse.body)).toEqual(dhsTestData as DHSData);
   });
+
+  it('newWiCases() should sum all of the new cases', async () => {
+    const expectedResult = 5262;
+    const result = Covid.newWiCases(dhsTestData as DHSData);
+    expect(result).toEqual(expectedResult);
+  });
 });
