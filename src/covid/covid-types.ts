@@ -26,13 +26,6 @@ export interface UsDaily {
     hash: string
 }
 
-export interface DHSData {
-    displayFieldName: string;
-    fieldAliases: DHSDataAlias
-    fields: DHSDataFieldsArray;
-    features: DHSDataCountyArray;
-}
-
 export interface DHSDataAlias {
     NAME: string;
     DATE: string;
@@ -46,8 +39,6 @@ export interface DHSDataAlias {
     GEO: string
 }
 
-export interface DHSDataFieldsArray extends Array<DHSDataField> {}
-
 export interface DHSDataField {
     name: string;
     type: string;
@@ -55,21 +46,30 @@ export interface DHSDataField {
     length: number;
 }
 
-export interface DHSDataCountyArray extends Array<DHSDataCounty> {}
+export interface DHSDataCountyAttributes {
+    NAME: string;
+    DATE: number;
+    POSITIVE: number;
+    POS_NEW: number;
+    NEGATIVE: number;
+    NEG_NEW: number;
+    DEATHS: number;
+    DTH_NEW: number;
+    TEST_NEW: number;
+    GEO: string;
+}
 
 export interface DHSDataCounty {
     attributes: DHSDataCountyAttributes;
 }
 
-export interface DHSDataCountyAttributes {
-    "NAME": string;
-    "DATE": number;
-    "POSITIVE": number;
-    "POS_NEW": number;
-    "NEGATIVE": number;
-    "NEG_NEW": number;
-    "DEATHS": number;
-    "DTH_NEW": number;
-    "TEST_NEW": number;
-    "GEO": string;
+export interface DHSDataCountyArray extends Array<DHSDataCounty> {}
+
+export interface DHSDataFieldsArray extends Array<DHSDataField> {}
+
+export interface DHSData {
+    displayFieldName: string;
+    fieldAliases: DHSDataAlias
+    fields: DHSDataFieldsArray;
+    features: DHSDataCountyArray;
 }
