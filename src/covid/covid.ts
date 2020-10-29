@@ -1,6 +1,7 @@
 import got from 'got';
 import { DateTime } from 'luxon';
 import { UsDaily, DHSData } from './covid-types';
+// from https://www.census.gov/data/datasets/time-series/demo/popest/2010s-counties-total.html
 import * as wiPopulationData from './wi_county_pop_data_2019.json';
 
 export class Covid {
