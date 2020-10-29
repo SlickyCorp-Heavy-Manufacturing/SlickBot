@@ -46,9 +46,7 @@ export interface DHSDataAlias {
     GEO: string
 }
 
-export interface DHSDataFieldsArray {
-    [fields: number]: DHSDataField;
-}
+export interface DHSDataFieldsArray extends Array<DHSDataField> {}
 
 export interface DHSDataField {
     name: string;
@@ -57,9 +55,7 @@ export interface DHSDataField {
     length: number;
 }
 
-export interface DHSDataCountyArray {
-    [features: number]: DHSDataCounty;
-}
+export interface DHSDataCountyArray extends Array<DHSDataCounty> {}
 
 export interface DHSDataCounty {
     attributes: DHSDataCountyAttributes;
