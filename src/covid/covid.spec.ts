@@ -144,7 +144,9 @@ describe('covid', () => {
     expectedResult.set('Oconto', 5510.150276825731);
     expectedResult.set('Calumet', 5342.490367146479);
 
-    const result = Covid.topFiveCountiesByTotalCasesPerCapita(dhsTestData as DHSData, wiCountyPopData as WICensusData);
+    const result = Covid.topFiveCountiesByTotalCasesPerCapita(
+      dhsTestData as DHSData, wiCountyPopData as WICensusData,
+    );
     expect(result).toEqual(expectedResult);
   });
 
@@ -156,7 +158,9 @@ describe('covid', () => {
     expectedResult.set('Iron', 70.3358537014243);
     expectedResult.set('Milwaukee', 61.117067734206316);
 
-    const result = Covid.topFiveCountiesByTotalDeathsPerCapita(dhsTestData as DHSData, wiCountyPopData as WICensusData);
+    const result = Covid.topFiveCountiesByTotalDeathsPerCapita(
+      dhsTestData as DHSData, wiCountyPopData as WICensusData,
+    );
     expect(result).toEqual(expectedResult);
   });
 });

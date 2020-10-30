@@ -155,7 +155,10 @@ ${Covid.formatTopFive(Covid.topFiveCountiesByTotalDeathsPerCapita(dhsData, wiCou
       );
     }
 
-    public static topFiveCountiesByTotalCasesPerCapita(dhsData: DHSData, popData: WICensusData): Map<string, number> {
+    public static topFiveCountiesByTotalCasesPerCapita(
+      dhsData: DHSData,
+      popData: WICensusData,
+    ): Map<string, number> {
       const countyToCapitaMap: Map<string, number> = new Map();
 
       dhsData.features.forEach((dhsCounty) => {
@@ -188,7 +191,10 @@ ${Covid.formatTopFive(Covid.topFiveCountiesByTotalDeathsPerCapita(dhsData, wiCou
       return retMap;
     }
 
-    public static topFiveCountiesByTotalDeathsPerCapita(dhsData: DHSData, popData: WICensusData): Map<string, number> {
+    public static topFiveCountiesByTotalDeathsPerCapita(
+      dhsData: DHSData,
+      popData: WICensusData,
+    ): Map<string, number> {
       const countyToCapitaMap: Map<string, number> = new Map();
 
       dhsData.features.forEach((dhsCounty) => {
