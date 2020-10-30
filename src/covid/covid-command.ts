@@ -12,3 +12,14 @@ export const CovidCommand: ICommand = {
     msg.channel.send(usDaily);
   },
 };
+
+export const CovidWiCommand: ICommand = {
+  name: '!covidwi',
+  helpDescription: 'Display the WI COVID leaderboards.',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!covidwi'),
+  command: async (msg: Message) => {
+    const leaderboardMsg = await Covid.wiLeaderboard();
+    msg.channel.send(leaderboardMsg);
+  },
+};

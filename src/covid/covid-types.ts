@@ -25,3 +25,55 @@ export interface UsDaily {
     totalTestResultsIncrease: number
     hash: string
 }
+
+export interface DHSDataAlias {
+    NAME: string;
+    DATE: string;
+    POSITIVE: string;
+    POS_NEW: string;
+    NEGATIVE: string;
+    NEG_NEW: string;
+    DEATHS: string;
+    DTH_NEW: string;
+    TEST_NEW: string;
+    GEO: string
+}
+
+export interface DHSDataField {
+    name: string;
+    type: string;
+    alias: string;
+    length: number;
+}
+
+export interface DHSDataCountyAttributes {
+    NAME: string;
+    DATE: number;
+    POSITIVE: number;
+    POS_NEW: number;
+    NEGATIVE: number;
+    NEG_NEW: number;
+    DEATHS: number;
+    DTH_NEW: number;
+    TEST_NEW: number;
+    GEO: string;
+}
+
+export interface DHSDataCounty {
+    attributes: DHSDataCountyAttributes;
+}
+
+export interface DHSDataCountyArray extends Array<DHSDataCounty> {}
+
+export interface DHSDataFieldsArray extends Array<DHSDataField> {}
+
+export interface DHSData {
+    displayFieldName: string;
+    fieldAliases: DHSDataAlias
+    fields: DHSDataFieldsArray;
+    features: DHSDataCountyArray;
+}
+
+export interface WICensusData {
+    [index: string]: number;
+}
