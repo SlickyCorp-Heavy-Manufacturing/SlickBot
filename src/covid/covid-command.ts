@@ -15,7 +15,7 @@ export const CovidCommand: ICommand = {
 
 export const CovidWiCommand: ICommand = {
   name: '!covidwi',
-  helpDescription: 'Return the new daily deaths from covid in Wisconsin today.',
+  helpDescription: 'Display the WI COVID leaderboards.',
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!covidwi'),
   command: async (msg: Message) => {
