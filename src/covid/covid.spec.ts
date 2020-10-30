@@ -1,10 +1,11 @@
 import 'jasmine';
 import nock from 'nock';
 import { DateTime } from 'luxon';
-import { DHSData } from './covid-types';
+import { DHSData, WICensusData } from './covid-types';
 
 // From https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-by-county/geoservice?orderBy=GEOID
 import * as dhsTestData from './dhs_2020-10-27.json';
+import * as wiCountyPopData from './wi_county_pop_data_2019.json';
 
 import { Covid } from './covid';
 
@@ -132,6 +133,30 @@ describe('covid', () => {
   it('totalWiDeaths() should sum all of the total deaths', async () => {
     const expectedResult = 1852;
     const result = Covid.totalWiDeaths(dhsTestData as DHSData);
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('topFiveCountiesByTotalCasesPerCapita() should provide a map of the top five counties', async () => {
+    const expectedResult: Map<string, number> = new Map();
+    expectedResult.set('Menominee', 6540.825285338015);
+    expectedResult.set('Shawano', 5882.784420156972);
+    expectedResult.set('Brown', 5709.1123526698975);
+    expectedResult.set('Oconto', 5510.150276825731);
+    expectedResult.set('Calumet', 5342.490367146479);
+
+    const result = Covid.topFiveCountiesByTotalCasesPerCapita(dhsTestData as DHSData, wiCountyPopData as WICensusData);
+    expect(result).toEqual(expectedResult);
+  });
+
+  it('topFiveCountiesByTotalDeathsPerCapita() should provide a map of the top five counties', async () => {
+    const expectedResult: Map<string, number> = new Map();
+    expectedResult.set('Florence', 139.69732246798603);
+    expectedResult.set('Forest', 111.06175033318524);
+    expectedResult.set('Waupaca', 74.52441655226515);
+    expectedResult.set('Iron', 70.3358537014243);
+    expectedResult.set('Milwaukee', 61.117067734206316);
+
+    const result = Covid.topFiveCountiesByTotalDeathsPerCapita(dhsTestData as DHSData, wiCountyPopData as WICensusData);
     expect(result).toEqual(expectedResult);
   });
 });

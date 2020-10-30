@@ -73,3 +73,7 @@ export interface DHSData {
     fields: DHSDataFieldsArray;
     features: DHSDataCountyArray;
 }
+
+export interface WICensusData {
+    [index: string]: number;
+}

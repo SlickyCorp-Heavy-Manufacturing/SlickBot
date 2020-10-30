@@ -1,8 +1,9 @@
 import got from 'got';
 import { DateTime } from 'luxon';
-import { UsDaily, DHSData } from './covid-types';
+import { number } from 'yargs';
+import { UsDaily, DHSData, WICensusData } from './covid-types';
 // from https://www.census.gov/data/datasets/time-series/demo/popest/2010s-counties-total.html
-import * as wiPopulationData from './wi_county_pop_data_2019.json';
+import * as wiCountyPopData from './wi_county_pop_data_2019.json';
 
 export class Covid {
     private static readonly COVID_API: string = 'https://api.covidtracking.com/v1';
@@ -47,6 +48,14 @@ export class Covid {
       return Covid.formatLeaderboard(startDate, endDate, dhsData);
     }
 
+    public static datesToURI(startDate: DateTime, endDate: DateTime): string {
+      const strStartDate = `'${startDate.toISO()}'`; // wrap in single quotes
+      const strEndDate = `'${endDate.toISO()}'`; // wrap in single quotes
+      const retString = `${strStartDate} AND ${strEndDate}`;
+
+      return retString;
+    }
+
     // From https://data.dhsgis.wi.gov/datasets/covid-19-historical-data-by-county/geoservice?orderBy=GEOID
     static WI_COVID_API_SERVER = 'https://dhsgis.wi.gov';
 
@@ -59,18 +68,6 @@ export class Covid {
     static WI_COVID_API_OUTSR = '&outSR=4326';
 
     static WI_COVID_API_TYPE = '&f=json';
-
-    private static countiesToMd(counties: Object): string {
-      return '';
-    }
-
-    public static datesToURI(startDate: DateTime, endDate: DateTime): string {
-      const strStartDate = `'${startDate.toISO()}'`; // wrap in single quotes
-      const strEndDate = `'${endDate.toISO()}'`; // wrap in single quotes
-      const retString = `${strStartDate} AND ${strEndDate}`;
-
-      return retString;
-    }
 
     public static fullDHSUri(startDate: DateTime, endDate: DateTime): string {
       // This string is very fragile and does not respond well to template strings.
@@ -120,10 +117,19 @@ export class Covid {
 > **New Deaths:** ${Covid.newWiDeaths(dhsData).toLocaleString()}
 > **Total Deaths:** ${Covid.totalWiDeaths(dhsData).toLocaleString()}
 
-__County Leaderboard__
-> **New cases per capita:** TODO ${Covid.countiesToMd(Covid.topFiveCountiesByNewCasesPerCapita())}
-> **New deaths per capita:** TODO ${Covid.countiesToMd(Covid.topFiveCountiesByNewDeathsPerCapita())}`;
+__Total cases per 100k:__
+${Covid.formatTopFive(Covid.topFiveCountiesByTotalCasesPerCapita(dhsData, wiCountyPopData))}
+__Total deaths per 100k:__
+${Covid.formatTopFive(Covid.topFiveCountiesByTotalDeathsPerCapita(dhsData, wiCountyPopData))}`;
       return retString;
+    }
+
+    public static formatTopFive(countyToCaseMap: Map<string, number>): string {
+      let retStr = '';
+      countyToCaseMap.forEach((numCases, county, map) => {
+        retStr = retStr.concat(`> **${county}:** ${numCases.toFixed(2)}\n`);
+      });
+      return retStr;
     }
 
     public static newWiCases(dhsData: DHSData): Number {
@@ -150,15 +156,69 @@ __County Leaderboard__
       );
     }
 
-    private static topFiveCountiesByNewCasesPerCapita(): Object {
-      return {};
+    public static topFiveCountiesByTotalCasesPerCapita(dhsData: DHSData, popData: WICensusData): Map<string, number> {
+      const countyToCapitaMap: Map<string, number> = new Map();
+
+      dhsData.features.forEach((dhsCounty) => {
+        const countyName = dhsCounty.attributes.NAME;
+        const population = popData[countyName];
+        const perCapita = dhsCounty.attributes.POSITIVE / population;
+        const casesPer100k = perCapita * 100000;
+
+        countyToCapitaMap.set(`${countyName}`, casesPer100k);
+      });
+
+      // convert to
+      // [
+      //   [ countyName, casesPer100k ],
+      //   [ countyName, casesPer100k ]
+      // ]
+      // then sort descending on cases
+      const sortArray = Array.from(countyToCapitaMap);
+      sortArray.sort((a, b) => b[1] - a[1]);
+
+      // Take the top 5
+      const top5 = sortArray.slice(0, 5);
+
+      // Convert back into a Map so I don't hate myself throwing arrays around
+      const retMap: Map<string, number> = new Map();
+      top5.forEach((pair) => {
+        retMap.set(pair[0], pair[1]);
+      });
+
+      return retMap;
     }
 
-    private static topFiveCountiesByNewDeathsPerCapita(): Object {
-      return {};
-    }
+    public static topFiveCountiesByTotalDeathsPerCapita(dhsData: DHSData, popData: WICensusData): Map<string, number> {
+      const countyToCapitaMap: Map<string, number> = new Map();
 
-    private static topFiveCountiesByNewTestPositivityPct(): Object {
-      return {};
+      dhsData.features.forEach((dhsCounty) => {
+        const countyName = dhsCounty.attributes.NAME;
+        const population = popData[countyName];
+        const perCapita = dhsCounty.attributes.DEATHS / population;
+        const casesPer100k = perCapita * 100000;
+
+        countyToCapitaMap.set(`${countyName}`, casesPer100k);
+      });
+
+      // convert to
+      // [
+      //   [ countyName, casesPer100k ],
+      //   [ countyName, casesPer100k ]
+      // ]
+      // then sort descending on cases
+      const sortArray = Array.from(countyToCapitaMap);
+      sortArray.sort((a, b) => b[1] - a[1]);
+
+      // Take the top 5
+      const top5 = sortArray.slice(0, 5);
+
+      // Convert back into a Map so I don't hate myself throwing arrays around
+      const retMap: Map<string, number> = new Map();
+      top5.forEach((pair) => {
+        retMap.set(pair[0], pair[1]);
+      });
+
+      return retMap;
     }
 }
