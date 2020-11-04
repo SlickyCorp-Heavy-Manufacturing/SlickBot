@@ -18,7 +18,7 @@ export class TweetGen {
     await withFile(
       async (tmpFile) => {
         const response = await got.get(
-          'http://website-snapshot.centralus.azurecontainer.io:8080/tweet',
+          'https://website-snapshot.herokuapp.com/tweet',
           {
             searchParams: {
               nickname: tweet.nickname,
