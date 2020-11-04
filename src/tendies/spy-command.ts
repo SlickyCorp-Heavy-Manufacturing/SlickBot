@@ -13,7 +13,7 @@ export const SpyCommand: ICommand = {
   command: async (msg: Message) => {
     await withFile(
       async (tmpFile) => {
-        const response = await got.get('http://website-snapshot.centralus.azurecontainer.io:8080/spy', { responseType: 'buffer' });
+        const response = await got.get('https://website-snapshot.herokuapp.com/spy', { responseType: 'buffer' });
         fs.writeFileSync(tmpFile.path, response.body);
         await msg.channel.send({ files: [tmpFile.path] });
       },
@@ -30,7 +30,7 @@ export const EtfCommand: ICommand = {
   command: async (msg: Message) => {
     await withFile(
       async (tmpFile) => {
-        const response = await got.get('http://website-snapshot.centralus.azurecontainer.io:8080/etf', { responseType: 'buffer' });
+        const response = await got.get('https://website-snapshot.herokuapp.com/etf', { responseType: 'buffer' });
         fs.writeFileSync(tmpFile.path, response.body);
         await msg.channel.send({ files: [tmpFile.path] });
       },
