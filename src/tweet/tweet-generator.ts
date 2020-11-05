@@ -38,7 +38,6 @@ export class TweetGen {
       profile = await this.getTwitterProfile(tweet.nickname);
     } catch (err) {
       msg.channel.send(`${err.message}\n${err.stack}`);
-      return Promise.resolve();
     }
 
     await withFile(
