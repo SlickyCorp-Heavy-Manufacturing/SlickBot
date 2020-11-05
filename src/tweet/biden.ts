@@ -4,7 +4,7 @@ import { TweetGen } from './tweet-generator';
 
 const commandString = '!biden';
 
-export const RocketManCommand: ICommand = {
+export const BidenCommand: ICommand = {
   name: commandString,
   helpDescription: 'Bot will respond with a tweet from Joe Biden',
   showInHelp: true,

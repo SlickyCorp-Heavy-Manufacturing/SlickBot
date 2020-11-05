@@ -4,7 +4,7 @@ import { TweetGen } from './tweet-generator';
 
 const commandString = '!ap';
 
-export const RocketManCommand: ICommand = {
+export const APCommand: ICommand = {
   name: commandString,
   helpDescription: 'Bot will respond with a tweet from the associated press',
   showInHelp: true,
