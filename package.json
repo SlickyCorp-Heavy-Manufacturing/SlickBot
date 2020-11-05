@@ -17,6 +17,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "capture-website": "^1.2.1",
+    "cheerio": "^1.0.0-rc.3",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
     "eslint-import-resolver-typescript": "^2.3.0",
@@ -37,6 +38,7 @@
     "ytdl-core-discord": "^1.2.1"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.22",
     "@types/ffmpeg-static": "^3.0.0",
     "@types/fuzzyset.js": "0.0.2",
     "@types/jasmine": "^3.5.14",
