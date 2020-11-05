@@ -239,4 +239,19 @@ describe('slickbot', () => {
             });
     }, 15000);
 
+    it('!tweet should post a tweet', (done) => {
+        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
+        testChannel.send('!tweet elonmusk I\'m bored');
+
+        _lastMessage
+            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
+            .pipe(filter(msg => msg.attachments.size > 0 && msg.attachments.some((attachment) => {
+                return attachment.name && attachment.name.startsWith('tweet-elonmusk');
+            })))
+            .pipe(take(1))
+            .subscribe( msg => {
+                expect(msg.attachments.size > 0)
+                done();
+            });
+    }, 15000);
 });
