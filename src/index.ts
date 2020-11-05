@@ -1,4 +1,4 @@
-import Discord, { Client, TextChannel } from 'discord.js';
+import Discord, { TextChannel } from 'discord.js';
 
 import { commandList } from './commandList';
 import { scheduledPosts } from './scheduledPosts';
