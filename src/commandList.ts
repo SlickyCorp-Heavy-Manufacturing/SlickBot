@@ -10,12 +10,11 @@ import { KlingonCommand } from './klingon/klingon-command';
 import { PlayCommand } from './play/play-command';
 import { FoffCommand } from './foaas/foaas-command';
 import { TendiesCommand, SpyCommand, EtfCommand } from './tendies';
-import { CovidCommand } from './covid/covid-command';
-import { CovidWiCommand } from './covid/covid-command';
+import { CovidCommand, CovidWiCommand } from './covid/covid-command';
 import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
 import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
-import { TrompoCommand, RocketManCommand } from './tweet';
+import { APCommand, BidenCommand, TrompoCommand, RocketManCommand } from './tweet';
 import { DevOpsCommand } from './devops/devops';
 
 export const commandList: ICommand[] = [
@@ -38,6 +37,8 @@ export const commandList: ICommand[] = [
   DrawMemeCommand,
   FlavorForecastCommand,
   FlavorOfTheDayCommand,
+  APCommand,
+  BidenCommand,
   TrompoCommand,
   RocketManCommand,
   SpyCommand,
