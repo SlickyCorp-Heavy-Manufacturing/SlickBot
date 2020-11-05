@@ -33,9 +33,16 @@ export class TweetGen {
   }
 
   public static async tweet(msg: Message, tweet: Tweet): Promise<void> {
+    let profile: TwitterProfile;
+    try {
+      profile = await this.getTwitterProfile(tweet.nickname);
+    } catch (err) {
+      msg.channel.send(`${err.message}\n${err.stack}`);
+      return Promise.resolve();
+    }
+
     await withFile(
       async (tmpFile) => {
-        const profile = await this.getTwitterProfile(tweet.nickname);
         const response = await got.get(
           'https://website-snapshot.herokuapp.com/tweet',
           {
