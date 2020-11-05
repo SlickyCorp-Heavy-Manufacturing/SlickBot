@@ -191,7 +191,7 @@ describe('slickbot', () => {
             .pipe(take(1))
             .subscribe( msg => {
                 expect(msg.content).toMatch(/^\*\*[A-Z\.\+\-\=\^]+:\*\*\s(\+|\-)\d+\.\d+\s\(\d+\.\d+%\)\s:chart_with_(upwards|downwards)_trend:/m);
-                expect(msg.content).toContain('https://tenor.com');
+                expect(msg.content).toContain('https://');
                 done();
             });
     }, 15000);
