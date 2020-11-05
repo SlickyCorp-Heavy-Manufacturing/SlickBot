@@ -14,7 +14,7 @@ import { CovidCommand, CovidWiCommand } from './covid/covid-command';
 import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
 import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
-import { APCommand, BidenCommand, TrompoCommand, RocketManCommand } from './tweet';
+import { APCommand, BidenCommand, TrompoCommand, RocketManCommand, TweetCommand } from './tweet';
 import { DevOpsCommand } from './devops/devops';
 
 export const commandList: ICommand[] = [
@@ -45,4 +45,5 @@ export const commandList: ICommand[] = [
   EtfCommand,
   PlayCommand,
   DevOpsCommand,
+  TweetCommand,
 ];

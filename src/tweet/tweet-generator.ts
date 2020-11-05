@@ -11,6 +11,7 @@ export interface Tweet {
   retweets?: number;
   retweetsWithComments?: number;
   likes?: number;
+  verified?: boolean;
 }
 
 export class TweetGen {
@@ -28,6 +29,7 @@ export class TweetGen {
               retweets: tweet.retweets,
               retweetsWithComments: tweet.retweetsWithComments,
               likes: tweet.likes,
+              verified: tweet.verified,
             },
             responseType: 'buffer',
           },
