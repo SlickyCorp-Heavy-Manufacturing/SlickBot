@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { Client, TextChannel } from 'discord.js';
 
 import { commandList } from './commandList';
 import { scheduledPosts } from './scheduledPosts';
@@ -28,6 +28,22 @@ process.on('unhandledRejection', (reason, p) => {
 
 const discordClient = new DiscordClient();
 discordClient.init().then(() => {
+  discordClient.client.on('ready', () => {
+    // Integration test channel
+    discordClient.client.channels.fetch('745350887316258976').then((channel) => {
+      if (channel instanceof TextChannel) {
+        channel.send('A new build of SlickBot has just started running');
+      }
+    }).catch((reason) => console.log(reason));
+
+    // Judgement Day Channel
+    discordClient.client.channels.fetch('744689796554817556').then((channel) => {
+      if (channel instanceof TextChannel) {
+        channel.send('A new build of SlickBot has just started running');
+      }
+    }).catch((reason) => console.log(reason));
+  });
+
   discordClient.client.on('message', (msg: Discord.Message) => {
     const commands = commandList.filter((command) => command.trigger(msg));
     Promise.all(commands.map(async (command) => {
