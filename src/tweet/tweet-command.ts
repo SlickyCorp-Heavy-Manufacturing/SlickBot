@@ -12,13 +12,6 @@ export const TweetCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!tweet'),
   command: async (msg: Message) => {
     const match = messageRegex.exec(msg.content);
-    try {
-      msg.channel.send(JSON.stringify(match));
-      msg.channel.send(`match[1] = ${JSON.stringify(match[1])}`);
-      msg.channel.send(`match[2] = ${JSON.stringify(match[1])}`);
-    } catch (err) {
-      msg.channel.send(JSON.stringify(err));
-    }
 
     await TweetGen.tweet(msg, {
       nickname: match[1],
