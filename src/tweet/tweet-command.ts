@@ -17,7 +17,7 @@ export const TweetCommand: ICommand = {
         content_match: msg.content.match(messageRegex),
         cleanContent: msg.cleanContent,
         cleanContent_match: msg.cleanContent.match(messageRegex),
-      }
+      },
     ));
     return Promise.resolve();
     /*
