@@ -5,17 +5,28 @@ import { TweetGen } from './tweet-generator';
 
 const messageRegex = /^!tweet\s+(\w+)\s+(.+)/gims;
 
+const split = (source: string, separator: RegExp, limit: number): string[] => {
+  let out: string[] = [];
+
+  while(limit--) {
+      out.push(source.slice(separator.lastIndex, separator.exec(source).index))
+  }
+
+  out.push(source.slice(separator.lastIndex));
+  return out;
+}
+
 export const TweetCommand: ICommand = {
   name: '!tweet',
   helpDescription: 'Bot will respond with a tweet from given twitter user',
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!tweet'),
   command: async (msg: Message) => {
-    const match = messageRegex.exec(msg.content);
+    const parts = split(msg.content, /\s+/g, 2);
 
     await TweetGen.tweet(msg, {
-      nickname: match[1],
-      text: match[2],
+      nickname: parts[1],
+      text: parts[2],
       retweets: Math.floor(Math.random() * (12345 - 0 + 1) + 0),
       retweetsWithComments: Math.floor(Math.random() * (1234 - 0 + 1) + 0),
       likes: Math.floor(Math.random() * (12345 - 0 + 1) + 0),
