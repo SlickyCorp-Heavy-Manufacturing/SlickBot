@@ -13,8 +13,8 @@ export const TweetCommand: ICommand = {
   command: async (msg: Message) => {
     const match = messageRegex.exec(msg.content);
     await TweetGen.tweet(msg, {
-      nickname: match['groups']['handle'],
-      text: match['groups']['text'],
+      nickname: match['groups']['handle'], // eslint-disable-line dot-notation
+      text: match['groups']['text'], // eslint-disable-line dot-notation
       retweets: Math.floor(Math.random() * (12345 - 0 + 1) + 0),
       retweetsWithComments: Math.floor(Math.random() * (1234 - 0 + 1) + 0),
       likes: Math.floor(Math.random() * (12345 - 0 + 1) + 0),
