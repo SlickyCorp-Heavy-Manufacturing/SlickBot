@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 import { ICommand } from '../icommand';
 import { TweetGen } from './tweet-generator';
 
-const messageRegex = /^!tweet\s+(?<handle>\w+)\s+(?<text>.+)/gims;
+const messageRegex = /^!tweet\s+(\w+)\s+(.+)/gims;
 
 export const TweetCommand: ICommand = {
   name: '!tweet',
@@ -11,13 +11,11 @@ export const TweetCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!tweet'),
   command: async (msg: Message) => {
-    msg.channel.send(`\`\`\`javascript\n${JSON.stringify(messageRegex.exec(msg.content))}\`\`\``);
-    const { groups: { handle, text } } = messageRegex.exec(msg.content);
-    msg.channel.send(`\`\`\`javascript\n${JSON.stringify({ handle, text })}\`\`\``);
+    const match = messageRegex.exec(msg.content);
 
     await TweetGen.tweet(msg, {
-      nickname: handle,
-      text,
+      nickname: match[1],
+      text: match[2],
       retweets: Math.floor(Math.random() * (12345 - 0 + 1) + 0),
       retweetsWithComments: Math.floor(Math.random() * (1234 - 0 + 1) + 0),
       likes: Math.floor(Math.random() * (12345 - 0 + 1) + 0),
