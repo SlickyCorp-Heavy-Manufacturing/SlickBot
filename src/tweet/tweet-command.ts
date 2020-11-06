@@ -6,15 +6,15 @@ import { TweetGen } from './tweet-generator';
 const messageRegex = /^!tweet\s+(\w+)\s+(.+)/gims;
 
 const split = (source: string, separator: RegExp, limit: number): string[] => {
-  let out: string[] = [];
+  const out: string[] = [];
 
-  while(limit--) {
-      out.push(source.slice(separator.lastIndex, separator.exec(source).index))
+  for (let i = limit; i > 0; i -= 1) {
+    out.push(source.slice(separator.lastIndex, separator.exec(source).index));
   }
 
   out.push(source.slice(separator.lastIndex));
   return out;
-}
+};
 
 export const TweetCommand: ICommand = {
   name: '!tweet',
