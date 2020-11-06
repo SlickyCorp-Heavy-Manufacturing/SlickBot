@@ -9,12 +9,15 @@ export const TweetCommand: ICommand = {
   name: '!tweet',
   helpDescription: 'Bot will respond with a tweet from given twitter user',
   showInHelp: true,
-  trigger: (msg: Message) => messageRegex.exec(msg.content) !== null,
+  trigger: (msg: Message) => msg.content.startsWith('!tweet'),
   command: async (msg: Message) => {
-    const match = messageRegex.exec(msg.content);
+    msg.channel.send('```javascript' + "\n" + JSON.stringify(messageRegex.exec(msg.content)) + '```');
+    const { groups: { handle, text }} = messageRegex.exec(msg.content);
+    msg.channel.send('```javascript' + "\n" + JSON.stringify({handle, text}) + '```');
+
     await TweetGen.tweet(msg, {
-      nickname: match['groups']['handle'], // eslint-disable-line dot-notation
-      text: match['groups']['text'], // eslint-disable-line dot-notation
+      nickname: handle,
+      text: text,
       retweets: Math.floor(Math.random() * (12345 - 0 + 1) + 0),
       retweetsWithComments: Math.floor(Math.random() * (1234 - 0 + 1) + 0),
       likes: Math.floor(Math.random() * (12345 - 0 + 1) + 0),
