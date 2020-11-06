@@ -253,5 +253,5 @@ describe('slickbot', () => {
                 expect(msg.attachments.size > 0)
                 done();
             });
-    }, 30000);
+    }, 60000);
 });
