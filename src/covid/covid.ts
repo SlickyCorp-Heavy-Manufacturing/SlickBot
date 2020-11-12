@@ -116,6 +116,8 @@ export class Covid {
 > **New Deaths:** ${Covid.newWiDeaths(dhsData).toLocaleString()}
 > **Total Deaths:** ${Covid.totalWiDeaths(dhsData).toLocaleString()}
 
+__New cases per 100k:__
+${Covid.formatTopFive(Covid.topFiveCountiesByNewCasesPerCapita(dhsData, wiCountyPopData))}
 __Total cases per 100k:__
 ${Covid.formatTopFive(Covid.topFiveCountiesByTotalCasesPerCapita(dhsData, wiCountyPopData))}
 __Total deaths per 100k:__
@@ -153,6 +155,42 @@ ${Covid.formatTopFive(Covid.topFiveCountiesByTotalDeathsPerCapita(dhsData, wiCou
       return dhsData.features.reduce(
         (accumulator, county) => accumulator + county.attributes.DEATHS, 0,
       );
+    }
+
+    public static topFiveCountiesByNewCasesPerCapita(
+      dhsData: DHSData,
+      popData: WICensusData,
+    ): Map<string, number> {
+      const countyToCapitaMap: Map<string, number> = new Map();
+
+      dhsData.features.forEach((dhsCounty) => {
+        const countyName = dhsCounty.attributes.NAME;
+        const population = popData[countyName];
+        const perCapita = dhsCounty.attributes.POS_NEW / population;
+        const casesPer100k = perCapita * 100000;
+
+        countyToCapitaMap.set(`${countyName}`, casesPer100k);
+      });
+
+      // convert to
+      // [
+      //   [ countyName, casesPer100k ],
+      //   [ countyName, casesPer100k ]
+      // ]
+      // then sort descending on cases
+      const sortArray = Array.from(countyToCapitaMap);
+      sortArray.sort((a, b) => b[1] - a[1]);
+
+      // Take the top 5
+      const top5 = sortArray.slice(0, 5);
+
+      // Convert back into a Map so I don't hate myself throwing arrays around
+      const retMap: Map<string, number> = new Map();
+      top5.forEach((pair) => {
+        retMap.set(pair[0], pair[1]);
+      });
+
+      return retMap;
     }
 
     public static topFiveCountiesByTotalCasesPerCapita(

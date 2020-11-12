@@ -136,6 +136,20 @@ describe('covid', () => {
     expect(result).toEqual(expectedResult);
   });
 
+  it('topFiveCountiesByNewCasesPerCapita() should provide a map of the top five counties', async () => {
+    const expectedResult: Map<string, number> = new Map();
+    expectedResult.set('Fond du Lac', 325.90930630639343);
+    expectedResult.set('Langlade', 276.19990619625827);
+    expectedResult.set('Menominee', 219.49078138718176);
+    expectedResult.set('Brown', 194.67608168079173);
+    expectedResult.set('Adams', 178.04154302670622);
+
+    const result = Covid.topFiveCountiesByNewCasesPerCapita(
+      dhsTestData as DHSData, wiCountyPopData as WICensusData,
+    );
+    expect(result).toEqual(expectedResult);
+  });
+
   it('topFiveCountiesByTotalCasesPerCapita() should provide a map of the top five counties', async () => {
     const expectedResult: Map<string, number> = new Map();
     expectedResult.set('Menominee', 6540.825285338015);
