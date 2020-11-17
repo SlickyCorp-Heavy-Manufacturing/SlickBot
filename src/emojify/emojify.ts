@@ -17,7 +17,7 @@ export const EmojifyCommand: ICommand = {
     )).first();
 
     if (previousMessage !== undefined && msg.content.trim() !== '') {
-      const emojified: string = translate.translate.translate(previousMessage.content, false);
+      const emojified: string = translate.translate(previousMessage.content, false);
       if (previousMessage.content.toLowerCase() !== emojified.toLowerCase()) {
         msg.channel.send(emojified);
       }
