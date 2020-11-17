@@ -16,6 +16,7 @@ import { DevNullCommand } from './dev_null/dev-null-command';
 import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
 import { TrompoCommand, RocketManCommand, TweetCommand } from './tweet';
 import { DevOpsCommand } from './devops/devops';
+import { EmojifyCommand } from './emojify/emojify';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -44,4 +45,5 @@ export const commandList: ICommand[] = [
   PlayCommand,
   DevOpsCommand,
   TweetCommand,
+  EmojifyCommand,
 ];
