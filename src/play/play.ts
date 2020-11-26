@@ -2,7 +2,7 @@
 import * as yargs from 'yargs';
 import { Message } from 'discord.js';
 
-import ytdl from 'ytdl-core-discord';
+import ytdl from 'discord-ytdl-core';
 
 export class Play {
   static currentStream: any;
@@ -34,7 +34,11 @@ export class Play {
     }
 
     voiceChannel.join().then(async (connection) => {
-      const stream = await ytdl(args.url, { highWaterMark: 1 << 25, filter: 'audioonly' });
+      const stream = ytdl(args.url, {
+        filter: 'audioonly',
+        highWaterMark: 1 << 25,
+        opusEncoded: true,
+      });
 
       // Kill the current stream, if it exists
       if (Play.currentStream) {
