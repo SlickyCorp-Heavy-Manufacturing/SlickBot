@@ -35,9 +35,10 @@ export class Play {
 
     voiceChannel.join().then(async (connection) => {
       const stream = ytdl(args.url, {
-        filter: "audioonly",
+        filter: 'audioonly',
         highWaterMark: 1 << 25,
-        opusEncoded: true });
+        opusEncoded: true,
+      });
 
       // Kill the current stream, if it exists
       if (Play.currentStream) {
