@@ -2,6 +2,7 @@
 import * as yargs from 'yargs';
 import { Message } from 'discord.js';
 
+import Soundcloud from "soundcloud.ts";
 import ytdl from 'discord-ytdl-core';
 
 export class Play {
@@ -23,7 +24,7 @@ export class Play {
     }
 
     if (!(args.url.startsWith('https://')
-        && (args.url.includes('youtube.com') || args.url.includes('youtu.be'))
+        && (args.url.includes('youtube.com') || args.url.includes('youtu.be') || args.url.includes('soundcloud.com'))
     )) {
       return Promise.resolve(`${args.url} is not a dank enough beat, try again.`);
     }
@@ -33,13 +34,25 @@ export class Play {
       return Promise.resolve('Join a voice channel, Dumas!');
     }
 
-    voiceChannel.join().then(async (connection) => {
-      const stream = ytdl(args.url, {
-        filter: 'audioonly',
-        highWaterMark: 1 << 25,
-        opusEncoded: true,
-      });
+    let stream: any;
+    const client_id = 'ymSs5c4hxrRu3yuA6ZyOORoADJI2tVPD';
+    const soundcloud = new Soundcloud(client_id);
 
+    try {
+      if (args.url.includes('soundcloud.com')) {
+        stream = await soundcloud.util.streamTrack(args.url);
+      } else {
+        stream = ytdl(args.url, {
+          filter: 'audioonly',
+          highWaterMark: 1 << 25,
+          opusEncoded: true,
+        });
+      }
+    } catch (error) {
+      return Promise.resolve(`Slickyboi pooped: ${error} 🎶`);
+    }
+
+    voiceChannel.join().then(async (connection) => {
       // Kill the current stream, if it exists
       if (Play.currentStream) {
         console.log('Destroying current stream');
@@ -55,7 +68,12 @@ export class Play {
         }
       });
 
-      const dispatcher = connection.play(stream, { type: 'opus' });
+      let options = {};
+      if (!args.url.includes('soundcloud.com')) {
+        options = { type: 'opus' };
+      }
+
+      const dispatcher = connection.play(stream, options);
       dispatcher.setVolumeLogarithmic(args.v / 100);
       dispatcher.on('error', console.error);
       dispatcher.on('finish', () => voiceChannel.leave());
