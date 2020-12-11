@@ -2,7 +2,7 @@
 import * as yargs from 'yargs';
 import { Message } from 'discord.js';
 
-import Soundcloud from "soundcloud.ts";
+import Soundcloud from 'soundcloud.ts';
 import ytdl from 'discord-ytdl-core';
 
 export class Play {
@@ -35,8 +35,8 @@ export class Play {
     }
 
     let stream: any;
-    const client_id = 'ymSs5c4hxrRu3yuA6ZyOORoADJI2tVPD';
-    const soundcloud = new Soundcloud(client_id);
+    const clientId = 'ymSs5c4hxrRu3yuA6ZyOORoADJI2tVPD';
+    const soundcloud = new Soundcloud(clientId);
 
     try {
       if (args.url.includes('soundcloud.com')) {
