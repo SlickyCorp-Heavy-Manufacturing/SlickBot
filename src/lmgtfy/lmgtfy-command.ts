@@ -8,8 +8,7 @@ export const LMGTFYCommand: ICommand = {
   trigger: (msg: Message) => msg.cleanContent.startsWith('!lmgtfy'),
   command: async (msg: Message) => {
     msg.channel.messages.fetch({ limit: 2 }).then((messages) => {
-      const message = messages.last().cleanContent.replace(/\s/g, '+');
-      messages.last().reply(`https://lmgtfy.app/?q=${message}`);
+      messages.last().reply(`https://lmgtfy.app/?q=${encodeURIComponent(messages.last().cleanContent)}`);
     });
   },
 };

@@ -13,6 +13,7 @@ env:
   IMGFLIP_USER: ${{ secrets.IMGFLIP_USER }}
   IMGFLIP_PASS: ${{ secrets.IMGFLIP_PASS }}
   FINNHUB_TOKEN: ${{ secrets.FINNHUB_TOKEN }}
+  TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
 
 jobs:
   build-and-deploy:
