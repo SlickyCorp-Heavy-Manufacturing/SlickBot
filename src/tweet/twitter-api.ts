@@ -1,6 +1,7 @@
-import got, { Response } from "got/dist/source";
+import got, { Response } from 'got/dist/source';
 
 export interface UserDetails {
+  /* eslint-disable camelcase */
   public_metrics: {
     followers_count: number;
     following_count: number;
@@ -17,6 +18,7 @@ export interface UserDetails {
   profile_image_url: string;
   verified: boolean;
   description: string;
+  /* eslint-enable camelcase */
 }
 
 export class TwitterApi {
@@ -35,7 +37,7 @@ export class TwitterApi {
         searchParams: {
           'user.fields': 'created_at,description,entities,id,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,withheld',
         },
-      }
+      },
     ).then((response: Response<any>) => response.body.data as UserDetails);
   }
 }
