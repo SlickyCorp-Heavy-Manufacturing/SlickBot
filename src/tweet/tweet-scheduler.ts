@@ -33,7 +33,7 @@ export class TweetScheduler {
 
 export const scheduledTweetChecks: IScheduledPost[] = [
   {
-    cronDate: '* /5 * * *',
+    cronDate: '*/5 * * * *',
     channel: 'noaa-information-bureau',
     getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, 'noaa-information-bureau', 'NWSMilwaukee'),
   },
