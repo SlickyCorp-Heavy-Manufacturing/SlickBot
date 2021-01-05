@@ -62,6 +62,9 @@ export class TwitterApi {
           Authorization: `Bearer ${this.API_BEARER_TOKEN}`,
         },
         responseType: 'json',
+        searchParams: {
+          'exclude': 'replies,retweets',
+        },
       },
     ).then((response: Response<any>) => response.body.data as TweetDetails[]);
   }
