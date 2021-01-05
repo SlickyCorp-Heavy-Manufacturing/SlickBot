@@ -1,5 +1,10 @@
 import got, { Response } from 'got/dist/source';
 
+export interface TweetDetails {
+  id: number;
+  text: string;
+}
+
 export interface UserDetails {
   /* eslint-disable camelcase */
   public_metrics: {
@@ -26,6 +31,10 @@ export class TwitterApi {
 
   private static readonly API_BEARER_TOKEN: string = process.env.TWITTER_BEARER_TOKEN;
 
+  /**
+   * Get the details of a twitter user.
+   * @param username The Twitter username.
+   */
   public static async getUserDetails(username: string): Promise<UserDetails> {
     return got(
       `${this.API_URL}/users/by/username/${username}`,
@@ -39,5 +48,21 @@ export class TwitterApi {
         },
       },
     ).then((response: Response<any>) => response.body.data as UserDetails);
+  }
+
+  /**
+   * Get 10 most recent tweets of a user.
+   * @param userId The user ID number (not username).
+   */
+  public static async getUserTimeline(userId: number): Promise<TweetDetails[]> {
+    return got(
+      `${this.API_URL}/users/${userId}/tweets`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.API_BEARER_TOKEN}`,
+        },
+        responseType: 'json',
+      },
+    ).then((response: Response<any>) => response.body.data as TweetDetails[]);
   }
 }

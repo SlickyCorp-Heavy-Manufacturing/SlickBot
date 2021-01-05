@@ -37,9 +37,15 @@ discordClient.init().then(() => {
 
   scheduledPosts.forEach((scheduledPost) => {
     schedule.scheduleJob({ rule: scheduledPost.cronDate, tz: 'America/Chicago' }, () => {
-      scheduledPost.getMessage(discordClient.client).then((value: string) => {
-        const channel = findChannelByName(discordClient.client, scheduledPost.channel);
-        channel.send(value);
+      scheduledPost.getMessage(discordClient.client).then((value) => {
+        if (value) {
+          const channel = findChannelByName(discordClient.client, scheduledPost.channel);
+          if (Array.isArray(value)) {
+            value.forEach((message) => channel.send(message));
+          } else {
+            channel.send(value);
+          }
+        }
       });
     });
   });
