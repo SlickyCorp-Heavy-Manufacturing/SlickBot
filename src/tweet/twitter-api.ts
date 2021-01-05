@@ -63,7 +63,7 @@ export class TwitterApi {
         },
         responseType: 'json',
         searchParams: {
-          'exclude': 'replies,retweets',
+          exclude: 'replies,retweets',
         },
       },
     ).then((response: Response<any>) => response.body.data as TweetDetails[]);
