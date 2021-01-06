@@ -19,8 +19,8 @@ export const SpyCommand: ICommand = {
             headers: {
               API_KEY: process.env.SNAPSHOT_API_TOKEN,
             },
-            responseType: 'buffer'
-          }
+            responseType: 'buffer',
+          },
         );
         fs.writeFileSync(tmpFile.path, response.body);
         await msg.channel.send({ files: [tmpFile.path] });
@@ -44,8 +44,8 @@ export const EtfCommand: ICommand = {
             headers: {
               API_KEY: process.env.SNAPSHOT_API_TOKEN,
             },
-            responseType: 'buffer'
-          }
+            responseType: 'buffer',
+          },
         );
         fs.writeFileSync(tmpFile.path, response.body);
         await msg.channel.send({ files: [tmpFile.path] });
