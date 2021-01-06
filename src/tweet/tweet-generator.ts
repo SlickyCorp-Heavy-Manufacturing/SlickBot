@@ -20,8 +20,11 @@ export class TweetGen {
       async (tmpFile) => {
         const profile = await TwitterApi.getUserDetails(tweet.nickname);
         const response = await got.get(
-          'https://website-snapshot.herokuapp.com/tweet',
+          'https://website-snapshot.krischeonline.com/tweet',
           {
+            headers: {
+              API_KEY: process.env.SNAPSHOT_API_TOKEN,
+            },
             searchParams: {
               nickname: tweet.nickname,
               name: profile.name,
