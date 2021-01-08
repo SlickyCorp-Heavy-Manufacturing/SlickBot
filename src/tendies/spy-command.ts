@@ -13,7 +13,15 @@ export const SpyCommand: ICommand = {
   command: async (msg: Message) => {
     await withFile(
       async (tmpFile) => {
-        const response = await got.get('https://website-snapshot.herokuapp.com/spy', { responseType: 'buffer' });
+        const response = await got.get(
+          'https://website-snapshot.krischeonline.com/spy',
+          {
+            headers: {
+              API_KEY: process.env.SNAPSHOT_API_TOKEN,
+            },
+            responseType: 'buffer',
+          },
+        );
         fs.writeFileSync(tmpFile.path, response.body);
         await msg.channel.send({ files: [tmpFile.path] });
       },
@@ -30,7 +38,15 @@ export const EtfCommand: ICommand = {
   command: async (msg: Message) => {
     await withFile(
       async (tmpFile) => {
-        const response = await got.get('https://website-snapshot.herokuapp.com/etf', { responseType: 'buffer' });
+        const response = await got.get(
+          'https://website-snapshot.krischeonline.com/etf',
+          {
+            headers: {
+              API_KEY: process.env.SNAPSHOT_API_TOKEN,
+            },
+            responseType: 'buffer',
+          },
+        );
         fs.writeFileSync(tmpFile.path, response.body);
         await msg.channel.send({ files: [tmpFile.path] });
       },
