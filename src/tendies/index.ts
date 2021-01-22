@@ -1,2 +1,2 @@
 export { TendiesCommand } from './tendies-command';
-export { EtfCommand, SpyCommand } from './spy-command';
+export { EtfCommand, SpyCommand, WorldCommand } from './spy-command';

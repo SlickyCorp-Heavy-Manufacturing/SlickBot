@@ -9,7 +9,12 @@ import { MemeCommand, MemeSearchCommand, DrawMemeCommand } from './meme';
 import { KlingonCommand } from './klingon/klingon-command';
 import { PlayCommand } from './play/play-command';
 import { FoffCommand } from './foaas/foaas-command';
-import { TendiesCommand, SpyCommand, EtfCommand } from './tendies';
+import {
+  TendiesCommand,
+  SpyCommand,
+  EtfCommand,
+  WorldCommand,
+} from './tendies';
 import { CovidCommand, CovidWiCommand } from './covid/covid-command';
 import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
@@ -43,6 +48,7 @@ export const commandList: ICommand[] = [
   RocketManCommand,
   SpyCommand,
   EtfCommand,
+  WorldCommand,
   PlayCommand,
   DevOpsCommand,
   TweetCommand,

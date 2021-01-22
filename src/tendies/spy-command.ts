@@ -54,3 +54,28 @@ export const EtfCommand: ICommand = {
     );
   },
 };
+
+export const WorldCommand: ICommand = {
+  name: '!world',
+  helpDescription: 'Bot will respond with a box chart worldly stocks',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!world'),
+  command: async (msg: Message) => {
+    await withFile(
+      async (tmpFile) => {
+        const response = await got.get(
+          'https://website-snapshot.krischeonline.com/world',
+          {
+            headers: {
+              API_KEY: process.env.SNAPSHOT_API_TOKEN,
+            },
+            responseType: 'buffer',
+          },
+        );
+        fs.writeFileSync(tmpFile.path, response.body);
+        await msg.channel.send({ files: [tmpFile.path] });
+      },
+      { postfix: '.png' },
+    );
+  },
+};
