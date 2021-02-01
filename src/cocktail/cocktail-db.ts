@@ -24,7 +24,6 @@ export interface Drink {
   strIngredient13: string;
   strIngredient14: string;
   strIngredient15: string;
-<<<<<<< HEAD
   strMeasure1: string;
   strMeasure2: string;
   strMeasure3: string;
@@ -40,8 +39,6 @@ export interface Drink {
   strMeasure13: string;
   strMeasure14: string;
   strMeasure15: string;
-=======
->>>>>>> origin/master
 }
 
 export interface Drinks {
@@ -50,7 +47,6 @@ export interface Drinks {
 
 export const getIngredientsAsArray = (drink: Drink): string[] => {
   const ingredients: string[] = [];
-<<<<<<< HEAD
   if (drink.strIngredient1) ingredients.push(drink.strMeasure1 ? `${drink.strIngredient1} (${drink.strMeasure1})` : drink.strIngredient1);
   if (drink.strIngredient2) ingredients.push(drink.strMeasure2 ? `${drink.strIngredient2} (${drink.strMeasure2})` : drink.strIngredient2);
   if (drink.strIngredient3) ingredients.push(drink.strMeasure3 ? `${drink.strIngredient3} (${drink.strMeasure3})` : drink.strIngredient3);
@@ -84,22 +80,3 @@ export const findCocktail = async (cocktailName: string): Promise<Drink|null> =>
   }
   return null;
 };
-=======
-  if (drink.strIngredient1) ingredients.push(drink.strIngredient1);
-  if (drink.strIngredient2) ingredients.push(drink.strIngredient2);
-  if (drink.strIngredient3) ingredients.push(drink.strIngredient3);
-  if (drink.strIngredient4) ingredients.push(drink.strIngredient4);
-  if (drink.strIngredient5) ingredients.push(drink.strIngredient5);
-  if (drink.strIngredient6) ingredients.push(drink.strIngredient6);
-  if (drink.strIngredient7) ingredients.push(drink.strIngredient7);
-  if (drink.strIngredient8) ingredients.push(drink.strIngredient8);
-  if (drink.strIngredient9) ingredients.push(drink.strIngredient9);
-  if (drink.strIngredient10) ingredients.push(drink.strIngredient10);
-  if (drink.strIngredient11) ingredients.push(drink.strIngredient11);
-  if (drink.strIngredient12) ingredients.push(drink.strIngredient12);
-  if (drink.strIngredient13) ingredients.push(drink.strIngredient13);
-  if (drink.strIngredient14) ingredients.push(drink.strIngredient14);
-  if (drink.strIngredient15) ingredients.push(drink.strIngredient15);
-  return ingredients;
-};
->>>>>>> origin/master

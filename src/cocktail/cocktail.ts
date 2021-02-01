@@ -6,7 +6,7 @@ export const GetCocktail: ICommand = {
   name: '!cocktail',
   helpDescription: 'Get a slick cocktail recommendation.',
   showInHelp: true,
-  trigger: (msg: Message) => msg.content.startsWith('!cocktail'),
+  trigger: (msg: Message) => msg.content.startsWith('!cocktail '),
   command: async (msg: Message) => {
     const cocktailName = msg.content.replace('!cocktail', '').trim();
     const drink = await findCocktail(cocktailName);
