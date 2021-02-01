@@ -11,6 +11,7 @@ import { PlayCommand } from './play/play-command';
 import { FoffCommand } from './foaas/foaas-command';
 import {
   TendiesCommand,
+  ShortsCommand,
   SpyCommand,
   EtfCommand,
   WorldCommand,
@@ -47,6 +48,7 @@ export const commandList: ICommand[] = [
   FlavorOfTheDayCommand,
   TrompoCommand,
   RocketManCommand,
+  ShortsCommand,
   SpyCommand,
   EtfCommand,
   WorldCommand,
