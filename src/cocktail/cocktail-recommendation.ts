@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import got from 'got';
 import { ICommand } from '../icommand';
-import { Drinks, THE_COCKTAIL_DB_RANDOM_URL } from './cocktail-db';
+import { Drinks, getIngredientsAsArray, THE_COCKTAIL_DB_RANDOM_URL } from './cocktail-db';
 
 export const CocktailRecommendation: ICommand = {
   name: '!cocktail-recommendation',
@@ -13,6 +13,8 @@ export const CocktailRecommendation: ICommand = {
     const drinks = response.body as Drinks;
     const drink = drinks.drinks[0];
     msg.channel.send(`I would have to recommend a *${drink.strDrink}* served in a ${drink.strGlass}.
+
+Ingredients: ${getIngredientsAsArray(drink).join(', ')}
 
 ${drink.strInstructions}
 
