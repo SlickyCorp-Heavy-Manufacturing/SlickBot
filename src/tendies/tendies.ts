@@ -163,6 +163,7 @@ export class Tendies {
       },
     ).then((response: Response<any>) => response.body as CompanyProfile2);
 
-    return `${shortInterest.data[0].shortInterest / (companyProfile2.shareOutstanding * 1000000)}`;
+    const shortPercent = (shortInterest.data[0].shortInterest / (companyProfile2.shareOutstanding * 1000000)) * 100;
+    return `${symbol.toUpperCase()} Short Interest: ${(shortPercent).toFixed(2)}%`;
   }
 }
