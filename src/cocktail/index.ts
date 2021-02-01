@@ -1,2 +1,2 @@
-export * from './cocktail-db';
+export * from './cocktail';
 export * from './cocktail-recommendation';

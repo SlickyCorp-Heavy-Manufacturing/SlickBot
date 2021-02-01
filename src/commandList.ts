@@ -23,7 +23,7 @@ import { TrompoCommand, RocketManCommand, TweetCommand } from './tweet';
 import { DevOpsCommand } from './devops/devops';
 import { EmojifyCommand } from './emojify/emojify';
 import { LMGTFYCommand } from './lmgtfy';
-import { CocktailRecommendation } from './cocktail';
+import { CocktailRecommendation, GetCocktail } from './cocktail';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -56,4 +56,5 @@ export const commandList: ICommand[] = [
   EmojifyCommand,
   LMGTFYCommand,
   CocktailRecommendation,
+  GetCocktail,
 ];
