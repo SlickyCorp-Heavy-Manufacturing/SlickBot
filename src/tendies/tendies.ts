@@ -96,14 +96,18 @@ export class Tendies {
       return `${details}https://tenor.com/view/stonks-up-stongs-meme-stocks-gif-15715298`;
     } if (percentChange >= 5 && percentChange < 10) {
       return `${details}https://tenor.com/view/wsb-wall-street-bets-hands-up-cool-shades-gif-16964384`;
-    } if (percentChange >= 10) {
+    } if (percentChange >= 10 && percentChange < 15) {
       return `${details}https://tenor.com/view/jpow-jerome-powell-money-printing-covid-bailout-bailout-gif-16865595`;
+    } if (percentChange >= 15) {
+      return `${details}https://tenor.com/view/scrooge-mcduck-money-gif-13447299`;
     } if (percentChange >= -5 && percentChange < -1) {
       return `${details}https://tenor.com/view/not-stonks-profit-down-sad-frown-arms-crossed-gif-15684535`;
     } if (percentChange >= -10 && percentChange < -5) {
-      return `${details}https://gfycat.com/classicmadhornedtoad`;
-    } if (percentChange < -10) {
+      return `${details}https://cdn.discordapp.com/attachments/679842740124647540/805163871404032030/B5wb1K8.png`;
+    } if (percentChange >= -15 && percentChange < -10) {
       return `${details}https://tenor.com/view/elmo-gif-9112913`;
+    } if (percentChange < -15) {
+      return `${details}https://tenor.com/view/market-simpsons-poor-stonks-notsure500-gif-16072046`;
     }
     return `${details}https://tenor.com/view/what-the-fuck-wtf-blink182-gif-4982401`;
   }
