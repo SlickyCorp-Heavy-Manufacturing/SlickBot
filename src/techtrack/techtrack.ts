@@ -25,7 +25,9 @@ export class TechTrackStory {
    * @param msg The Discord message
    */
   public static async fromMessage(msg: Message): Promise<TechTrackStory> {
-    const potentialAssignees = await Promise.all(this.TECHTRACK_USERS.map(async (userId) => await msg.client.users.fetch(userId)));
+    const potentialAssignees = await Promise.all(
+      this.TECHTRACK_USERS.map(async (userId) => msg.client.users.fetch(userId)),
+    );
     const id = `RAIDARCH01-${Math.floor(Math.random() * 9000) + 1000}`;
     const description = `As someone who doesn't want to do their job, ${msg.cleanContent.replace(/^@techtrack\s*/i, '')}`;
     const points = _sample([2, 3, 5, 8, 13]);

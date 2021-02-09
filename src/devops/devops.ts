@@ -25,7 +25,9 @@ export class DevOpsStory {
    * @param msg The Discord message
    */
   public static async fromMessage(msg: Message): Promise<DevOpsStory> {
-    const potentialAssignees = await Promise.all(this.DEVOPS_USERS.map(async (userId) => await msg.client.users.fetch(userId)));
+    const potentialAssignees = await Promise.all(
+      this.DEVOPS_USERS.map(async (userId) => msg.client.users.fetch(userId)),
+    );
     const id = `DEVOPS01-${Math.floor(Math.random() * 9000) + 1000}`;
     const description = `As a DevOps customer, ${msg.cleanContent.replace(/^@devops\s*/i, '')}`;
     const points = _sample([2, 3, 5, 8, 13]);
