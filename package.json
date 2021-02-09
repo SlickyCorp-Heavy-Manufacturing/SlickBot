@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
+    "dev": "ts-node src/index.ts",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts",
     "test": "jasmine-ts --config=jasmine-ts.json",

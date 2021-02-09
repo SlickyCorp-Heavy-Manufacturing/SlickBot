@@ -21,11 +21,10 @@ import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
 import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
 import { TrompoCommand, RocketManCommand, TweetCommand } from './tweet';
-import { DevOpsCommand } from './devops/devops';
+import { DevOpsCommand, TechTrackCommand } from './teams/teams';
 import { EmojifyCommand } from './emojify/emojify';
 import { LMGTFYCommand } from './lmgtfy';
 import { CocktailRecommendation, GetCocktail } from './cocktail';
-import { TechTrackCommand } from './techtrack/techtrack';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -55,10 +54,10 @@ export const commandList: ICommand[] = [
   WorldCommand,
   PlayCommand,
   DevOpsCommand,
+  TechTrackCommand,
   TweetCommand,
   EmojifyCommand,
   LMGTFYCommand,
   CocktailRecommendation,
   GetCocktail,
-  TechTrackCommand,
 ];
