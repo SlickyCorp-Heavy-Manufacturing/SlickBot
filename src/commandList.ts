@@ -25,6 +25,7 @@ import { DevOpsCommand } from './devops/devops';
 import { EmojifyCommand } from './emojify/emojify';
 import { LMGTFYCommand } from './lmgtfy';
 import { CocktailRecommendation, GetCocktail } from './cocktail';
+import { TechTrackCommand } from './techtrack/techtrack';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -59,4 +60,5 @@ export const commandList: ICommand[] = [
   LMGTFYCommand,
   CocktailRecommendation,
   GetCocktail,
+  TechTrackCommand,
 ];
