@@ -3,7 +3,7 @@ import { sample as _sample } from 'lodash';
 import { ICommand } from '../icommand';
 
 export class TechTrackStory {
-  private static readonly DEVOPS_USERS = ['[EliteTerrorist]AbeLincoln'];
+  private static readonly TECHTRACK_USERS = ['208684753958731776'];
 
   public readonly assignee: User;
 
@@ -24,16 +24,18 @@ export class TechTrackStory {
    * Create a new DevOps story from a discord message
    * @param msg The Discord message
    */
-  public static fromMessage(msg: Message): TechTrackStory {
-    const potentialAssignees = this.DEVOPS_USERS
-      .map((username) => msg.client.users.cache.find((user) => user.username === username))
-      .filter((user) => user !== undefined);
-
+  public static async fromMessage(msg: Message): Promise<TechTrackStory> {
+    const potentialAssignees = await Promise.all(this.TECHTRACK_USERS.map(async (userId) => await msg.client.users.fetch(userId)));
     const id = `RAIDARCH01-${Math.floor(Math.random() * 9000) + 1000}`;
     const description = `As someone who doesn't want to do their job, ${msg.cleanContent.replace(/^@techtrack\s*/i, '')}`;
     const points = _sample([2, 3, 5, 8, 13]);
 
-    return new TechTrackStory(_sample(potentialAssignees), description, id, points);
+    return new TechTrackStory(
+      _sample(potentialAssignees.filter((user) => user !== undefined)),
+      description,
+      id,
+      points,
+    );
   }
 }
 
@@ -43,7 +45,7 @@ export const TechTrackCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.cleanContent.toLocaleLowerCase().startsWith('@techtrack'),
   command: async (msg: Message) => {
-    const story = TechTrackStory.fromMessage(msg);
+    const story = await TechTrackStory.fromMessage(msg);
     await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
   },
 };

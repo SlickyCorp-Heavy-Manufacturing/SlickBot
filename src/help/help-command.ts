@@ -13,7 +13,7 @@ export const HelpCommand: ICommand = {
       // Break the message up into 2000 character chunks
       const newMessage: string = `${command.name} - ${command.helpDescription}\n`;
       if (newMessage.length + messages[messages.length - 1].length > 2000) {
-        messages.push(newMessage);
+        messages.push('*continued*\n' + newMessage);
       } else {
         messages[messages.length - 1] += newMessage;
       }

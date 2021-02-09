@@ -3,7 +3,7 @@ import { sample as _sample } from 'lodash';
 import { ICommand } from '../icommand';
 
 export class DevOpsStory {
-  private static readonly DEVOPS_USERS = ['krische', 'freedeau'];
+  private static readonly DEVOPS_USERS = ['622595355153793045', '436298366952144907'];
 
   public readonly assignee: User;
 
@@ -24,16 +24,18 @@ export class DevOpsStory {
    * Create a new DevOps story from a discord message
    * @param msg The Discord message
    */
-  public static fromMessage(msg: Message): DevOpsStory {
-    const potentialAssignees = this.DEVOPS_USERS
-      .map((username) => msg.client.users.cache.find((user) => user.username === username))
-      .filter((user) => user !== undefined);
-
+  public static async fromMessage(msg: Message): Promise<DevOpsStory> {
+    const potentialAssignees = await Promise.all(this.DEVOPS_USERS.map(async (userId) => await msg.client.users.fetch(userId)));
     const id = `DEVOPS01-${Math.floor(Math.random() * 9000) + 1000}`;
     const description = `As a DevOps customer, ${msg.cleanContent.replace(/^@devops\s*/i, '')}`;
     const points = _sample([2, 3, 5, 8, 13]);
 
-    return new DevOpsStory(_sample(potentialAssignees), description, id, points);
+    return new DevOpsStory(
+      _sample(potentialAssignees.filter((user) => user !== undefined)),
+      description,
+      id,
+      points,
+    );
   }
 }
 
@@ -43,7 +45,7 @@ export const DevOpsCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.cleanContent.toLocaleLowerCase().startsWith('@devops'),
   command: async (msg: Message) => {
-    const story = DevOpsStory.fromMessage(msg);
+    const story = await DevOpsStory.fromMessage(msg);
     await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
   },
 };
