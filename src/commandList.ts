@@ -10,6 +10,7 @@ import { KlingonCommand } from './klingon/klingon-command';
 import { PlayCommand } from './play/play-command';
 import { FoffCommand } from './foaas/foaas-command';
 import {
+  CryptoCommand,
   TendiesCommand,
   ShortsCommand,
   SpyCommand,
@@ -60,4 +61,5 @@ export const commandList: ICommand[] = [
   LMGTFYCommand,
   CocktailRecommendation,
   GetCocktail,
+  CryptoCommand,
 ];

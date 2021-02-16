@@ -17,6 +17,16 @@ export interface CompanyProfile2 {
   finnhubIndustry: string;
 }
 
+export interface CryptoCandles {
+  c: number[],
+  h: number[],
+  l: number[],
+  o: number[],
+  s: 'ok' | 'no_data',
+  t: number[],
+  v: number[]
+}
+
 export interface Quote {
   c: number,
   h: number,
