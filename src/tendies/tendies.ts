@@ -76,7 +76,7 @@ export class Tendies {
           format: 'json',
           from: now - 86400,
           resolution: 'D',
-          symbol: `COINBASE:${symbol.toUpperCase()}-USD`,
+          symbol: `BINANCE:${symbol.toUpperCase()}BUSD`,
           to: now,
           token: Tendies.FINNHUB_TOKEN,
         },
