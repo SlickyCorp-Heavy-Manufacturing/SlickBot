@@ -54,7 +54,7 @@ describe('tendies', () => {
       .reply(200, cryptoCandles);
 
     const message = await Tendies.crypto('btc');
-    expect(message).toEqual(`**Current:** $123.45\n**Low (24 hrs):** $12.34\n**High (24 hrs):** $234.56`);
+    expect(message).toEqual('**Current:** $123.45\n**Low (24 hrs):** $12.34\n**High (24 hrs):** $234.56');
   });
 
   it('calculateQuotePercentage() calculates percentage', () => {

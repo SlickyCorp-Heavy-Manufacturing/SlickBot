@@ -65,7 +65,7 @@ export class Tendies {
    * @param symbol The symbol of the crypto currency
    */
   public static async crypto(symbol: string): Promise<string> {
-    const now: number = Math.round(Date.now() / 1000)
+    const now: number = Math.round(Date.now() / 1000);
 
     // Let's just assume coinbase for now.
     const response = await got(
@@ -77,9 +77,9 @@ export class Tendies {
           from: now - 86400,
           resolution: 'D',
           symbol: `COINBASE:${symbol.toUpperCase()}-USD`,
-          to: now
-        }
-      }
+          to: now,
+        },
+      },
     );
     const candles = response.body as CryptoCandles;
 
@@ -89,9 +89,9 @@ export class Tendies {
       message += `**Low (24 hrs):** ${candles.l[0].toLocaleString('en-US', { style: 'currency', currency: 'USD' })}\n`;
       message += `**High (24 hrs):** ${candles.h[0].toLocaleString('en-US', { style: 'currency', currency: 'USD' })}`;
       return message;
-    } else {
-      return `Error: no data`;
     }
+
+    return 'Error: no data';
   }
 
   /**
