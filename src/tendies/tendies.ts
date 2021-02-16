@@ -2,6 +2,7 @@ import got, { Response } from 'got';
 
 import {
   CompanyProfile2,
+  CryptoCandles,
   Quote,
   ShortInterest,
   Stock,
@@ -57,6 +58,40 @@ export class Tendies {
       return `ROK closed down (${percentChange.toFixed(2)}% :chart_with_downwards_trend:) today, please thank Blake for his generosity if you still have a job.`;
     }
     return 'ROK closed EVEN today, Blake is disappointed by your simulaneous lack of both gumption and ineptitude.';
+  }
+
+  /**
+   * Return a message with information about the exchange rate of a crypto currency
+   * @param symbol The symbol of the crypto currency
+   */
+  public static async crypto(symbol: string): Promise<string> {
+    const now: number = Math.round(Date.now() / 1000);
+
+    // Let's just assume coinbase for now.
+    const response = await got(
+      `${Tendies.FINNHUB_URL}/crypto/candle`,
+      {
+        responseType: 'json',
+        searchParams: {
+          format: 'json',
+          from: now - 86400,
+          resolution: 'D',
+          symbol: `COINBASE:${symbol.toUpperCase()}-USD`,
+          to: now,
+        },
+      },
+    );
+    const candles = response.body as CryptoCandles;
+
+    if (candles.s && candles.s === 'ok') {
+      let message = '';
+      message += `**Current:** ${candles.c[0].toLocaleString('en-US', { style: 'currency', currency: 'USD' })}\n`;
+      message += `**Low (24 hrs):** ${candles.l[0].toLocaleString('en-US', { style: 'currency', currency: 'USD' })}\n`;
+      message += `**High (24 hrs):** ${candles.h[0].toLocaleString('en-US', { style: 'currency', currency: 'USD' })}`;
+      return message;
+    }
+
+    return 'Error: no data';
   }
 
   /**
