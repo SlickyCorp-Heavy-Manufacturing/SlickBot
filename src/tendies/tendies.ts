@@ -78,6 +78,7 @@ export class Tendies {
           resolution: 'D',
           symbol: `COINBASE:${symbol.toUpperCase()}-USD`,
           to: now,
+          token: Tendies.FINNHUB_TOKEN,
         },
       },
     );
