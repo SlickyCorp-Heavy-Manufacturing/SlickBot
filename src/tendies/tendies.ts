@@ -41,6 +41,9 @@ export class Tendies {
       // Returns empty object when ticker symbol not found.
       throw new Error(`Ticker symbol '${symbol}' was not found.`);
     }
+    if (response.statusCode !== 200) {
+      throw new Error(`\`\`\`json\n${response.body}\n\`\`\``);
+    }
 
     return response.body as Quote;
   }
@@ -67,22 +70,31 @@ export class Tendies {
   public static async crypto(symbol: string): Promise<string> {
     const now: number = Math.round(Date.now() / 1000);
 
-    // Let's just assume coinbase for now.
-    const response = await got(
-      `${Tendies.FINNHUB_URL}/crypto/candle`,
-      {
-        responseType: 'json',
-        searchParams: {
-          format: 'json',
-          from: now - 86400,
-          resolution: 'D',
-          symbol: `BINANCE:${symbol.toUpperCase()}BUSD`,
-          to: now,
-          token: Tendies.FINNHUB_TOKEN,
+    // Let's just assume binance exchange for now.
+    let candles: CryptoCandles;
+    try {
+      const response = await got(
+        `${Tendies.FINNHUB_URL}/crypto/candle`,
+        {
+          responseType: 'json',
+          searchParams: {
+            format: 'json',
+            from: now - 86400,
+            resolution: 'D',
+            symbol: `BINANCE:${symbol.toUpperCase()}BUSD`,
+            to: now,
+            token: Tendies.FINNHUB_TOKEN,
+          },
         },
-      },
-    );
-    const candles = response.body as CryptoCandles;
+      );
+      if (response.statusCode === 200) {
+        candles = response.body as CryptoCandles;
+      } else {
+        return `\`\`\`json\n${response.body}\n\`\`\``;
+      }
+    } catch (error) {
+      return `Error: ${error.message}`;
+    }
 
     if (candles.s && candles.s === 'ok') {
       let message = '';
