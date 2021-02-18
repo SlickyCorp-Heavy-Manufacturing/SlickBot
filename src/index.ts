@@ -28,6 +28,12 @@ process.on('unhandledRejection', (reason, p) => {
 
 const discordClient = new DiscordClient();
 discordClient.init().then(() => {
+  discordClient.client.on('channelCreate', (newChannel: Discord.Channel) => {
+    if (newChannel instanceof Discord.TextChannel) {
+      (newChannel as Discord.TextChannel).send("Uggghhh. Not another text channel.... Is this really necessary??");
+    }
+  });
+
   discordClient.client.on('message', (msg: Discord.Message) => {
     const commands = commandList.filter((command) => command.trigger(msg));
     Promise.all(commands.map(async (command) => {
