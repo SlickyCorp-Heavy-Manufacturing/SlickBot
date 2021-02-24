@@ -146,7 +146,7 @@ export class Tendies {
       return `${details}https://tenor.com/view/wsb-wall-street-bets-hands-up-cool-shades-gif-16964384`;
     } if (percentChange >= 10 && percentChange < 15) {
       return `${details}https://tenor.com/view/jpow-jerome-powell-money-printing-covid-bailout-bailout-gif-16865595`;
-    } if (percentChange >= 15 && percentChange < 25 ) {
+    } if (percentChange >= 15 && percentChange < 25) {
       return `${details}https://tenor.com/view/scrooge-mcduck-money-gif-13447299`;
     } if (percentChange >= 25) {
       return `${details}https://i.imgur.com/LFdqkCi.gif`;
