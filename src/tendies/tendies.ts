@@ -150,8 +150,10 @@ export class Tendies {
       return `${details}https://tenor.com/view/scrooge-mcduck-money-gif-13447299`;
     } if (percentChange >= 25 && percentChange < 50) {
       return `${details}https://i.imgur.com/LFdqkCi.gif`;
-    } if (percentChange >= 50) {
+    } if (percentChange >= 50 && percentChange < 75) {
       return `${details}https://i.giphy.com/media/fGLM3nGAbD1WOCNblY/giphy.gif`;
+    } if (percentChange >= 75) {
+      return `${details}https://tenor.com/view/im-rich-chappelle-rich-gif-5477172`;
     } if (percentChange >= -5 && percentChange < -1) {
       return `${details}https://tenor.com/view/not-stonks-profit-down-sad-frown-arms-crossed-gif-15684535`;
     } if (percentChange >= -10 && percentChange < -5) {
