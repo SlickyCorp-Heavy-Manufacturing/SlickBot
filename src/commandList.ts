@@ -16,6 +16,7 @@ import {
   SpyCommand,
   EtfCommand,
   WorldCommand,
+  DowCommand,
 } from './tendies';
 import { CovidCommand, CovidWiCommand } from './covid/covid-command';
 import { NiceReaction, ChulasRecation } from './reactions';
@@ -51,6 +52,7 @@ export const commandList: ICommand[] = [
   RocketManCommand,
   ShortsCommand,
   SpyCommand,
+  DowCommand,
   EtfCommand,
   WorldCommand,
   PlayCommand,

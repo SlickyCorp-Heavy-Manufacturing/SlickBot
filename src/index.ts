@@ -30,7 +30,7 @@ const discordClient = new DiscordClient();
 discordClient.init().then(() => {
   discordClient.client.on('channelCreate', (newChannel: Discord.Channel) => {
     if (newChannel instanceof Discord.TextChannel) {
-      (newChannel as Discord.TextChannel).send("Uggghhh. Not another text channel.... Is this really necessary??");
+      (newChannel as Discord.TextChannel).send('Uggghhh. Not another text channel.... Is this really necessary??');
     }
   });
 
