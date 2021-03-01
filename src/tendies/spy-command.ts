@@ -35,7 +35,7 @@ export const DowCommand: ICommand = {
   name: '!dow',
   helpDescription: 'Bot will respond with Dow Jones Industrial Average',
   showInHelp: true,
-  trigger: (msg: Message) => msg.content.startsWith('!down'),
+  trigger: (msg: Message) => msg.content.startsWith('!dow'),
   command: async (msg: Message) => {
     await msg.channel.send(_sample([
       'https://tenor.com/bdkoy.gif',
