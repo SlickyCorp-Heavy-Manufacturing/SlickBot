@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 import fs from 'fs';
 import got from 'got/dist/source';
+import { sample as _sample } from 'lodash';
 import { withFile } from 'tmp-promise';
 
 import { ICommand } from '../icommand';
@@ -27,6 +28,21 @@ export const SpyCommand: ICommand = {
       },
       { postfix: '.png' },
     );
+  },
+};
+
+export const DowCommand: ICommand = {
+  name: '!dow',
+  helpDescription: 'Bot will respond with Dow Jones Industrial Average',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!down'),
+  command: async (msg: Message) => {
+    await msg.channel.send(_sample([
+      'https://tenor.com/bdkoy.gif',
+      'https://tenor.com/bbCLu.gif',
+      'https://tenor.com/beDbD.gif',
+      'https://tenor.com/bgfS2.gif',
+    ]));
   },
 };
 
