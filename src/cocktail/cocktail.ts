@@ -4,7 +4,7 @@ import { findCocktail, getIngredientsAsArray } from './cocktail-db';
 
 export const GetCocktail: ICommand = {
   name: '!cocktail',
-  helpDescription: 'Get a slick cocktail recommendation.',
+  helpDescription: 'Ask how to make a specific cocktail. e.g. `!cocktail Quick`',
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!cocktail '),
   command: async (msg: Message) => {

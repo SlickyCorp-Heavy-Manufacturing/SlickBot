@@ -46,22 +46,27 @@ export interface Drinks {
 }
 
 export const getIngredientsAsArray = (drink: Drink): string[] => {
+  const addIngredientToArray = (arr: string[], ingredient: string, measurement: string) => {
+    if (ingredient) arr.push(measurement ? `${ingredient} (${measurement})` : ingredient);
+  };
+
   const ingredients: string[] = [];
-  if (drink.strIngredient1) ingredients.push(drink.strMeasure1 ? `${drink.strIngredient1} (${drink.strMeasure1})` : drink.strIngredient1);
-  if (drink.strIngredient2) ingredients.push(drink.strMeasure2 ? `${drink.strIngredient2} (${drink.strMeasure2})` : drink.strIngredient2);
-  if (drink.strIngredient3) ingredients.push(drink.strMeasure3 ? `${drink.strIngredient3} (${drink.strMeasure3})` : drink.strIngredient3);
-  if (drink.strIngredient4) ingredients.push(drink.strMeasure4 ? `${drink.strIngredient4} (${drink.strMeasure4})` : drink.strIngredient4);
-  if (drink.strIngredient5) ingredients.push(drink.strMeasure5 ? `${drink.strIngredient5} (${drink.strMeasure5})` : drink.strIngredient5);
-  if (drink.strIngredient6) ingredients.push(drink.strMeasure6 ? `${drink.strIngredient6} (${drink.strMeasure6})` : drink.strIngredient6);
-  if (drink.strIngredient7) ingredients.push(drink.strMeasure7 ? `${drink.strIngredient7} (${drink.strMeasure7})` : drink.strIngredient7);
-  if (drink.strIngredient8) ingredients.push(drink.strMeasure8 ? `${drink.strIngredient8} (${drink.strMeasure8})` : drink.strIngredient8);
-  if (drink.strIngredient9) ingredients.push(drink.strMeasure9 ? `${drink.strIngredient9} (${drink.strMeasure9})` : drink.strIngredient9);
-  if (drink.strIngredient10) ingredients.push(drink.strMeasure10 ? `${drink.strIngredient10} (${drink.strMeasure10})` : drink.strIngredient10);
-  if (drink.strIngredient11) ingredients.push(drink.strMeasure11 ? `${drink.strIngredient11} (${drink.strMeasure11})` : drink.strIngredient11);
-  if (drink.strIngredient12) ingredients.push(drink.strMeasure12 ? `${drink.strIngredient12} (${drink.strMeasure12})` : drink.strIngredient12);
-  if (drink.strIngredient13) ingredients.push(drink.strMeasure13 ? `${drink.strIngredient13} (${drink.strMeasure13})` : drink.strIngredient13);
-  if (drink.strIngredient14) ingredients.push(drink.strMeasure14 ? `${drink.strIngredient14} (${drink.strMeasure14})` : drink.strIngredient14);
-  if (drink.strIngredient15) ingredients.push(drink.strMeasure15 ? `${drink.strIngredient15} (${drink.strMeasure15})` : drink.strIngredient15);
+  addIngredientToArray(ingredients, drink.strIngredient1, drink.strMeasure1);
+  addIngredientToArray(ingredients, drink.strIngredient2, drink.strMeasure2);
+  addIngredientToArray(ingredients, drink.strIngredient3, drink.strMeasure3);
+  addIngredientToArray(ingredients, drink.strIngredient4, drink.strMeasure4);
+  addIngredientToArray(ingredients, drink.strIngredient5, drink.strMeasure5);
+  addIngredientToArray(ingredients, drink.strIngredient6, drink.strMeasure6);
+  addIngredientToArray(ingredients, drink.strIngredient7, drink.strMeasure7);
+  addIngredientToArray(ingredients, drink.strIngredient8, drink.strMeasure8);
+  addIngredientToArray(ingredients, drink.strIngredient9, drink.strMeasure9);
+  addIngredientToArray(ingredients, drink.strIngredient10, drink.strMeasure10);
+  addIngredientToArray(ingredients, drink.strIngredient11, drink.strMeasure11);
+  addIngredientToArray(ingredients, drink.strIngredient12, drink.strMeasure12);
+  addIngredientToArray(ingredients, drink.strIngredient13, drink.strMeasure13);
+  addIngredientToArray(ingredients, drink.strIngredient14, drink.strMeasure14);
+  addIngredientToArray(ingredients, drink.strIngredient15, drink.strMeasure15);
+
   return ingredients;
 };
 
