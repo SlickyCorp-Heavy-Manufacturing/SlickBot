@@ -5,22 +5,8 @@ import { scheduledPosts } from './scheduledPosts';
 import { findChannelByName } from './utils';
 import { DiscordClient } from './discordClient';
 
-const express = require('express');
 require('dotenv').config();
 const schedule = require('node-schedule');
-
-// I dont know if this is needed anymore, it was used for herkoku web
-// but now its using a worker
-
-const app = express();
-let port = process.env.PORT;
-if (port === null || port === '') {
-  port = 8000 as any;
-}
-
-app.listen(port, () => {
-  console.info('App Listening');
-});
 
 process.on('unhandledRejection', (reason, p) => {
   console.log(`caught your junk ${reason} ${p}`);
