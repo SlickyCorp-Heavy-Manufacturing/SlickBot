@@ -1,2 +1,9 @@
+export { CryptoCommand } from './crypto-command';
 export { TendiesCommand } from './tendies-command';
-export { EtfCommand, SpyCommand, WorldCommand } from './spy-command';
+export { ShortsCommand } from './shorts-command';
+export {
+  DowCommand,
+  EtfCommand,
+  SpyCommand,
+  WorldCommand,
+} from './spy-command';
