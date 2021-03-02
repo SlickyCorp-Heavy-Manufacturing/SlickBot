@@ -48,7 +48,7 @@ export interface Drinks {
 export const getIngredientsAsArray = (drink: Drink): string[] => {
   const addIngredientToArray = (arr: string[], ingredient: string, measurement: string) => {
     if (ingredient) arr.push(measurement ? `${ingredient} (${measurement})` : ingredient);
-  }
+  };
 
   const ingredients: string[] = [];
   addIngredientToArray(ingredients, drink.strIngredient1, drink.strMeasure1);
