@@ -57,7 +57,10 @@ export const TechTrackCommand: ICommand = {
       'As someone who doesn\'t want to do their job',
       msg,
       'RAIDARCH01',
-      ['208684753958731776'], // Mike
+      [
+        '208684753958731776', // MikeF
+        '277609530915946497', // MarkT
+      ],
     );
     await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
   },
