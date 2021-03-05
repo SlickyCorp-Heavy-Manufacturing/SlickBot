@@ -16,6 +16,7 @@ export class TweetScheduler {
     client: Discord.Client,
     channel: string,
     username: string,
+    regex?: RegExp,
   ): Promise<string[]> {
     // Get most recent tweets
     const user = await TwitterApi.getUserDetails(username);
@@ -26,6 +27,12 @@ export class TweetScheduler {
 
     return tweets
       .filter((tweet) => !posts.some((post) => post.content.includes(tweet.id.toString())))
+      .filter((tweet) => {
+        if (regex === undefined) {
+          return true;
+        }
+        return regex.test(tweet.text);
+      })
       .map((tweet) => `https://twitter.com/${username}/status/${tweet.id}`)
       .reverse();
   }
@@ -36,5 +43,10 @@ export const scheduledTweetChecks: IScheduledPost[] = [
     cronDate: '*/5 * * * *',
     channel: 'noaa-information-bureau',
     getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, 'noaa-information-bureau', 'NWSMilwaukee'),
+  },
+  {
+    cronDate: '*/5 * * * *',
+    channel: 'covid-tendies',
+    getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, 'covid-tendies', 'DHSWI', /Today's #COVID19_WI updates, /m),
   },
 ];
