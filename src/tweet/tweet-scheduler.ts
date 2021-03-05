@@ -47,6 +47,6 @@ export const scheduledTweetChecks: IScheduledPost[] = [
   {
     cronDate: '*/5 * * * *',
     channel: 'covid-tendies',
-    getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, 'covid-tendies', 'DHSWI', /Today's #COVID19_WI updates, /m),
+    getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, 'covid-tendies', 'DHSWI', /^Today's #COVID19_WI update/m),
   },
 ];
