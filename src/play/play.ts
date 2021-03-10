@@ -40,7 +40,7 @@ export class Play {
     }
 
     // Does this contain a URL?
-    let item: PlayItem;
+    const items: PlayItem[] = [];
     if (msg.content.includes('http')) {
       const args = yargs
         .number('volume').number('v')
@@ -62,28 +62,35 @@ export class Play {
       }
 
       // Save this item to be played or added to queue
-      item = {
+      items.push({
         msg,
         url: args.url,
         voiceChannel,
         volume: args.v,
-      };
+      });
     } else {
       const text = msg.content.replace(/^![^\s]+\s+/, '');
-      item = {
+      items.push(...text.match(/.{1,200}(\s|$)/g).map((part) => Object.create({
         msg,
-        text,
-        url: googleTTS.getAudioUrl(text),
+        text: part,
+        url: googleTTS.getAudioUrl(part),
         voiceChannel,
         volume: 100,
-      };
+      })));
     }
 
     if (playNow) {
-      this.startJamming(item);
-    } else {
-      const queuedTrackCallback = () => this.startJamming(item);
-      this.queue.push(queuedTrackCallback);
+      this.startJamming(items.shift());
+      if (items.length === 0) {
+        return;
+      }
+    }
+
+    // queue all remaining items
+    this.queue.push(...items.map((item) => () => this.startJamming(item)));
+
+    // process queue if we weren't told to play now
+    if (!playNow) {
       this.processQueue();
     }
   }
