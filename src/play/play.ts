@@ -66,7 +66,7 @@ export class Play {
         msg,
         url: args.url,
         voiceChannel,
-        volume: args.v
+        volume: args.v,
       };
     } else {
       const text = msg.content.replace(/^![^\s]+\s+/, '');
@@ -75,8 +75,8 @@ export class Play {
         text,
         url: googleTTS.getAudioUrl(text),
         voiceChannel,
-        volume: 100
-      }
+        volume: 100,
+      };
     }
 
     if (playNow) {
