@@ -23,7 +23,7 @@ export class TweetScheduler {
     const tweets = await TwitterApi.getUserTimeline(parseInt(user.id, 10));
 
     // Get 50 most recent posts in the channel
-    const posts = await findChannelByName(client, channel).messages.fetch({ limit: 250 }, false);
+    const posts = await findChannelByName(client, channel).messages.fetch({ limit: 100 }, false);
 
     return tweets
       .filter((tweet) => !posts.some((post) => post.content.includes(tweet.id.toString())))
