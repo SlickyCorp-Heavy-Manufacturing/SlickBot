@@ -37,7 +37,7 @@
     "soundcloud.ts": "^0.3.1",
     "tmp-promise": "^3.0.2",
     "yargs": "^16.0.3",
-    "ytdl-core": "^4.1.0"
+    "ytdl-core": "^4.5.0"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.22",
