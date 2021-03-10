@@ -18,6 +18,12 @@ export class Play {
       return;
     }
 
+    const DRUNK_ROLE = msg.guild.roles.cache.find((role) => role.name === 'drunk');
+    if (msg.member.roles.cache.has(DRUNK_ROLE.id)) {
+      await msg.reply(`${msg.member}, you're drunk, go home.`);
+      return;
+    }
+
     const args = yargs
       .number('volume').number('v')
       .options({
