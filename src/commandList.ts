@@ -27,6 +27,7 @@ import { DevOpsCommand, TechTrackCommand } from './teams/teams';
 import { EmojifyCommand } from './emojify/emojify';
 import { LMGTFYCommand } from './lmgtfy';
 import { CocktailRecommendation, GetCocktail } from './cocktail';
+import { PlayNowCommand } from './play';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -56,6 +57,7 @@ export const commandList: ICommand[] = [
   EtfCommand,
   WorldCommand,
   PlayCommand,
+  PlayNowCommand,
   DevOpsCommand,
   TechTrackCommand,
   TweetCommand,
