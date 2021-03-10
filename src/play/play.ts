@@ -11,10 +11,10 @@ export class Play {
   public static async getTrack(msg: Message): Promise<String> {
     if (msg.channel.type === 'dm') Promise.resolve('Don\'t !play with your DMs.');
 
-    const DRUNK_ROLE = msg.guild.roles.cache.find(role => role.name === 'drunk');
+    const DRUNK_ROLE = msg.guild.roles.cache.find((role) => role.name === 'drunk');
     if (msg.member.roles.cache.has(DRUNK_ROLE.id)) {
       return Promise.resolve(`${msg.member}, you're drunk, go home.`);
-    };
+    }
 
     const args = yargs
       .number('volume').number('v')
