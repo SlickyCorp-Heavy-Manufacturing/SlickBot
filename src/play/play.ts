@@ -20,7 +20,8 @@ export class Play {
 
     const DRUNK_ROLE = msg.guild.roles.cache.find((role) => role.name === 'drunk');
     if (msg.member.roles.cache.has(DRUNK_ROLE.id)) {
-      return Promise.resolve(`${msg.member}, you're drunk, go home.`);
+      await Promise.resolve(`${msg.member}, you're drunk, go home.`);
+      return;
     }
 
     const args = yargs
