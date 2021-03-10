@@ -25,6 +25,7 @@
     "eslint-import-resolver-typescript": "^2.3.0",
     "ffmpeg-static": "^4.2.7",
     "fuzzyset.js": "^1.0.5",
+    "google-tts-api": "^2.0.1",
     "got": "^11.6.2",
     "imgflip": "^2.0.0",
     "iso-639-1": "^2.1.4",
