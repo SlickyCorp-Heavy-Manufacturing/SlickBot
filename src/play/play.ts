@@ -78,7 +78,7 @@ export class Play {
         ttsRequest: {
           input: { text: part },
           voice: { name: 'en-US-Wavenet-C', languageCode: 'en-US' },
-          audioConfig: { audioEncoding: 'MP3' },
+          audioConfig: { audioEncoding: 'MP3', volumeGainDb: 12 },
         },
         voiceChannel,
         volume: 100,
