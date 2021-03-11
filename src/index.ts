@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import { writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 
 import { commandList } from './commandList';
 import { scheduledPosts } from './scheduledPosts';
@@ -21,6 +21,18 @@ if (process.env.GOOGLE_APPLICATION_CREDENTIALS && process.env.GOOGLE_API_CREDS_C
     process.env.GOOGLE_API_CREDS_CONTENT,
     { encoding: 'utf8' },
   );
+  console.log(
+    'Reading back the written file: %s',
+    readFileSync(process.env.GOOGLE_API_CREDS_CONTENT, { encoding: 'utf8' }),
+  );
+} else {
+  console.log(
+    'WARNING: Both "%s" and "%s" env variables are not set, Google Cloud TTS will not work',
+    'GOOGLE_APPLICATION_CREDENTIALS',
+    'GOOGLE_API_CREDS_CONTENT',
+  );
+  console.log('  process.env.GOOGLE_APPLICATION_CREDENTIALS=%s', process.env.GOOGLE_APPLICATION_CREDENTIALS);
+  console.log('  process.env.GOOGLE_API_CREDS_CONTENT=%s', process.env.GOOGLE_API_CREDS_CONTENT);
 }
 
 const discordClient = new DiscordClient();
