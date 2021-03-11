@@ -44,9 +44,4 @@ export const scheduledTweetChecks: IScheduledPost[] = [
     channel: 'noaa-information-bureau',
     getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, 'noaa-information-bureau', 'NWSMilwaukee'),
   },
-  {
-    cronDate: '*/5 * * * *',
-    channel: 'covid-tendies',
-    getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, 'covid-tendies', 'DHSWI', /^Today's #COVID19_WI update/m),
-  },
 ];
