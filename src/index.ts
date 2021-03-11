@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
 
 import { commandList } from './commandList';
 import { scheduledPosts } from './scheduledPosts';
@@ -14,25 +14,20 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 // Write out the Google Cloud Credentials if provided
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS && process.env.GOOGLE_API_CREDS_CONTENT) {
-  console.log('Writing Google Clound credentials to: %s', process.env.GOOGLE_APPLICATION_CREDENTIALS);
-  writeFileSync(
-    process.env.GOOGLE_APPLICATION_CREDENTIALS,
-    process.env.GOOGLE_API_CREDS_CONTENT,
-    { encoding: 'utf8' },
-  );
-  console.log(
-    'Reading back the written file: %s',
-    readFileSync(process.env.GOOGLE_API_CREDS_CONTENT, { encoding: 'utf8' }),
-  );
-} else {
-  console.log(
-    'WARNING: Both "%s" and "%s" env variables are not set, Google Cloud TTS will not work',
-    'GOOGLE_APPLICATION_CREDENTIALS',
-    'GOOGLE_API_CREDS_CONTENT',
-  );
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  console.log('Google Credentials')
   console.log('  process.env.GOOGLE_APPLICATION_CREDENTIALS=%s', process.env.GOOGLE_APPLICATION_CREDENTIALS);
-  console.log('  process.env.GOOGLE_API_CREDS_CONTENT=%s', process.env.GOOGLE_API_CREDS_CONTENT);
+  try {
+    console.log('  %s=%s',
+      process.env.GOOGLE_APPLICATION_CREDENTIALS,
+      readFileSync(process.env.GOOGLE_API_CREDS_CONTENT, { encoding: 'utf8' }),
+    );
+  } catch (err) {
+    console.log('  ERROR: Failed to read file: %o', err);
+  }
+} else {
+  console.log('WARNING: GOOGLE_APPLICATION_CREDENTIALS env variable not set, TTS will not work');
+  console.log('  process.env.GOOGLE_APPLICATION_CREDENTIALS=%s', process.env.GOOGLE_APPLICATION_CREDENTIALS);
 }
 
 const discordClient = new DiscordClient();
