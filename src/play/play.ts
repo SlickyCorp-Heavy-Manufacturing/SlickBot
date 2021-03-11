@@ -1,7 +1,8 @@
 /* eslint no-bitwise: ["error", { "allow": ["<<"] }] */
-import * as googleTTS from 'google-tts-api';
+import { protos, TextToSpeechClient } from '@google-cloud/text-to-speech';
 import * as yargs from 'yargs';
 import { Message, VoiceChannel } from 'discord.js';
+import { Readable } from 'stream';
 
 import Soundcloud from 'soundcloud.ts';
 import ytdl from 'discord-ytdl-core';
@@ -9,7 +10,8 @@ import ytdl from 'discord-ytdl-core';
 interface PlayItem {
   msg: Message;
   text?: string;
-  url: string;
+  ttsRequest?: protos.google.cloud.texttospeech.v1.ISynthesizeSpeechRequest;
+  url?: string;
   voiceChannel: VoiceChannel;
   volume: number;
 }
@@ -70,10 +72,14 @@ export class Play {
       });
     } else {
       const text = msg.content.replace(/^![^\s]+\s+/, '');
-      items.push(...text.match(/.{1,200}(\s|$)/g).map((part) => Object.create({
+      items.push(...text.match(/.{1,5000}(\s|$)/gs).map((part) => Object.create({
         msg,
         text: part,
-        url: googleTTS.getAudioUrl(part),
+        ttsRequest: {
+          input: { text: part },
+          voice: { name: 'en-US-Wavenet-C', languageCode: 'en-US' },
+          audioConfig: { audioEncoding: 'MP3' },
+        },
         voiceChannel,
         volume: 100,
       })));
@@ -116,10 +122,12 @@ export class Play {
     const soundcloud = new Soundcloud(clientId);
 
     try {
-      if (item.url.includes('soundcloud.com')) {
+      if (item.ttsRequest) {
+        const client = new TextToSpeechClient();
+        const [response] = await client.synthesizeSpeech(item.ttsRequest);
+        stream = Readable.from(response.audioContent);
+      } else if (item.url.includes('soundcloud.com')) {
         stream = await soundcloud.util.streamTrack(item.url);
-      } else if (item.url.includes('translate.google.com')) {
-        stream = item.url;
       } else {
         stream = ytdl(item.url, {
           filter: 'audioonly',
@@ -152,7 +160,7 @@ export class Play {
       });
 
       let options = {};
-      if (!item.url.includes('soundcloud.com') && !item.url.includes('translate.google.com')) {
+      if (item.url && !item.url.includes('soundcloud.com')) {
         options = { type: 'opus' };
       }
 
@@ -165,8 +173,8 @@ export class Play {
         setTimeout(() => this.processQueue(), 100);
       });
 
-      if (item.url.includes('translate.google.com')) {
-        await item.msg.reply(`🎙️ Slickyboi started speaking: ${item.text} 🎙️`);
+      if (item.text) {
+        await item.msg.reply(`🎙️ Slickyboi started speaking:\n> ${item.text.replace(/\n{1,}/gm, '\n> ')}`);
       } else {
         await item.msg.reply(`🎶 Slickyboi started playing: ${item.url} 🎶`);
       }
