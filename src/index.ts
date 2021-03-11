@@ -21,7 +21,7 @@ if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
     console.log(
       '  %s=%s',
       process.env.GOOGLE_APPLICATION_CREDENTIALS,
-      readFileSync(process.env.GOOGLE_API_CREDS_CONTENT, { encoding: 'utf8' }),
+      readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS, { encoding: 'utf8' }),
     );
   } catch (err) {
     console.log('  ERROR: Failed to read file: %o', err);
