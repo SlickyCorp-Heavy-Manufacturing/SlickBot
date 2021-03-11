@@ -15,10 +15,11 @@ process.on('unhandledRejection', (reason, p) => {
 
 // Write out the Google Cloud Credentials if provided
 if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-  console.log('Google Credentials')
+  console.log('Google Credentials');
   console.log('  process.env.GOOGLE_APPLICATION_CREDENTIALS=%s', process.env.GOOGLE_APPLICATION_CREDENTIALS);
   try {
-    console.log('  %s=%s',
+    console.log(
+      '  %s=%s',
       process.env.GOOGLE_APPLICATION_CREDENTIALS,
       readFileSync(process.env.GOOGLE_API_CREDS_CONTENT, { encoding: 'utf8' }),
     );
