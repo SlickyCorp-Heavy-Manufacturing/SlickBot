@@ -118,7 +118,7 @@ export class Play {
   private static async startJamming(item: PlayItem): Promise<void> {
     this.currentlyPlaying = true;
     let stream: any;
-    const clientId = 'ymSs5c4hxrRu3yuA6ZyOORoADJI2tVPD';
+    const clientId = 'sCFubJLD5LtMoZI4xUu46btuIqerNC84';
     const soundcloud = new Soundcloud(clientId);
 
     try {
