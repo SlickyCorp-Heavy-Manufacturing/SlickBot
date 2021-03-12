@@ -23,6 +23,12 @@ export class Play {
 
   private static queue: { (): void; }[] = [];
 
+  private static generateUA(): string {
+    const date = new Date();
+    const version = ((date.getFullYear() - 2018) * 4 + Math.floor(date.getMonth() / 4) + 58) + ".0";
+    return `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:${version} Gecko/20100101 Firefox/${version}`;
+  }
+
   public static async playTrack(msg: Message, playNow: boolean): Promise<void> {
     if (msg.channel.type === 'dm') {
       await msg.reply('Don\'t !play with your DMs.');
@@ -133,6 +139,13 @@ export class Play {
           filter: 'audioonly',
           highWaterMark: 1 << 25,
           opusEncoded: true,
+          requestOptions: {
+            headers: {
+              'Accept-Language': 'en-US,en;q=0.5',
+              cookie: 'GPS=1; YSC=gizc2v7SspI; VISITOR_INFO1_LIVE=c_xVA4S61fU; PREF=f4=4000000&tz=America.Chicago',
+              'User-Agent': Play.generateUA(),
+            },
+          },
         });
       }
     } catch (error) {
