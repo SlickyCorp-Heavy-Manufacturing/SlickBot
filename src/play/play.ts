@@ -176,7 +176,7 @@ export class Play {
           stream.destroy(error);
         }
         await item.msg.reply(`Slickyboi pooped: ${error} 🎶`);
-      })
+      });
 
       let options = {};
       if (item.url && !item.url.includes('soundcloud.com')) {
