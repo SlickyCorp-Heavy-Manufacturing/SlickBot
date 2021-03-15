@@ -170,6 +170,13 @@ export class Play {
           stream.destroy(err);
         }
       });
+      connection.on('error', async (error) => {
+        if (stream && stream.destroy) {
+          console.log('Disconnected, destroying stream');
+          stream.destroy(error);
+        }
+        await item.msg.reply(`Slickyboi pooped: ${error} 🎶`);
+      })
 
       let options = {};
       if (item.url && !item.url.includes('soundcloud.com')) {
