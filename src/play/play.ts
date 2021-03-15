@@ -142,7 +142,6 @@ export class Play {
           requestOptions: {
             headers: {
               'Accept-Language': 'en-US,en;q=0.5',
-              cookie: 'GPS=1; YSC=gizc2v7SspI; VISITOR_INFO1_LIVE=c_xVA4S61fU; PREF=f4=4000000&tz=America.Chicago',
               'User-Agent': Play.generateUA(),
             },
           },
