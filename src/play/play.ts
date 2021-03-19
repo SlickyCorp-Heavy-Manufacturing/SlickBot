@@ -138,7 +138,7 @@ export class Play {
         const headers: { [key: string]: string; } = {
           'Accept-Language': 'en-US,en;q=0.5',
           'User-Agent': Play.generateUA(),
-        }
+        };
         if (process.env.YOUTUBE_COOKIE) {
           headers.cookie = process.env.YOUTUBE_COOKIE;
         }
