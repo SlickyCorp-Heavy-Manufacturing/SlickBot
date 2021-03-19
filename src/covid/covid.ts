@@ -1,5 +1,8 @@
+import { Message } from 'discord.js';
+import fs from 'fs';
 import got from 'got';
 import { DateTime } from 'luxon';
+import { withFile } from 'tmp-promise';
 import { UsDaily, DHSData, WICensusData } from './covid-types';
 // from https://www.census.gov/data/datasets/time-series/demo/popest/2010s-counties-total.html
 import * as wiCountyPopData from './wi_county_pop_data_2019.json';
@@ -45,6 +48,28 @@ export class Covid {
 
       // At this point I should have data to parse. Let's do it.
       return Covid.formatLeaderboard(startDate, endDate, dhsData);
+    }
+
+    public static async wiVaccine(msg: Message): Promise<void> {
+      await withFile(
+        async (tmpFile) => {
+          const response = await got.get(
+            'https://website-snapshot.krischeonline.com/vaccine-wi',
+            {
+              headers: {
+                API_KEY: process.env.SNAPSHOT_API_TOKEN,
+              },
+              responseType: 'buffer',
+            },
+          );
+          fs.writeFileSync(tmpFile.path, response.body);
+          await msg.channel.send({ files: [tmpFile.path] });
+        },
+        {
+          prefix: 'vaccine-wi-',
+          postfix: '.png',
+        },
+      );
     }
 
     public static datesToURI(startDate: DateTime, endDate: DateTime): string {

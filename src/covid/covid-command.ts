@@ -23,3 +23,13 @@ export const CovidWiCommand: ICommand = {
     msg.channel.send(leaderboardMsg);
   },
 };
+
+export const VaccineWiCommand: ICommand = {
+  name: '!vaccinewi',
+  helpDescription: 'Display the WI vaccine visualization.',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!vaccinewi'),
+  command: async (msg: Message) => {
+    await Covid.wiVaccine(msg);
+  },
+};
