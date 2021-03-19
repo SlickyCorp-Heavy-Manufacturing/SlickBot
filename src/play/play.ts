@@ -135,15 +135,19 @@ export class Play {
       } else if (item.url.includes('soundcloud.com')) {
         stream = await soundcloud.util.streamTrack(item.url);
       } else {
+        const headers: { [key: string]: string; } = {
+          'Accept-Language': 'en-US,en;q=0.5',
+          'User-Agent': Play.generateUA(),
+        }
+        if (process.env.YOUTUBE_COOKIE) {
+          headers.cookie = process.env.YOUTUBE_COOKIE;
+        }
         stream = ytdl(item.url, {
           filter: 'audioonly',
           highWaterMark: 1 << 25,
           opusEncoded: true,
           requestOptions: {
-            headers: {
-              'Accept-Language': 'en-US,en;q=0.5',
-              'User-Agent': Play.generateUA(),
-            },
+            headers,
           },
         });
       }
