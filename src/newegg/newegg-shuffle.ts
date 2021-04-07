@@ -3,7 +3,7 @@ import { uniq } from 'lodash';
 import { IScheduledPost } from '../ischeduledpost';
 import { shuffle } from './newegg';
 
-export const scheduledTendiesPosts: IScheduledPost[] = [
+export const scheduledNeweggShufflePosts: IScheduledPost[] = [
   {
     cronDate: '0 30 * * * *',
     channel: '715723681304674304',
