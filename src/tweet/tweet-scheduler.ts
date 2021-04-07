@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 import { IScheduledPost } from '../ischeduledpost';
-import { findChannelByName } from '../utils';
+import { findChannelById } from '../utils';
 
 import { TwitterApi } from './twitter-api';
 
@@ -23,7 +23,8 @@ export class TweetScheduler {
     const tweets = await TwitterApi.getUserTimeline(parseInt(user.id, 10));
 
     // Get 50 most recent posts in the channel
-    const posts = await findChannelByName(client, channel).messages.fetch({ limit: 100 }, false);
+    const fetchedChannel = await findChannelById(client, channel);
+    const posts = await fetchedChannel.messages.fetch({ limit: 100 }, false);
 
     return tweets
       .filter((tweet) => !posts.some((post) => post.content.includes(tweet.id.toString())))
@@ -41,7 +42,7 @@ export class TweetScheduler {
 export const scheduledTweetChecks: IScheduledPost[] = [
   {
     cronDate: '*/5 * * * *',
-    channel: 'noaa-information-bureau',
-    getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, 'noaa-information-bureau', 'NWSMilwaukee'),
+    channel: '742469521977376980',
+    getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, '742469521977376980', 'NWSMilwaukee'),
   },
 ];

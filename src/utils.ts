@@ -1,9 +1,13 @@
 import { Client, TextChannel } from 'discord.js';
 
-export function findChannelByName(client: Client, name: String): TextChannel {
+export function findChannelByName(client: Client, name: string): TextChannel {
   return client.channels.cache.find(
     (channel) => (channel as TextChannel).name === name,
   ) as TextChannel;
+}
+
+export function findChannelById(client: Client, id: string): Promise<TextChannel> {
+  return client.channels.fetch(id).then((channel) => channel as TextChannel);
 }
 
 export function escapeMarkdown(text: String): String {

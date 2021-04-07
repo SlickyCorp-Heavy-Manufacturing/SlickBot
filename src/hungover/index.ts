@@ -1,10 +1,10 @@
-import Discord, { Client } from 'discord.js';
-import { sample, sample as _sample } from 'lodash';
+import Discord from 'discord.js';
+import { sample } from 'lodash';
 
 import { IScheduledPost } from '../ischeduledpost';
-import { findChannelByName } from '../utils';
+import { findChannelById } from '../utils';
 
-const CHANNEL = 'irl';
+const CHANNEL = '614482862363770903';
 const HANGOVER_CURES = [
   '**eating a good breakfast**:\n> Eating a hearty breakfast is one of the most well-known remedies for a hangover.',
   '**getting plenty of sleep**:\n> Alcohol can cause sleep disturbances and may be associated with decreased sleep quality and duration for some individuals.',
@@ -19,7 +19,8 @@ async function hangoverCures(
   client: Discord.Client,
 ): Promise<string[]> {
   const messages: string[] = [];
-  const role = await findChannelByName(client, CHANNEL).guild.roles.fetch(HUNGOVER_ROLE);
+  const channel = await findChannelById(client, CHANNEL);
+  const role = await channel.guild.roles.fetch(HUNGOVER_ROLE);
   role.members.each((member) => {
     messages.push(`${member.user} it looks like you're hungover, I suggest ${sample(HANGOVER_CURES)}`);
   });

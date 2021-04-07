@@ -1,13 +1,13 @@
 import Discord from 'discord.js';
 import { readFileSync } from 'fs';
+import { scheduleJob } from 'node-schedule';
 
 import { commandList } from './commandList';
 import { scheduledPosts } from './scheduledPosts';
-import { findChannelByName } from './utils';
+import { findChannelById } from './utils';
 import { DiscordClient } from './discordClient';
 
 require('dotenv').config();
-const schedule = require('node-schedule');
 
 process.on('unhandledRejection', (reason, p) => {
   console.log(`caught your junk ${reason} ${p}`);
@@ -41,17 +41,16 @@ discordClient.init().then(() => {
   });
 
   scheduledPosts.forEach((scheduledPost) => {
-    schedule.scheduleJob({ rule: scheduledPost.cronDate, tz: 'America/Chicago' }, () => {
-      scheduledPost.getMessage(discordClient.client).then((value) => {
-        if (value) {
-          const channel = findChannelByName(discordClient.client, scheduledPost.channel);
-          if (Array.isArray(value)) {
-            value.forEach((message) => channel.send(message));
-          } else {
-            channel.send(value);
-          }
+    scheduleJob({ rule: scheduledPost.cronDate, tz: 'America/Chicago' }, async () => {
+      const message = scheduledPost.getMessage(discordClient.client);
+      if (message) {
+        const channel = await findChannelById(discordClient.client, scheduledPost.channel);
+        if (Array.isArray(message)) {
+          message.forEach((msg) => channel.send(msg));
+        } else {
+          channel.send(message);
         }
-      });
+      }
     });
   });
 });
