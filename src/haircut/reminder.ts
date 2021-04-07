@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import { IScheduledPost } from '../ischeduledpost';
 
-const IRL_CHANNEL = 'irl';
+const IRL_CHANNEL = '614482862363770903';
 
 export const PulakHairCut: IScheduledPost[] = [
   {
