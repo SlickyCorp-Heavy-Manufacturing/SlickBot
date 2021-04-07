@@ -9,27 +9,12 @@ import { DiscordClient } from './discordClient';
 
 require('dotenv').config();
 
-process.on('unhandledRejection', (reason, p) => {
-  console.log(`caught your junk ${reason} ${p}`);
-});
-
-// Write out the Google Cloud Credentials if provided
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-  console.log('Google Credentials');
-  console.log('  process.env.GOOGLE_APPLICATION_CREDENTIALS=%s', process.env.GOOGLE_APPLICATION_CREDENTIALS);
-  try {
-    console.log(
-      '  %s=%s',
-      process.env.GOOGLE_APPLICATION_CREDENTIALS,
-      readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS, { encoding: 'utf8' }),
-    );
-  } catch (err) {
-    console.log('  ERROR: Failed to read file: %o', err);
+process.on('unhandledRejection', (reason: Error | any, p: Promise<any>) => {
+  console.log('caught your junk %s', reason);
+  if (reason.stack) {
+    console.log(reason.stack);
   }
-} else {
-  console.log('WARNING: GOOGLE_APPLICATION_CREDENTIALS env variable not set, TTS will not work');
-  console.log('  process.env.GOOGLE_APPLICATION_CREDENTIALS=%s', process.env.GOOGLE_APPLICATION_CREDENTIALS);
-}
+});
 
 const discordClient = new DiscordClient();
 discordClient.init().then(() => {
@@ -42,7 +27,7 @@ discordClient.init().then(() => {
 
   scheduledPosts.forEach((scheduledPost) => {
     scheduleJob({ rule: scheduledPost.cronDate, tz: 'America/Chicago' }, async () => {
-      const message = scheduledPost.getMessage(discordClient.client);
+      const message = await scheduledPost.getMessage(discordClient.client);
       if (message) {
         const channel = await findChannelById(discordClient.client, scheduledPost.channel);
         if (Array.isArray(message)) {
