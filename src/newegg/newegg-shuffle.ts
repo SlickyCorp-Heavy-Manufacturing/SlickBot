@@ -5,7 +5,7 @@ import { shuffle } from './newegg';
 
 export const scheduledNeweggShufflePosts: IScheduledPost[] = [
   {
-    cronDate: '0 30 * * * *',
+    cronDate: '0 5 * * * *',
     channel: '715723681304674304',
     getMessage: async (): Promise<string> => {
       try {
