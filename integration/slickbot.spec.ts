@@ -166,36 +166,6 @@ describe('slickbot', () => {
             });
     }, 15000);
 
-    xit('tendies should post given stock change in meme format', (done) => {
-        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
-        testChannel.send('!tendies TSLA');
-
-        _lastMessage
-            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('TSLA')))
-            .pipe(take(1))
-            .subscribe( msg => {
-                expect(msg.content).toMatch(/\*\*TSLA:\*\*\s(\+|\-)\d+\.\d+\s\(\d+\.\d+%\)\s:chart_with_(upwards|downwards)_trend:/gm);
-                expect(msg.content).toContain('https://');
-                done();
-            });
-    }, 30000);
-
-    it('tendies should post a random stock if none specified', (done) => {
-        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
-        testChannel.send('!tendies');
-
-        _lastMessage
-            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => /^(\*\*)?[A-Z\.\+\-\=\^]+:(\*\*)?\s/gm.test(msg.content)))
-            .pipe(take(1))
-            .subscribe( msg => {
-                expect(msg.content).toMatch(/^\*\*[A-Z\.\+\-\=\^]+:\*\*\s(\+|\-)\d+\.\d+\s\(\d+\.\d+%\)\s:chart_with_(upwards|downwards)_trend:/m);
-                expect(msg.content).toContain('https://');
-                done();
-            });
-    }, 30000);
-
     it('!crypto btc should post the exchange rate of BTC', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
         testChannel.send('!crypto btc');
@@ -208,21 +178,6 @@ describe('slickbot', () => {
                 expect(msg.content).toContain('Current:');
                 expect(msg.content).toContain('Low (24 hrs):');
                 expect(msg.content).toContain('High (24 hrs):');
-                done();
-            });
-    }, 30000);
-
-    xit('tendies should post a note if the stock wasn\'t found', (done) => {
-        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL);
-        const fakeStock = 'thisstockdoesnotexist';
-        testChannel.send(`!tendies ${fakeStock}`);
-
-        _lastMessage
-            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes(fakeStock.toUpperCase())))
-            .pipe(take(1))
-            .subscribe( msg => {
-                expect(msg.content).toBe(`Ticker symbol \'${fakeStock.toUpperCase()}\' was not found.`);
                 done();
             });
     }, 30000);
