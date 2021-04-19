@@ -49,21 +49,6 @@ export class Tendies {
   }
 
   /**
-   * Calculate Blake's happiness.
-   */
-  public static async blakesHappiness(): Promise<string> {
-    const quote = await Tendies.quote('ROK');
-    const percentChange = Tendies.calculateQuotePercentage(quote);
-
-    if (percentChange > 0) {
-      return `ROK closed up (+${percentChange.toFixed(2)}% :chart_with_upwards_trend:) today, Blake thanks you for his profit off your labor.`;
-    } if (percentChange < 0) {
-      return `ROK closed down (${percentChange.toFixed(2)}% :chart_with_downwards_trend:) today, please thank Blake for his generosity if you still have a job.`;
-    }
-    return 'ROK closed EVEN today, Blake is disappointed by your simulaneous lack of both gumption and ineptitude.';
-  }
-
-  /**
    * Return a message with information about the exchange rate of a crypto currency
    * @param symbol The symbol of the crypto currency
    */

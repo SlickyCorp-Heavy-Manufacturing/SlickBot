@@ -15,7 +15,7 @@ export const scheduledNeweggShufflePosts: IScheduledPost[] = [
           // A shuffle has started within the past hour
           const items = uniq(lotteryData.LotteryItems.map((item) => item.Tag)).sort();
           return Promise.resolve(
-            `A Newegg Product Shuffle has started, the following items are available: ${items.join(', ')}\nhttps://www.newegg.com/product-shuffle`,
+            `A Newegg Product Shuffle has started, the following items are available: **${items.join(', ')}**\nhttps://www.newegg.com/product-shuffle`,
           );
         }
       } catch (error) {
