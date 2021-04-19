@@ -179,7 +179,7 @@ describe('slickbot', () => {
                 expect(msg.content).toContain('https://');
                 done();
             });
-    }, 15000);
+    }, 30000);
 
     it('tendies should post a random stock if none specified', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
@@ -194,7 +194,7 @@ describe('slickbot', () => {
                 expect(msg.content).toContain('https://');
                 done();
             });
-    }, 15000);
+    }, 30000);
 
     it('!crypto btc should post the exchange rate of BTC', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
@@ -210,7 +210,7 @@ describe('slickbot', () => {
                 expect(msg.content).toContain('High (24 hrs):');
                 done();
             });
-    }, 15000);
+    }, 30000);
 
     xit('tendies should post a note if the stock wasn\'t found', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL);
@@ -225,7 +225,7 @@ describe('slickbot', () => {
                 expect(msg.content).toBe(`Ticker symbol \'${fakeStock.toUpperCase()}\' was not found.`);
                 done();
             });
-    }, 15000);
+    }, 30000);
 
     it('!meme should post a meme', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
