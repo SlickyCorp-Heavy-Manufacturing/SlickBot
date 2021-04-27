@@ -38,8 +38,8 @@ export interface EthermineDashboardInfo {
 }
 
 export class EthermineDashboard {
-  public static async info(walletId: string): Promise<EthermineDashboardInfo> {
-    const response = await got(`https://api.ethermine.org/miner/${walletId}/dashboard`, { responseType: 'json' });
+  public static async info(walletAddress: string): Promise<EthermineDashboardInfo> {
+    const response = await got(`https://api.ethermine.org/miner/${walletAddress}/dashboard`, { responseType: 'json' });
     return response.body as EthermineDashboardInfo;
   }
 }
