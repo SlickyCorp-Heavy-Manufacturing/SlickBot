@@ -28,6 +28,7 @@ import { EmojifyCommand } from './emojify/emojify';
 import { LMGTFYCommand } from './lmgtfy';
 import { CocktailRecommendation, GetCocktail } from './cocktail';
 import { PlayNowCommand } from './play';
+import { MinerStatsCommand } from './miner';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -67,4 +68,5 @@ export const commandList: ICommand[] = [
   CocktailRecommendation,
   GetCocktail,
   CryptoCommand,
+  MinerStatsCommand,
 ];
