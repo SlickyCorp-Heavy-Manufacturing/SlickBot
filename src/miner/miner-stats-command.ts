@@ -12,7 +12,7 @@ export const MinerStatsCommand: ICommand = {
   command: async (msg: Message) => {
     const walletAddress = msg.content.replace('!miner-stats', '').trim();
     if (!walletRegex.test(walletAddress)) {
-      msg.reply('Invalid wallet id provided');
+      msg.reply('Invalid wallet address provided');
       return;
     }
 
