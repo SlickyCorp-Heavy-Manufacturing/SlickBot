@@ -19,8 +19,8 @@ export const MinerStatsCommand: ICommand = {
     }
 
     const info = await EthermineDashboard.info(walletAddress);
-
     const averageHashRate = average(info.data.statistics.map(stats => stats.currentHashrate));
+  
     await msg.reply(`Ethermine statistics for ${walletAddress}:
 > Active Workers: ${info.data.currentStatistics.activeWorkers}
 > Current Hashrate: ${(info.data.currentStatistics.currentHashrate / 1000000).toFixed(3)} MH/s
