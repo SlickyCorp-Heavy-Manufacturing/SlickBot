@@ -20,9 +20,9 @@ async function hangoverCures(
 ): Promise<string[]> {
   const messages: string[] = [];
   const channel = await findChannelById(client, CHANNEL);
-  const role = await channel.guild.roles.fetch(HUNGOVER_ROLE);
+  const role = await channel.guild.roles.fetch(HUNGOVER_ROLE, false, true);
   role.members.each((member) => {
-    messages.push(`${member.user} it looks like you're hungover, I suggest ${sample(HANGOVER_CURES)}`);
+    messages.push(`${member.user} it looks like you're hungover, I suggest ${HANGOVER_CURES[Math.floor(Math.random() * (HANGOVER_CURES.length + 1))]}`);
   });
 
   return messages;
