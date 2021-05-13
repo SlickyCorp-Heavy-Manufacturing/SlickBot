@@ -1,5 +1,4 @@
 import Discord from 'discord.js';
-import { sample } from 'lodash';
 
 import { IScheduledPost } from '../ischeduledpost';
 import { findChannelById } from '../utils';
@@ -22,7 +21,12 @@ async function hangoverCures(
   const channel = await findChannelById(client, CHANNEL);
   const role = await channel.guild.roles.fetch(HUNGOVER_ROLE, false, true);
   role.members.each((member) => {
-    messages.push(`${member.user} it looks like you're hungover, I suggest ${HANGOVER_CURES[Math.floor(Math.random() * (HANGOVER_CURES.length + 1))]}`);
+    const random = Math.floor(Math.random() * (HANGOVER_CURES.length));
+    console.log('Random Hangover Cure Index: %i', random);
+    console.log('Another Random Index: %i', Math.floor(Math.random() * (HANGOVER_CURES.length)));
+    console.log('Another Random Index: %i', Math.floor(Math.random() * (HANGOVER_CURES.length)));
+    console.log('Another Random Index: %i', Math.floor(Math.random() * (HANGOVER_CURES.length)));
+    messages.push(`${member.user} it looks like you're hungover, I suggest ${HANGOVER_CURES[random]}`);
   });
 
   return messages;
