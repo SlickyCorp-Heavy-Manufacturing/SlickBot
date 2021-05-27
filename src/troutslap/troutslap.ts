@@ -42,9 +42,9 @@ export class Troutslap {
     // Slide into author's DMs with usage.
     if (msg.author.dmChannel === null) {
       msg.author.createDM()
-        .then((channel: DMChannel) => channel.send(this.usage()));
+        .then((channel: DMChannel) => channel.send(this.usage(), {split: false}));
     } else {
-      msg.author.dmChannel.send(this.usage());
+      msg.author.dmChannel.send(this.usage(), {split: false});
     }
   }
 

@@ -59,7 +59,7 @@ export class Play {
 
       // If the url is provided as the last arg (without --url), use that
       if (yargs.argv._.length > 1) {
-        args.url = yargs.argv._.pop();
+        args.url = yargs.argv._.pop().toString();
       }
 
       if (!(args.url.startsWith('https://')
