@@ -10,7 +10,7 @@ export const MemeCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!meme'),
   command: async (msg: Message) => {
     const value = await Meme.getImage(msg);
-    await msg.reply(value, {split: false});
+    await msg.reply(value, { split: false });
   },
 };
 
@@ -21,7 +21,7 @@ export const MemeSearchCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!meme-search'),
   command: async (msg: Message) => {
     const message = await Meme.getImage(msg);
-    await msg.reply(message, {split: false});
+    await msg.reply(message, { split: false });
   },
 };
 

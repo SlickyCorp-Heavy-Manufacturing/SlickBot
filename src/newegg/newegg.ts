@@ -37,7 +37,7 @@ export const shuffle = async (): Promise<LotteryData> => {
   const response = await got('https://www.newegg.com/product-shuffle');
   const $ = cheerio.load(response.body, { xmlMode: true });
 
-  const scripts: any = $('script:not([src])').filter((index, element: any): boolean => element.children.some((child: any) => child.data && child.data.includes('LotteryStartDate')))
+  const scripts: any = $('script:not([src])').filter((index, element: any): boolean => element.children.some((child: any) => child.data && child.data.includes('LotteryStartDate')));
   const initialState = scripts[0].children[0].data;
 
   const match = initialState.match(/\{.*\}/);
