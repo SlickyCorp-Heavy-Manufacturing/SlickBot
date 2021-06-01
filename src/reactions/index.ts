@@ -1,1 +1,1 @@
-export { NiceReaction, ChulasRecation } from './react';
+export { NiceReaction, ChulasRecation, GroupReaction } from './react';
