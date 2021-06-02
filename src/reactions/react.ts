@@ -31,12 +31,12 @@ export const GroupReaction: ICommand = {
   trigger: (msg: Message) => msg.channel.id === '619704904696594493',
   command: async (msg: Message) => {
     const groupA = await msg.guild.roles.fetch('849368883689291776', false, true);
-    if (groupA && groupA.members.some((member) => member.user.id === msg.author.id)) {
-      await msg.react('🅰️');
+    if (groupA.members.some((member) => member.user.id === msg.author.id)) {
+      await msg.react('A');
     } else {
       const groupB = await msg.guild.roles.fetch('849368974083883038', false, true);
-      if (groupB && groupB.members.some((member) => member.user.id === msg.author.id)) {
-        await msg.react('🅱️');
+      if (groupB.members.some((member) => member.user.id === msg.author.id)) {
+        await msg.react('B');
       }
     }
   },
