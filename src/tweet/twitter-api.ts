@@ -1,8 +1,11 @@
 import got, { Response } from 'got/dist/source';
 
 export interface TweetDetails {
+  /* eslint-disable camelcase */
+  created_at: Date;
   id: number;
   text: string;
+  /* eslint-enable camelcase */
 }
 
 export interface UserDetails {
@@ -18,7 +21,7 @@ export interface UserDetails {
   url: string;
   name: string;
   id: string;
-  created_at: string;
+  created_at: Date;
   protected: boolean;
   profile_image_url: string;
   verified: boolean;
@@ -47,7 +50,10 @@ export class TwitterApi {
           'user.fields': 'created_at,description,entities,id,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,withheld',
         },
       },
-    ).then((response: Response<any>) => response.body.data as UserDetails);
+    ).then((response: Response<any>) => {
+      response.body.data.created_at = new Date(response.body.data.created_at);
+      return response.body.data as UserDetails;
+    });
   }
 
   /**
@@ -64,8 +70,14 @@ export class TwitterApi {
         responseType: 'json',
         searchParams: {
           exclude: 'replies,retweets',
+          'tweet.fields': 'created_at,id,text',
         },
       },
-    ).then((response: Response<any>) => response.body.data as TweetDetails[]);
+    ).then((response: Response<any>) => {
+      for (let i = 0; i < response.body.data.length; i += 1) {
+        response.body.data[i].created_at = new Date(response.body.data[i].created_at);
+      }
+      return response.body.data as TweetDetails[];
+    });
   }
 }
