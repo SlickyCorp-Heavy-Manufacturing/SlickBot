@@ -1,20 +1,17 @@
-import Discord from 'discord.js';
 import { IScheduledPost } from '../ischeduledpost';
-import { findChannelById } from '../utils';
 
 import { TwitterApi } from './twitter-api';
 
 export class TweetScheduler {
   /**
-   * Get the 10 most recent tweet permalinks of a twitter user that haven't
-   * already been posted to the specified channel.
-   * @param client The Discord client.
-   * @param channel The Discord channel.
+   * Get the 10 most recent tweet permalinks of a twitter user that are newer
+   * than the specified expiration.
+   * @param expiration Don't post any twitters older than this number of minutes.
    * @param username The Twitter username.
+   * @param regex [Optional] Only post tweets that match this regular expression.
    */
-  public static async getUnpostedTweets(
-    client: Discord.Client,
-    channel: string,
+  public static async getRecentTweets(
+    expiration: number,
     username: string,
     regex?: RegExp,
   ): Promise<string[]> {
@@ -22,12 +19,11 @@ export class TweetScheduler {
     const user = await TwitterApi.getUserDetails(username);
     const tweets = await TwitterApi.getUserTimeline(parseInt(user.id, 10));
 
-    // Get 50 most recent posts in the channel
-    const fetchedChannel = await findChannelById(client, channel);
-    const posts = await fetchedChannel.messages.fetch({ limit: 100 }, false);
+    const now = new Date();
 
     return tweets
-      .filter((tweet) => !posts.some((post) => post.content.includes(tweet.id.toString())))
+      .filter((tweet) => now.getTime() - tweet.created_at.getTime() > 0)
+      .filter((tweet) => now.getTime() - tweet.created_at.getTime() < expiration * 60 * 1000)
       .filter((tweet) => {
         if (regex === undefined) {
           return true;
@@ -43,6 +39,11 @@ export const scheduledTweetChecks: IScheduledPost[] = [
   {
     cronDate: '*/5 * * * *',
     channel: '742469521977376980',
-    getMessage: (client: Discord.Client) => TweetScheduler.getUnpostedTweets(client, '742469521977376980', 'NWSMilwaukee'),
+    getMessage: () => TweetScheduler.getRecentTweets(5, 'NWSMilwaukee'),
+  },
+  {
+    cronDate: '1 * * * *',
+    channel: '679842740124647540',
+    getMessage: () => TweetScheduler.getRecentTweets(60, 'ewhispers', /^#earnings for the week\s+/gim),
   },
 ];
