@@ -45,5 +45,6 @@ export const scheduledTweetChecks: IScheduledPost[] = [
     cronDate: '1 * * * *',
     channel: '679842740124647540',
     getMessage: () => TweetScheduler.getRecentTweets(60, 'ewhispers', /^#earnings for the week\s+/gim),
+    pinMessage: true,
   },
 ];
