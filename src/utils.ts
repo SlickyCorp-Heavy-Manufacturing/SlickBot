@@ -23,3 +23,17 @@ export function isSlickBotEmployee(user: string): Boolean {
   }
   return true;
 }
+
+/**
+ * Unpin all messages of a channel that were created by the bot user.
+ * @param client The discord client
+ * @param channel The discord channel
+ */
+export async function unpinBotMessages(client: Client, channel: TextChannel): Promise<void> {
+  const pinnedMessages = await channel.messages.fetchPinned(false);
+  pinnedMessages.forEach(async (pinnedMessage) => {
+    if (pinnedMessage.author.id === client.user.id) {
+      await pinnedMessage.unpin();
+    }
+  });
+}

@@ -1,10 +1,9 @@
 import Discord from 'discord.js';
-import { readFileSync } from 'fs';
 import { scheduleJob } from 'node-schedule';
 
 import { commandList } from './commandList';
 import { scheduledPosts } from './scheduledPosts';
-import { findChannelById } from './utils';
+import { findChannelById, unpinBotMessages } from './utils';
 import { DiscordClient } from './discordClient';
 
 require('dotenv').config();
@@ -30,10 +29,24 @@ discordClient.init().then(() => {
       const message = await scheduledPost.getMessage(discordClient.client);
       if (message) {
         const channel = await findChannelById(discordClient.client, scheduledPost.channel);
+
+        if (scheduledPost.pinMessage === true) {
+          // Unpin other messages from this user
+          await unpinBotMessages(discordClient.client, channel);
+        }
+
         if (Array.isArray(message)) {
-          message.forEach((msg) => channel.send(msg));
+          message.forEach(async (msg) => {
+            const sent = await channel.send(msg);
+            if (scheduledPost.pinMessage === true) {
+              await sent.pin();
+            }
+          });
         } else {
-          channel.send(message);
+          const sent = await channel.send(message);
+          if (scheduledPost.pinMessage === true) {
+            await sent.pin();
+          }
         }
       }
     });
