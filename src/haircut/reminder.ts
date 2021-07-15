@@ -5,7 +5,7 @@ const IRL_CHANNEL = '614482862363770903';
 
 export const PulakHairCut: IScheduledPost[] = [
   {
-    cronDate: '0 9 * * 2',
+    cronDate: '0 9 * * 4',
     channel: IRL_CHANNEL,
     getMessage: (client) => {
       const pulakUser = client.users.cache.find((user) => user.username === 'Pulak');
