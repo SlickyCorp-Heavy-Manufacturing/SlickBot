@@ -1,0 +1,1 @@
+export { DefineCommand } from './define';
