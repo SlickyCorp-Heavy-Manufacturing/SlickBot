@@ -29,6 +29,7 @@ import { LMGTFYCommand } from './lmgtfy';
 import { CocktailRecommendation, GetCocktail } from './cocktail';
 import { PlayNowCommand } from './play';
 import { MinerStatsCommand } from './miner';
+import { DefineCommand} from './dictionary'
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -69,4 +70,5 @@ export const commandList: ICommand[] = [
   GetCocktail,
   CryptoCommand,
   MinerStatsCommand,
+  DefineCommand,
 ];
