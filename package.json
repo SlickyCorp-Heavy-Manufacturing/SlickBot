@@ -35,7 +35,7 @@
     "luxon": "1.28.0",
     "moji-translate": "1.0.8",
     "node-schedule": "2.0.0",
-    "pureimage": "0.2.7",
+    "pureimage": "0.3.2",
     "rxjs": "6.6.7",
     "soundcloud.ts": "0.3.9",
     "tmp-promise": "3.0.2",
