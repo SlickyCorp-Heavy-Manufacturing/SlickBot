@@ -37,7 +37,7 @@
     "node-schedule": "2.0.0",
     "pureimage": "0.3.2",
     "rxjs": "6.6.7",
-    "soundcloud.ts": "0.3.9",
+    "soundcloud.ts": "0.4.0",
     "tmp-promise": "3.0.2",
     "yargs": "16.2.0",
     "ytdl-core": "4.9.0"
