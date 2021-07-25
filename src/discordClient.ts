@@ -24,7 +24,7 @@ export class DiscordClient {
 
             client.user.setActivity(DiscordClient.note());
 
-            resolve();
+            resolve(client);
           });
         });
       }
