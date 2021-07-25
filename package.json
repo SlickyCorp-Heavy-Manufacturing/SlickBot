@@ -24,7 +24,7 @@
     "cheerio": "1.0.0-rc.3",
     "discord-ytdl-core": "5.0.4",
     "discord.js": "12.3.1",
-    "dotenv": "8.6.0",
+    "dotenv": "10.0.0",
     "eslint-import-resolver-typescript": "2.4.0",
     "ffmpeg-static": "4.4.0",
     "fuzzyset.js": "1.0.6",
