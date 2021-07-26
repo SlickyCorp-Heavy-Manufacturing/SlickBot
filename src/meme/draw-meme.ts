@@ -14,7 +14,7 @@ export class DrawMeme {
       ctx.font = "48pt 'Source Sans Pro'";
       ctx.fillText('ABC', 80, 80);
 
-      const passThroughStream = new stream.PassThrough()
+      const passThroughStream = new stream.PassThrough();
       pureimage.encodePNGToStream(img, passThroughStream).then(() => {
         msg.channel.send({ files: [passThroughStream], split: false });
       });
