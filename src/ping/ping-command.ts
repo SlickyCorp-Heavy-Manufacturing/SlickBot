@@ -7,6 +7,6 @@ export const PingCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content === 'ping',
   command: async (msg: Message) => {
-    await msg.channel.send('pong');
+    await msg.channel.send('pong', { split: false });
   },
 };

@@ -9,6 +9,6 @@ export const ShortsCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!shorts'),
   command: async (msg: Message) => {
     const value = await Tendies.shorts(msg.content.replace('!shorts', '').trim());
-    await msg.channel.send(value);
+    await msg.channel.send(value, { split: false });
   },
 };

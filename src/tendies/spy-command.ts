@@ -42,7 +42,7 @@ export const DowCommand: ICommand = {
       'https://tenor.com/bbCLu.gif',
       'https://tenor.com/beDbD.gif',
       'https://tenor.com/bgfS2.gif',
-    ]));
+    ]), { split: false });
   },
 };
 

@@ -11,6 +11,6 @@ export const FlavorOfTheDayCommand: ICommand = {
     const flavorOfTheDay = await KoppsFlavorForecast.flavorOfTheDay();
     const flavorNames: string[] = flavorOfTheDay.flavors.map((flavorObj) => flavorObj.flavor);
     const formatedFlavorString: string = `${flavorNames.slice(0, -1).join(',')} and ${flavorNames.slice(-1)}`;
-    await msg.channel.send(`The flavor of the day at Kopps on ${flavorOfTheDay.date} is ${formatedFlavorString}.`);
+    await msg.channel.send(`The flavor of the day at Kopps on ${flavorOfTheDay.date} is ${formatedFlavorString}.`, { split: false });
   },
 };

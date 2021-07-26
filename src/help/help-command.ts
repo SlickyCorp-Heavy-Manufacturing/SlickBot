@@ -8,22 +8,12 @@ export const HelpCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content === '!help',
   command: (msg: Message) => {
-    const messages: string[] = [''];
+    let message: string = '';
     commandList.filter((command) => command.showInHelp).forEach((command: ICommand) => {
-      // Break the message up into 2000 character chunks
-      const newMessage: string = `${command.name} - ${command.helpDescription}\n`;
-      if (newMessage.length + messages[messages.length - 1].length > 2000) {
-        messages.push(`*continued*\n${newMessage}`);
-      } else {
-        messages[messages.length - 1] += newMessage;
-      }
+      message += `${command.name} - ${command.helpDescription}\n`;
     });
 
-    // Send all chunks
-    messages.forEach((message: string) => {
-      msg.channel.send(message);
-    });
-
+    msg.channel.send(message, { split: true });
     return Promise.resolve();
   },
 };

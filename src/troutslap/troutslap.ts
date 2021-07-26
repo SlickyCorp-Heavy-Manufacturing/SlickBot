@@ -1,5 +1,5 @@
 import Discord, { DMChannel } from 'discord.js';
-import { escapeMarkdown, isSlickBotEmployee } from '../utils';
+import { escapeMarkdown } from '../utils';
 
 export class Troutslap {
   public static async slap(msg: Discord.Message): Promise<void> {
@@ -34,7 +34,7 @@ export class Troutslap {
     // Assign a random trout
     // Reply in the publicly messaged channel.
     const slapMessage = `_slaps ${escapeMarkdown(item)} around with a ${Troutslap.randomTrout()}_`;
-    return msg.channel.send(slapMessage)
+    return msg.channel.send(slapMessage, { split: false })
       .catch(console.error);
   }
 
@@ -42,9 +42,9 @@ export class Troutslap {
     // Slide into author's DMs with usage.
     if (msg.author.dmChannel === null) {
       msg.author.createDM()
-        .then((channel: DMChannel) => channel.send(this.usage()));
+        .then((channel: DMChannel) => channel.send(this.usage(), { split: false }));
     } else {
-      msg.author.dmChannel.send(this.usage());
+      msg.author.dmChannel.send(this.usage(), { split: false });
     }
   }
 
