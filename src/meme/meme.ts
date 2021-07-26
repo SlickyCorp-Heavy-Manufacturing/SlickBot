@@ -40,7 +40,7 @@ export class Meme {
 
       const args = yargs.options({
         template: { type: 'string' },
-      }).parse(msg.content);
+      }).parseSync(msg.content);
 
       const template = this.findTemplate(args.template);
       return `${template.name} boxes ${template.box_count}`;
@@ -57,7 +57,7 @@ export class Meme {
         box4: { type: 'string' },
         box5: { type: 'string' },
         box6: { type: 'string' },
-      }).parse(msg.content);
+      }).parseSync(msg.content);
 
       let captions = [
         args.box1,
