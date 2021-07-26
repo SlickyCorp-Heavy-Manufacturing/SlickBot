@@ -55,11 +55,12 @@ export class Play {
         .options({
           url: { type: 'string', default: 'https://youtu.be/dQw4w9WgXcQ' },
           volume: { type: 'number', alias: 'v', default: '100' },
-        }).parse(msg.content);
+        }).parseSync(msg.content);
 
       // If the url is provided as the last arg (without --url), use that
-      if (yargs.argv._.length > 1) {
-        args.url = yargs.argv._.pop();
+      const additionalArgs: string[] = (yargs.argv as any)._ as string[];
+      if (additionalArgs.length > 1) {
+        args.url = additionalArgs.pop();
       }
 
       if (!(args.url.startsWith('https://')
