@@ -17,9 +17,9 @@ Ingredients: ${getIngredientsAsArray(drink).join(', ')}
               
 ${drink.strInstructions}
               
-${drink.strDrinkThumb}`);
+${drink.strDrinkThumb}`, { split: false });
     } else {
-      msg.channel.send('Sorry. I\'m not familiar wth that cocktail.');
+      msg.channel.send('Sorry. I\'m not familiar wth that cocktail.', { split: false });
     }
   },
 };

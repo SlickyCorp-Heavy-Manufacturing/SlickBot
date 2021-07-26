@@ -37,13 +37,13 @@ discordClient.init().then(() => {
 
         if (Array.isArray(message)) {
           message.forEach(async (msg) => {
-            const sent = await channel.send(msg);
+            const sent = await channel.send(msg, { split: false });
             if (scheduledPost.pinMessage === true) {
               await sent.pin();
             }
           });
         } else {
-          const sent = await channel.send(message);
+          const sent = await channel.send(message, { split: false });
           if (scheduledPost.pinMessage === true) {
             await sent.pin();
           }

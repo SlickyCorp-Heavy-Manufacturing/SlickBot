@@ -21,7 +21,7 @@ export class DrawMeme {
       });
     });
 
-    await msg.channel.send({ files: [filename] });
+    await msg.channel.send({ files: [filename] }, { split: false });
     fs.unlink('out.png', () => {});
   }
 }
