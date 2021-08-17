@@ -27,7 +27,10 @@ discordClient.init().then(() => {
   scheduledPosts.forEach((scheduledPost) => {
     scheduleJob({ rule: scheduledPost.cronDate, tz: 'America/Chicago' }, async () => {
       const message = await scheduledPost.getMessage(discordClient.client);
-      if (message) {
+      if (
+        (Array.isArray(message) && message.length > 0)
+        || (!Array.isArray(message) && message.trim() !== '')
+      ) {
         const channel = await findChannelById(discordClient.client, scheduledPost.channel);
 
         if (scheduledPost.pinMessage === true) {
