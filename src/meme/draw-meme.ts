@@ -5,13 +5,19 @@ import { Message } from 'discord.js';
 
 export class DrawMeme {
   public static async meme(msg: Message): Promise<void> {
-    const fnt = pureimage.registerFont('SourceSansPro-Regular.ttf', 'Source Sans Pro');
+    const fnt = pureimage.registerFont(
+      'SourceSansPro-Regular.ttf',
+      'Source Sans Pro',
+      400,
+      'normal',
+      'Regular',
+    );
 
     fnt.load(() => {
-      const img = pureimage.make(200, 200);
+      const img = pureimage.make(200, 200, {});
       const ctx = img.getContext('2d');
       ctx.fillStyle = '#000000';
-      ctx.font = "48pt 'Source Sans Pro'";
+      ctx.font = { family: 'Source Sans Pro', size: 48 };
       ctx.fillText('ABC', 80, 80);
 
       const passThroughStream = new stream.PassThrough();
