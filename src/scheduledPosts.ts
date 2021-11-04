@@ -8,7 +8,6 @@ import { scheduledWeatherPosts } from './weather';
 
 export const scheduledPosts: IScheduledPost[] = [
   ...scheduledHangoverCures,
-  ...scheduledNeweggShufflePosts,
   ...scheduledTendiesPosts,
   ...scheduledTweetChecks,
   ...scheduledWeatherPosts,
