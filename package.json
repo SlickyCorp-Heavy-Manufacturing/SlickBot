@@ -34,7 +34,7 @@
     "lodash": "4.17.21",
     "luxon": "2.0.2",
     "moji-translate": "1.0.8",
-    "node-schedule": "2.0.0",
+    "node-schedule": "2.1.0",
     "pureimage": "0.3.2",
     "rxjs": "7.4.0",
     "soundcloud.ts": "0.4.5",
