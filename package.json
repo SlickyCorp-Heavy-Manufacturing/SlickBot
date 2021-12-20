@@ -27,7 +27,7 @@
     "dotenv": "10.0.0",
     "eslint-import-resolver-typescript": "2.5.0",
     "ffmpeg-static": "4.4.0",
-    "fuzzyset.js": "1.0.6",
+    "fuzzyset.js": "1.0.7",
     "got": "11.8.3",
     "imgflip": "2.0.0",
     "iso-639-1": "2.1.10",
