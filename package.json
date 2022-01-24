@@ -36,7 +36,7 @@
     "moji-translate": "1.0.8",
     "node-schedule": "2.1.0",
     "pureimage": "0.3.2",
-    "rxjs": "7.5.1",
+    "rxjs": "7.5.2",
     "soundcloud.ts": "0.4.5",
     "tmp-promise": "3.0.3",
     "yargs": "17.3.1",
