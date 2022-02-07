@@ -43,7 +43,7 @@
     "ytdl-core": "4.10.0"
   },
   "devDependencies": {
-    "@types/cheerio": "0.22.30",
+    "@types/cheerio": "0.22.31",
     "@types/ffmpeg-static": "3.0.1",
     "@types/fuzzyset.js": "0.0.2",
     "@types/jasmine": "3.10.3",
