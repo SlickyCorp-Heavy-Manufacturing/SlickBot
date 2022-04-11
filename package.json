@@ -39,7 +39,7 @@
     "rxjs": "7.5.5",
     "soundcloud.ts": "0.4.5",
     "tmp-promise": "3.0.3",
-    "yargs": "17.4.0",
+    "yargs": "17.4.1",
     "ytdl-core": "4.11.0"
   },
   "devDependencies": {
