@@ -62,7 +62,7 @@
     "jasmine-spec-reporter": "7.0.0",
     "jasmine-ts": "0.4.0",
     "nock": "13.2.4",
-    "nodemon": "2.0.15",
+    "nodemon": "2.0.16",
     "nyc": "15.1.0",
     "ts-node": "10.7.0",
     "typescript": "4.6.4"
