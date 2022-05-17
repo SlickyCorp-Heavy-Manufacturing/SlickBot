@@ -9,6 +9,6 @@ export const KlingonCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!klingon'),
   command: async (msg: Message) => {
     const value: string = await Translate.translateToKlingon(msg.cleanContent);
-    await msg.channel.send(value, { split: false });
+    await msg.channel.send(value);
   },
 };

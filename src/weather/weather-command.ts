@@ -9,6 +9,6 @@ export const WeatherCommand: ICommand = {
   trigger: (msg: Message) => msg.content === '!weather',
   command: async (msg: Message) => {
     const value = await Weather.currentWeather();
-    await msg.channel.send(value, { split: false });
+    await msg.channel.send(value);
   },
 };

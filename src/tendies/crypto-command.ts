@@ -9,6 +9,6 @@ export const CryptoCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!crypto'),
   command: async (msg: Message) => {
     const value = await Tendies.crypto(msg.content.replace('!crypto', '').trim());
-    await msg.channel.send(value, { split: false });
+    await msg.channel.send(value);
   },
 };

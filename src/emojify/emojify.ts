@@ -12,14 +12,13 @@ export const EmojifyCommand: ICommand = {
   command: async (msg: Message) => {
     const previousMessage = (await msg.channel.messages.fetch(
       { before: msg.id, limit: 1 },
-      false,
-      false,
+      { cache: false, force: false },
     )).first();
 
     if (previousMessage !== undefined && msg.content.trim() !== '') {
       const emojified: string = translate.translate(previousMessage.content, false);
       if (previousMessage.content.toLowerCase() !== emojified.toLowerCase()) {
-        msg.channel.send(emojified, { split: false });
+        msg.channel.send(emojified);
       }
     }
   },

@@ -9,6 +9,6 @@ export const FoffCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!foff'),
   command: async (msg: Message) => {
     const value = await FOAAS.foff(msg);
-    msg.channel.send(value, { split: false });
+    msg.channel.send(value);
   },
 };
