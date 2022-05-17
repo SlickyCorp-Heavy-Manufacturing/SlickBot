@@ -59,7 +59,7 @@
     "@types/yargs": "17.0.10",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
-    "eslint": "^7.32.0",
+    "eslint": "8.15.0",
     "eslint-config-airbnb-base": "14.2.1",
     "eslint-plugin-import": "2.26.0",
     "jasmine": "3.99.0",
