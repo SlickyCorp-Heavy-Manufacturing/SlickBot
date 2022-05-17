@@ -98,7 +98,7 @@ Usage:
 
     // lulz
     'MR402-sized trout',
-  ]
+  ];
 
   private static randomTrout(): string {
     // Actually random. Unlike https://xkcd.com/221/
