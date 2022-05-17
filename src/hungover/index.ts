@@ -19,7 +19,7 @@ async function hangoverCures(
 ): Promise<string[]> {
   const messages: string[] = [];
   const channel = await findChannelById(client, CHANNEL);
-  const role = await channel.guild.roles.fetch(HUNGOVER_ROLE, false, true);
+  const role = await channel.guild.roles.fetch(HUNGOVER_ROLE, { cache: false, force: true });
   role.members.each((member) => {
     const random = Math.floor(Math.random() * (HANGOVER_CURES.length));
     console.log('Random Hangover Cure Index: %i', random);

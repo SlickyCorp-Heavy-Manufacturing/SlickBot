@@ -23,10 +23,12 @@
     "rules": {
         // ESLint detects imported interfaces as unused varibles. The workaround is to disable
         // the rule and use the typescript compiler checks.
+        "no-await-in-loop": "off",
         "no-unused-vars": "off",
         "no-console": "off",
         "no-useless-constructor": "off",
         "no-empty-function": "off",
+        "no-restricted-syntax": "off",
         "import/extensions": ["error", "ignorePackages", { "ts": "never" }],
         "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
         "import/prefer-default-export": "off"

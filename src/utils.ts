@@ -10,7 +10,7 @@ export function findChannelById(client: Client, id: string): Promise<TextChannel
   return client.channels.fetch(id).then((channel) => channel as TextChannel);
 }
 
-export function escapeMarkdown(text: String): String {
+export function escapeMarkdown(text: string): string {
   const unescaped = text.replace(/\\(\*|_|`|~|\\)/g, '$1'); // unescape any "backslashed" character
   const escaped = unescaped.replace(/(\*|_|`|~|\\)/g, '\\$1'); // escape *, _, `, ~, \
   return escaped;

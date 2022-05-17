@@ -17,7 +17,7 @@ process.on('unhandledRejection', (reason: Error | any, p: Promise<any>) => {
 
 const discordClient = new DiscordClient();
 discordClient.init().then(() => {
-  discordClient.client.on('message', (msg: Discord.Message) => {
+  discordClient.client.on('messageCreate', (msg: Discord.Message) => {
     const commands = commandList.filter((command) => command.trigger(msg));
     Promise.all(commands.map(async (command) => {
       command.command(msg);
@@ -40,13 +40,13 @@ discordClient.init().then(() => {
 
         if (Array.isArray(message)) {
           message.forEach(async (msg) => {
-            const sent = await channel.send(msg, { split: false });
+            const sent = await channel.send(msg);
             if (scheduledPost.pinMessage === true) {
               await sent.pin();
             }
           });
         } else {
-          const sent = await channel.send(message, { split: false });
+          const sent = await channel.send(message);
           if (scheduledPost.pinMessage === true) {
             await sent.pin();
           }

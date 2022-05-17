@@ -10,7 +10,7 @@ export const MinerStatsCommand: ICommand = {
   name: '!miner-stats',
   helpDescription: 'Get the statistics of a miner on ethermine. Usage "!miner-stats <wallet-address>"',
   showInHelp: true,
-  trigger: (msg: Message) => msg.content.includes('!miner-stats'),
+  trigger: (msg: Message) => msg.content.startsWith('!miner-stats'),
   command: async (msg: Message) => {
     const walletAddress = msg.content.replace('!miner-stats', '').trim();
     if (!walletRegex.test(walletAddress)) {

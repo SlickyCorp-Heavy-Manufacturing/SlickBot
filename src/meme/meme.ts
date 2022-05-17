@@ -35,7 +35,7 @@ export class Meme {
       return Meme.MEMES.find((x) => x.name === template[0][1]);
     }
 
-    public static async memeSearch(msg: Message): Promise<String> {
+    public static async memeSearch(msg: Message): Promise<string> {
       await this.login();
 
       const args = yargs.options({
@@ -46,7 +46,7 @@ export class Meme {
       return `${template.name} boxes ${template.box_count}`;
     }
 
-    public static async getImage(msg: Message): Promise<String> {
+    public static async getImage(msg: Message): Promise<string> {
       const imgflip = await this.login();
 
       const args = yargs.options({
