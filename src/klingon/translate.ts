@@ -18,7 +18,6 @@ export class Translate {
       json: {
         text: everythingButBangKlingon,
       },
-      timeout: 10000,
       responseType: 'json',
     });
 
@@ -27,20 +26,7 @@ export class Translate {
       const translation = Translate.DEFAULT_KLINGON_REPLY + Translate.parseResults(response);
       return translation;
     } catch (e) {
-      switch (e.constructor) {
-        case got.ReadError:
-          return 'Read Error';
-        case got.HTTPError:
-          return `HTTP Error ${e.response.statusCode}: ${e.response.statusMessage}`;
-        case got.MaxRedirectsError:
-          return `Max Redirects Error ${e.response.statusCode}: ${e.response.statusMessage}, URL: ${e.response.redirectUrls}`;
-        case got.UnsupportedProtocolError:
-          return 'Unsupported Protocol Error';
-        case got.TimeoutError:
-          return 'Request timed out; waited more than 10s';
-        default:
-          throw e;
-      }
+      return e.message;
     }
   }
 

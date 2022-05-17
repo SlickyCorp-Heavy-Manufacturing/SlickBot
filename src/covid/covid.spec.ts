@@ -86,7 +86,7 @@ describe('covid', () => {
 
     const dhsResponse = await Covid.getDHSData(startDate, endDate);
     const expectedURL = 'https://dhsgis.wi.gov/server/rest/services/DHS_COVID19/COVID19_WI/MapServer/12/query?where=DATE%20BETWEEN%20%272020-10-27T00:00:00.000Z%27%20AND%20%272020-10-28T00:00:00.000Z%27%20&outFields=NAME,DATE,POSITIVE,POS_NEW,NEGATIVE,NEG_NEW,DEATHS,DTH_NEW,TEST_NEW,GEO&outSR=4326&f=json';
-    expect(dhsResponse.request.requestUrl).toEqual(expectedURL);
+    expect(dhsResponse.request.requestUrl.toString()).toEqual(expectedURL);
     expect(JSON.parse(dhsResponse.body)).toEqual(dhsTestData);
   });
 
