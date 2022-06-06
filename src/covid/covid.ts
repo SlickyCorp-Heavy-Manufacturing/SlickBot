@@ -176,25 +176,29 @@ ${Covid.formatTopFive(Covid.topFiveCountiesByTotalDeathsPerCapita(dhsData, wiCou
 
   public static newWiCases(dhsData: DHSData): Number {
     return dhsData.features.reduce(
-      (accumulator, county) => accumulator + county.attributes.POS_NEW, 0,
+      (accumulator, county) => accumulator + county.attributes.POS_NEW,
+      0,
     );
   }
 
   public static newWiDeaths(dhsData: DHSData): Number {
     return dhsData.features.reduce(
-      (accumulator, county) => accumulator + county.attributes.DTH_NEW, 0,
+      (accumulator, county) => accumulator + county.attributes.DTH_NEW,
+      0,
     );
   }
 
   public static totalWiCases(dhsData: DHSData): Number {
     return dhsData.features.reduce(
-      (accumulator, county) => accumulator + county.attributes.POSITIVE, 0,
+      (accumulator, county) => accumulator + county.attributes.POSITIVE,
+      0,
     );
   }
 
   public static totalWiDeaths(dhsData: DHSData): Number {
     return dhsData.features.reduce(
-      (accumulator, county) => accumulator + county.attributes.DEATHS, 0,
+      (accumulator, county) => accumulator + county.attributes.DEATHS,
+      0,
     );
   }
 
