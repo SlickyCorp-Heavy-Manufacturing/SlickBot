@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import localeCode from 'iso-639-1';
+import localeCode, { LanguageCode } from 'iso-639-1';
 import got from 'got';
 import { escapeMarkdown } from '../utils';
 
@@ -9,7 +9,7 @@ import data from './operations.json';
 export class FOAAS {
   private static readonly URL: string = 'https://foaas.com';
 
-  private static readonly DEFAULT_LANGUAGE: string = 'en';
+  private static readonly DEFAULT_LANGUAGE: LanguageCode = 'en';
 
   private static readonly DEFAULT_NAME: string = 'Mr. X';
 
@@ -74,8 +74,11 @@ export class FOAAS {
     args.forEach((arg: string) => {
       if (nextArgIsLanguage) {
         langCode = localeCode.getCode(arg);
+        // @ts-ignore
         if (langCode === '') {
+          // @ts-ignore
           if (localeCode.validate(arg)) {
+            // @ts-ignore
             langCode = arg;
           } else {
             langCode = FOAAS.DEFAULT_LANGUAGE;
