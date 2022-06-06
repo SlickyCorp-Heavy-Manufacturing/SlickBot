@@ -145,7 +145,8 @@ describe('covid', () => {
     expectedResult.set('Adams', 178.04154302670622);
 
     const result = Covid.topFiveCountiesByNewCasesPerCapita(
-      dhsTestData as DHSData, wiCountyPopData as WICensusData,
+      dhsTestData as DHSData,
+      wiCountyPopData as WICensusData,
     );
     expect(result).toEqual(expectedResult);
   });
@@ -159,7 +160,8 @@ describe('covid', () => {
     expectedResult.set('Calumet', 5342.490367146479);
 
     const result = Covid.topFiveCountiesByTotalCasesPerCapita(
-      dhsTestData as DHSData, wiCountyPopData as WICensusData,
+      dhsTestData as DHSData,
+      wiCountyPopData as WICensusData,
     );
     expect(result).toEqual(expectedResult);
   });
@@ -173,7 +175,8 @@ describe('covid', () => {
     expectedResult.set('Milwaukee', 61.117067734206316);
 
     const result = Covid.topFiveCountiesByTotalDeathsPerCapita(
-      dhsTestData as DHSData, wiCountyPopData as WICensusData,
+      dhsTestData as DHSData,
+      wiCountyPopData as WICensusData,
     );
     expect(result).toEqual(expectedResult);
   });
