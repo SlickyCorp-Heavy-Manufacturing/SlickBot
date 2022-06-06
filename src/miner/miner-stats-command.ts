@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { ICommand } from '../icommand';
 import { EthermineDashboard } from './ethermine';
 
-const walletRegex = new RegExp('0x[A-Za-z0-9]+');
+const walletRegex = /0x[A-Za-z0-9]+/;
 
 const average = (array: number[]) => array.reduce((a, b) => a + b) / array.length;
 
