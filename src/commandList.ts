@@ -5,7 +5,7 @@ import { WeatherCommand } from './weather/weather-command';
 import { TrollPulakCommand } from './troll/troll-pulak-command';
 import { TroutslapCommand } from './troutslap/troutslap-command';
 import { XKCDCommand } from './xkcd';
-import { MemeCommand, MemeSearchCommand, DrawMemeCommand } from './meme';
+import { MemeCommand, MemeSearchCommand } from './meme';
 import { KlingonCommand } from './klingon/klingon-command';
 import { PlayCommand } from './play/play-command';
 import { FoffCommand } from './foaas/foaas-command';
@@ -49,7 +49,6 @@ export const commandList: ICommand[] = [
   NiceReaction,
   ChulasRecation,
   DevNullCommand,
-  DrawMemeCommand,
   FlavorForecastCommand,
   FlavorOfTheDayCommand,
   TrompoCommand,
