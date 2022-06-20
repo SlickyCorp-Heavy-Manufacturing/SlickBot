@@ -21,7 +21,7 @@ export const FlavorForecastCommand: ICommand = {
           .join('\n');
         return forecast;
       })
-      .map((forecast: string) => msg.channel.send(forecast, { split: false }));
+      .map((forecast: string) => msg.channel.send(forecast));
 
     forecastMessages.reduce(
       (promiseChain, currentPromise) => promiseChain.then((chainResults) => currentPromise.then(

@@ -15,6 +15,6 @@ Ingredients: ${getIngredientsAsArray(drink).join(', ')}
         
 ${drink.strInstructions}
         
-${drink.strDrinkThumb}`, { split: false });
+${drink.strDrinkThumb}`);
   },
 };

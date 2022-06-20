@@ -22,7 +22,7 @@ export class DrawMeme {
 
       const passThroughStream = new stream.PassThrough();
       pureimage.encodePNGToStream(img, passThroughStream).then(() => {
-        msg.channel.send({ files: [passThroughStream], split: false });
+        msg.channel.send({ files: [passThroughStream] });
       });
     });
   }

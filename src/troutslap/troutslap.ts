@@ -3,7 +3,7 @@ import { escapeMarkdown } from '../utils';
 
 export class Troutslap {
   public static async slap(msg: Discord.Message): Promise<void> {
-    if (msg.channel.type === 'text') {
+    if (msg.channel.type === 'GUILD_TEXT') {
       // If @everyone or @here...
       if (msg.mentions.users.size > 0) {
         // For each person,
@@ -34,7 +34,7 @@ export class Troutslap {
     // Assign a random trout
     // Reply in the publicly messaged channel.
     const slapMessage = `_slaps ${escapeMarkdown(item)} around with a ${Troutslap.randomTrout()}_`;
-    return msg.channel.send(slapMessage, { split: false })
+    return msg.channel.send(slapMessage)
       .catch(console.error);
   }
 
@@ -42,13 +42,13 @@ export class Troutslap {
     // Slide into author's DMs with usage.
     if (msg.author.dmChannel === null) {
       msg.author.createDM()
-        .then((channel: DMChannel) => channel.send(this.usage(), { split: false }));
+        .then((channel: DMChannel) => channel.send(this.usage()));
     } else {
-      msg.author.dmChannel.send(this.usage(), { split: false });
+      msg.author.dmChannel.send(this.usage());
     }
   }
 
-  private static usage(): String {
+  private static usage(): string {
     return `
 Slap users around with a trout.
 
@@ -98,9 +98,9 @@ Usage:
 
     // lulz
     'MR402-sized trout',
-  ]
+  ];
 
-  private static randomTrout(): String {
+  private static randomTrout(): string {
     // Actually random. Unlike https://xkcd.com/221/
     return this.TROUT_LIST[Math.floor(Math.random() * this.TROUT_LIST.length)];
   }

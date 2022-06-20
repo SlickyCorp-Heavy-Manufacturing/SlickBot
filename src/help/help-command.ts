@@ -7,13 +7,24 @@ export const HelpCommand: ICommand = {
   helpDescription: 'List the available commands',
   showInHelp: true,
   trigger: (msg: Message) => msg.content === '!help',
-  command: (msg: Message) => {
-    let message: string = '';
+  command: async (msg: Message) => {
+    const messages = ['```\n'];
     commandList.filter((command) => command.showInHelp).forEach((command: ICommand) => {
-      message += `${command.name} - ${command.helpDescription}\n`;
+      const message = `${command.name} - ${command.helpDescription}\n`;
+      if (messages[messages.length - 1].length + message.length > 1995) {
+        messages[messages.length - 1] = `${messages[messages.length - 1]}\`\`\`\n`;
+        messages.push(`*help continued...*\n\`\`\`\n${message}`);
+      } else {
+        messages[messages.length - 1] = `${messages[messages.length - 1]}${message}`;
+      }
     });
+    messages[messages.length - 1] = `${messages[messages.length - 1]}\`\`\`\n`;
 
-    msg.channel.send(message, { split: true });
+    /* eslint-disable no-await-in-loop */
+    for (const message of messages) {
+      await msg.channel.send(message);
+    }
+    /* eslint-enable no-await-in-loop */
     return Promise.resolve();
   },
 };

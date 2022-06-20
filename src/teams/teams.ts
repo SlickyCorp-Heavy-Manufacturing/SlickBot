@@ -62,7 +62,7 @@ export const TechTrackCommand: ICommand = {
         '277609530915946497', // MarkT
       ],
     );
-    await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`, { split: false });
+    await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
   },
 };
 
@@ -78,6 +78,6 @@ export const DevOpsCommand: ICommand = {
       'RAIDOPS01',
       ['622595355153793045', '436298366952144907'], // Brian, MarkF
     );
-    await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`, { split: false });
+    await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
   },
 };

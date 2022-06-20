@@ -9,7 +9,7 @@ export const CovidCommand: ICommand = {
   trigger: (msg: Message) => msg.content.match(/^!covid($|\s)/) !== null,
   command: async (msg: Message) => {
     const usDaily = await Covid.usDaily();
-    msg.channel.send(usDaily, { split: false });
+    msg.channel.send(usDaily);
   },
 };
 
@@ -20,7 +20,7 @@ export const CovidWiCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!covidwi'),
   command: async (msg: Message) => {
     const leaderboardMsg = await Covid.wiLeaderboard();
-    msg.channel.send(leaderboardMsg, { split: false });
+    msg.channel.send(leaderboardMsg);
   },
 };
 

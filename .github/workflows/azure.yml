@@ -7,7 +7,7 @@ on:
       - master
 
 env:
-  NODE_VERSION: '14.x'
+  NODE_VERSION: '16.x'
   TOKEN: ${{ secrets.TEST_TOKEN }}
   TEST_USER_TOKEN: ${{ secrets.TEST_USER_TOKEN }}
   IMGFLIP_USER: ${{ secrets.IMGFLIP_USER }}
@@ -20,9 +20,9 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VERSION }}
     - name: npm install, build, and test
