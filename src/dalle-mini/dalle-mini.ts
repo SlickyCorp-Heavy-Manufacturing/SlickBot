@@ -10,8 +10,8 @@ export const DalleCommand: ICommand = {
   command: async (msg: Message) => {
     const prompt = msg.content.replace('!dalle ', '');
 
-    let res: Response<string> | null = null;
     let retryCounter = 0;
+    let res: Response<string> | null = null;
     while (!res && retryCounter < 100) {
       try {
         res = await got.post('https://bf.dallemini.ai/generate', {
@@ -26,8 +26,8 @@ export const DalleCommand: ICommand = {
     if (res) {
       const json: { images: string[] } = JSON.parse(res.body);
       const buffers = json.images.map((base64Img) => Buffer.from(base64Img, 'base64'));
-      msg.channel.send({ files: buffers });
-      MessagePayload.create(msg.channel, { files: buffers });
+      const msgReply = MessagePayload.create(msg.channel, { files: buffers });
+      msg.reply(msgReply);
     } else {
       msg.reply('Unable to complete request at this time');
     }
