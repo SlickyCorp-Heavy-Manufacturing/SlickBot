@@ -30,6 +30,7 @@ import { CocktailRecommendation, GetCocktail } from './cocktail';
 import { PlayNowCommand } from './play';
 import { MinerStatsCommand } from './miner';
 import { DefineCommand } from './dictionary';
+import { DalleCommand } from './dalle-mini'
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -70,4 +71,5 @@ export const commandList: ICommand[] = [
   CryptoCommand,
   MinerStatsCommand,
   DefineCommand,
+  DalleCommand,
 ];
