@@ -27,7 +27,7 @@
     "discord.js": "13.7.0",
     "dotenv": "16.0.1",
     "eslint-import-resolver-typescript": "2.7.1",
-    "ffmpeg-static": "5.0.0",
+    "ffmpeg-static": "5.0.2",
     "fuzzyset.js": "1.0.7",
     "got": "11.8.5",
     "imgflip": "2.0.0",
