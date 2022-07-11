@@ -19,7 +19,7 @@
   "author": "Abe",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/opus": "0.7.0",
+    "@discordjs/opus": "0.8.0",
     "@discordjs/voice": "^0.10.0",
     "@google-cloud/text-to-speech": "3.4.0",
     "cheerio": "1.0.0-rc.12",
