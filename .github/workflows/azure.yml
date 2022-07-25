@@ -6,6 +6,8 @@ on:
     branches:
       - master
 
+concurrency: none # integration tests fail when running concurrently
+
 env:
   NODE_VERSION: '16.x'
   TOKEN: ${{ secrets.TEST_TOKEN }}
