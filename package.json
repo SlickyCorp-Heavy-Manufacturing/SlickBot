@@ -40,7 +40,7 @@
     "rxjs": "7.5.6",
     "soundcloud.ts": "0.4.7",
     "tmp-promise": "3.0.3",
-    "yargs": "17.4.1",
+    "yargs": "17.5.1",
     "youtube-dl-exec": "^2.0.12",
     "ytdl-core": "^4.11.0",
     "ytpl": "^2.3.0"
