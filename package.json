@@ -24,7 +24,7 @@
     "@google-cloud/text-to-speech": "4.0.0",
     "cheerio": "1.0.0-rc.12",
     "discord-ytdl-core": "5.0.4",
-    "discord.js": "13.9.2",
+    "discord.js": "13.10.2",
     "dotenv": "16.0.1",
     "eslint-import-resolver-typescript": "2.7.1",
     "ffmpeg-static": "5.0.2",
