@@ -50,7 +50,7 @@
     "@types/ffmpeg-static": "3.0.1",
     "@types/fuzzyset.js": "0.0.2",
     "@types/jasmine": "4.0.3",
-    "@types/lodash": "4.14.185",
+    "@types/lodash": "4.14.186",
     "@types/luxon": "1.27.1",
     "@types/node-schedule": "2.1.0",
     "@types/tmp": "0.2.3",
