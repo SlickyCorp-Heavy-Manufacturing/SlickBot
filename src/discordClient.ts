@@ -43,12 +43,10 @@ export class DiscordClient {
   }
 
   private static note(): string {
-    console.info('process.env = %o', process.env);
-    const commit = process.env.HEROKU_SLUG_COMMIT;
-    const releaseDate = process.env.HEROKU_RELEASE_CREATED_AT;
+    const commit = process.env.GIT_REV;
 
     if (commit) {
-      return `${commit} created at ${releaseDate}`;
+      return commit;
     }
     return 'haha you dont test in prod';
   }
