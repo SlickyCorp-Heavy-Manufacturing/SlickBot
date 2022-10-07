@@ -43,6 +43,7 @@ export class DiscordClient {
   }
 
   private static note(): string {
+    console.info('process.env = %o', process.env);
     const commit = process.env.HEROKU_SLUG_COMMIT;
     const releaseDate = process.env.HEROKU_RELEASE_CREATED_AT;
 
