@@ -9,4 +9,4 @@ Discord bot that does important features
 ## Secrets
 Use github secrets to store api keys.
 * They must be added to the azure.yml file for integration tests
-* heroku needs to updated for prod.
+* dokku needs to be updated with `dokku config:set` command
