@@ -41,7 +41,6 @@ export const commandList: ICommand[] = [
   MemeCommand,
   MemeSearchCommand,
   KlingonCommand,
-  FoffCommand,
   TendiesCommand,
   CovidCommand,
   CovidWiCommand,
