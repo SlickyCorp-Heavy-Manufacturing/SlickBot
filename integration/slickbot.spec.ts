@@ -133,7 +133,6 @@ describe('slickbot', () => {
                 expect(msg.content).toContain('!troutslap');
                 expect(msg.content).toContain('xkcd');
                 expect(msg.content).toContain('!meme');
-                expect(msg.content).toContain('!foff');
                 done();
             });
     }, 10000);
