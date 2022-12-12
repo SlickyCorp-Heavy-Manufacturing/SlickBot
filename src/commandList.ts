@@ -8,7 +8,6 @@ import { XKCDCommand } from './xkcd';
 import { MemeCommand, MemeSearchCommand } from './meme';
 import { KlingonCommand } from './klingon/klingon-command';
 import { PlayCommand } from './play/play-command';
-import { FoffCommand } from './foaas/foaas-command';
 import {
   CryptoCommand,
   TendiesCommand,
@@ -42,7 +41,6 @@ export const commandList: ICommand[] = [
   MemeCommand,
   MemeSearchCommand,
   KlingonCommand,
-  FoffCommand,
   TendiesCommand,
   CovidCommand,
   CovidWiCommand,
