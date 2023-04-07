@@ -11,8 +11,7 @@ export const EmojifyCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!emojify'),
   command: async (msg: Message) => {
     const previousMessage = (await msg.channel.messages.fetch(
-      { before: msg.id, limit: 1 },
-      { cache: false, force: false },
+      { before: msg.id, cache: false, limit: 1 },
     )).first();
 
     if (previousMessage !== undefined && msg.content.trim() !== '') {

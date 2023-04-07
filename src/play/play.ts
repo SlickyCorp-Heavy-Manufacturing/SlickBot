@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { ChannelType, Message } from 'discord.js';
 import { URL } from 'url';
 import * as yargs from 'yargs';
 import ytpl from 'ytpl';
@@ -13,7 +13,7 @@ export class Play {
   private static queue: PlayQueue;
 
   public static async playTrack(msg: Message, playNow: boolean): Promise<void> {
-    if (msg.channel.type === 'DM') {
+    if (msg.channel.type === ChannelType.DM) {
       await msg.reply('Don\'t !play with your DMs.');
       return;
     }
