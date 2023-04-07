@@ -1,9 +1,9 @@
-import Discord, { DMChannel } from 'discord.js';
+import Discord, { ChannelType, DMChannel } from 'discord.js';
 import { escapeMarkdown } from '../utils';
 
 export class Troutslap {
   public static async slap(msg: Discord.Message): Promise<void> {
-    if (msg.channel.type === 'GUILD_TEXT') {
+    if (msg.channel.type === ChannelType.GuildText) {
       // If @everyone or @here...
       if (msg.mentions.users.size > 0) {
         // For each person,
