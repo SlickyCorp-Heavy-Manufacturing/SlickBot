@@ -1,4 +1,4 @@
-import Discord, { Events } from 'discord.js';
+import Discord from 'discord.js';
 import { scheduleJob } from 'node-schedule';
 
 import { commandList } from './commandList';
@@ -17,11 +17,15 @@ process.on('unhandledRejection', (reason: Error | any, p: Promise<any>) => {
 
 const discordClient = new DiscordClient();
 discordClient.init().then(() => {
-  discordClient.client.on(Events.MessageCreate, (msg: Discord.Message) => {
-    const commands = commandList.filter((command) => command.trigger(msg));
-    Promise.all(commands.map(async (command) => {
-      command.command(msg);
-    })).then();
+  discordClient.client.on(Discord.Events.InteractionCreate, (interaction: Discord.BaseInteraction) => {
+    console.log('Interaction Received');
+    if (interaction.isMessageComponent()) {
+      const msg = (interaction as Discord.MessageComponentInteraction).message;
+      const commands = commandList.filter((command) => command.trigger(msg));
+      Promise.all(commands.map(async (command) => {
+        command.command(msg);
+      })).then();
+    }
   });
 
   scheduledPosts.forEach((scheduledPost) => {
