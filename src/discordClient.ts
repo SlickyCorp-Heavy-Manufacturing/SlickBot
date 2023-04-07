@@ -1,4 +1,4 @@
-import Discord, { GatewayIntentBits } from 'discord.js';
+import Discord, { Events, GatewayIntentBits } from 'discord.js';
 
 export class DiscordClient {
   private discordClient: Discord.Client;
@@ -25,7 +25,7 @@ export class DiscordClient {
       client.login(clientToken);
 
       return new Promise((resolve) => {
-        client.on('ready', () => {
+        client.on(Events.ClientReady, () => {
           this.discordClient = client;
           console.info(`Logged in as ${client.user.tag}!`);
 
