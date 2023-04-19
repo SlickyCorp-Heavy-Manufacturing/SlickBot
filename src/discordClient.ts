@@ -1,3 +1,4 @@
+import { generateDependencyReport } from '@discordjs/voice';
 import Discord, { Intents } from 'discord.js';
 
 export class DiscordClient {
@@ -28,6 +29,7 @@ export class DiscordClient {
         client.on('ready', () => {
           this.discordClient = client;
           console.info(`Logged in as ${client.user.tag}!`);
+          console.info(generateDependencyReport());
 
           client.user.setActivity(DiscordClient.note());
 
