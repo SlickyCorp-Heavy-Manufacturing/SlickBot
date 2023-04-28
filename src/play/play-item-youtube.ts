@@ -40,7 +40,7 @@ export class PlayItemYoutube implements PlayItem {
       const process = ytdl(
         this.url,
         {
-          format: 'bestaudio[acodec=opus]/bestaudio',
+          format: 'bestaudio',
           limitRate: '800K',
           output: '-',
           quiet: true,
