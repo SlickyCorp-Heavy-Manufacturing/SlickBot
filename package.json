@@ -37,7 +37,7 @@
     "luxon": "2.5.2",
     "moji-translate": "1.0.8",
     "node-schedule": "2.1.1",
-    "rxjs": "7.8.0",
+    "rxjs": "7.8.1",
     "soundcloud.ts": "0.4.9",
     "tmp-promise": "3.0.3",
     "yargs": "17.7.2",
