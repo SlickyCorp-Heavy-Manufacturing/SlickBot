@@ -21,7 +21,6 @@ import { CovidCommand, CovidWiCommand, VaccineWiCommand } from './covid/covid-co
 import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
 import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
-import { TrompoCommand, RocketManCommand, TweetCommand } from './tweet';
 import { DevOpsCommand, TechTrackCommand } from './teams/teams';
 import { EmojifyCommand } from './emojify/emojify';
 import { LMGTFYCommand } from './lmgtfy';
@@ -50,8 +49,6 @@ export const commandList: ICommand[] = [
   DevNullCommand,
   FlavorForecastCommand,
   FlavorOfTheDayCommand,
-  TrompoCommand,
-  RocketManCommand,
   ShortsCommand,
   SpyCommand,
   DowCommand,
@@ -61,7 +58,6 @@ export const commandList: ICommand[] = [
   PlayNowCommand,
   DevOpsCommand,
   TechTrackCommand,
-  TweetCommand,
   EmojifyCommand,
   LMGTFYCommand,
   CocktailRecommendation,
