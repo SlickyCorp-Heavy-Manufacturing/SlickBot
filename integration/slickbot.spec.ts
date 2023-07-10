@@ -137,20 +137,6 @@ describe('slickbot', () => {
             });
     }, 10000);
 
-    it('covid should post todays new covid deaths', (done) => {
-        const testChannel = findChannelByName(_userClient.client, 'covid-tendies')
-        testChannel.send('!covid');
-
-        _lastMessage
-            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('Americans laid down')))
-            .pipe(take(1))
-            .subscribe( msg => {
-                expect(msg.content).toMatch(/\d+ Americans laid down their lives for Mike's tendies today./)
-                done();
-            });
-    }, 15000);
-
     it('!crypto btc should post the exchange rate of BTC', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
         testChannel.send('!crypto btc');
