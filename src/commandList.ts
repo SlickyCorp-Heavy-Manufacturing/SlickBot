@@ -17,7 +17,6 @@ import {
   WorldCommand,
   DowCommand,
 } from './tendies';
-import { CovidCommand, CovidWiCommand, VaccineWiCommand } from './covid/covid-command';
 import { NiceReaction, ChulasRecation } from './reactions';
 import { DevNullCommand } from './dev_null/dev-null-command';
 import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
@@ -41,9 +40,6 @@ export const commandList: ICommand[] = [
   MemeSearchCommand,
   KlingonCommand,
   TendiesCommand,
-  CovidCommand,
-  CovidWiCommand,
-  VaccineWiCommand,
   NiceReaction,
   ChulasRecation,
   DevNullCommand,
