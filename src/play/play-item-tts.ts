@@ -1,7 +1,7 @@
+import { Readable } from 'stream';
 import { AudioResource, createAudioResource, StreamType } from '@discordjs/voice';
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 import { Message } from 'discord.js';
-import { Readable } from 'stream';
 
 import { PlayItem } from './play-item';
 

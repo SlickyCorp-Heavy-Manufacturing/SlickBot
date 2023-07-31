@@ -1,5 +1,5 @@
-import { Message } from 'discord.js';
 import { URL } from 'url';
+import { Message } from 'discord.js';
 import * as yargs from 'yargs';
 import ytpl from 'ytpl';
 
