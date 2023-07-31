@@ -1,3 +1,4 @@
+import { promisify } from 'node:util';
 import {
   AudioPlayer,
   AudioPlayerStatus,
@@ -10,7 +11,6 @@ import {
   VoiceConnectionDisconnectReason,
   VoiceConnectionStatus,
 } from '@discordjs/voice';
-import { promisify } from 'node:util';
 import type { PlayItem } from './play-item';
 
 const wait = promisify(setTimeout);

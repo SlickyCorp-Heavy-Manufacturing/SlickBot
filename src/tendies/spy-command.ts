@@ -1,5 +1,5 @@
-import { Message } from 'discord.js';
 import fs from 'fs';
+import { Message } from 'discord.js';
 import got from 'got/dist/source';
 import { sample as _sample } from 'lodash';
 import { withFile } from 'tmp-promise';
