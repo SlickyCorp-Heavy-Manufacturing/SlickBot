@@ -42,7 +42,7 @@
     "tmp-promise": "3.0.3",
     "yargs": "17.7.2",
     "youtube-dl-exec": "^2.0.12",
-    "ytdl-core": "https://github.com/khlevon/node-ytdl-core.git#v4.11.4",
+    "ytdl-core": "4.10.0",
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
