@@ -55,7 +55,7 @@
     "@types/node-schedule": "2.1.1",
     "@types/tmp": "0.2.4",
     "@types/ws": "8.5.7",
-    "@types/yargs": "17.0.27",
+    "@types/yargs": "17.0.29",
     "@typescript-eslint/eslint-plugin": "6.7.3",
     "@typescript-eslint/parser": "6.7.3",
     "eslint": "8.50.0",
