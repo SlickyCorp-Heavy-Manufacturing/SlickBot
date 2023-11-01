@@ -52,7 +52,7 @@
     "@types/jasmine": "4.3.6",
     "@types/lodash": "4.14.200",
     "@types/luxon": "3.3.3",
-    "@types/node-schedule": "2.1.1",
+    "@types/node-schedule": "2.1.2",
     "@types/tmp": "0.2.5",
     "@types/ws": "8.5.8",
     "@types/yargs": "17.0.29",
