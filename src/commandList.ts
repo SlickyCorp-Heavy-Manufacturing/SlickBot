@@ -9,7 +9,6 @@ import { MemeCommand, MemeSearchCommand } from './meme';
 import { KlingonCommand } from './klingon/klingon-command';
 import { PlayCommand } from './play/play-command';
 import {
-  CryptoCommand,
   TendiesCommand,
   ShortsCommand,
   SpyCommand,
@@ -58,7 +57,6 @@ export const commandList: ICommand[] = [
   LMGTFYCommand,
   CocktailRecommendation,
   GetCocktail,
-  CryptoCommand,
   MinerStatsCommand,
   DefineCommand,
   DalleCommand,
