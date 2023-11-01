@@ -137,22 +137,6 @@ describe('slickbot', () => {
             });
     }, 10000);
 
-    it('!crypto btc should post the exchange rate of BTC', (done) => {
-        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
-        testChannel.send('!crypto btc');
-
-        _lastMessage
-            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('Current:')))
-            .pipe(take(1))
-            .subscribe( msg => {
-                expect(msg.content).toContain('Current:');
-                expect(msg.content).toContain('Low (24 hrs):');
-                expect(msg.content).toContain('High (24 hrs):');
-                done();
-            });
-    }, 30000);
-
     it('!meme should post a meme', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
         testChannel.send('!meme --template "asdf --box1 "box1"');
