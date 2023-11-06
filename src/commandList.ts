@@ -4,7 +4,6 @@ import { PingCommand } from './ping/ping-command';
 import { WeatherCommand } from './weather/weather-command';
 import { TrollPulakCommand } from './troll/troll-pulak-command';
 import { TroutslapCommand } from './troutslap/troutslap-command';
-import { XKCDCommand } from './xkcd';
 import { MemeCommand, MemeSearchCommand } from './meme';
 import { KlingonCommand } from './klingon/klingon-command';
 import { PlayCommand } from './play/play-command';
@@ -34,7 +33,6 @@ export const commandList: ICommand[] = [
   WeatherCommand,
   TrollPulakCommand,
   TroutslapCommand,
-  XKCDCommand,
   MemeCommand,
   MemeSearchCommand,
   KlingonCommand,
