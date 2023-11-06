@@ -103,21 +103,6 @@ describe('slickbot', () => {
             });
     });
 
-    it('xkcd should post xkcd', (done) => {
-        const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
-        testChannel.send('!xkcd');
-
-        _lastMessage
-            .pipe(filter(msg => msg.author.username === 'TestSlickBot'))
-            .pipe(filter(msg => msg.content.includes('https://imgs.xkcd.com')))
-            .pipe(take(1))
-            .subscribe( msg => {
-                expect(msg.content).toContain('https://imgs.xkcd.com')
-                done();
-            });
-    }, 10000);
-
-
     it('help should post help', (done) => {
         const testChannel = findChannelByName(_userClient.client, TEST_CHANNEL)
         testChannel.send('!help');
@@ -131,7 +116,6 @@ describe('slickbot', () => {
                 expect(msg.content).toContain('ping');
                 expect(msg.content).toContain('!weather');
                 expect(msg.content).toContain('!troutslap');
-                expect(msg.content).toContain('xkcd');
                 expect(msg.content).toContain('!meme');
                 done();
             });
