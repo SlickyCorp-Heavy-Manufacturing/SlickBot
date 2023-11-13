@@ -46,7 +46,7 @@
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
-    "@types/cheerio": "0.22.33",
+    "@types/cheerio": "0.22.34",
     "@types/ffmpeg-static": "3.0.2",
     "@types/fuzzyset.js": "0.0.4",
     "@types/jasmine": "4.6.1",
