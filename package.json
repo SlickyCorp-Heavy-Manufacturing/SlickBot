@@ -48,7 +48,7 @@
   "devDependencies": {
     "@types/cheerio": "0.22.34",
     "@types/ffmpeg-static": "3.0.2",
-    "@types/fuzzyset.js": "0.0.4",
+    "@types/fuzzyset.js": "0.0.5",
     "@types/jasmine": "4.6.1",
     "@types/lodash": "4.14.200",
     "@types/luxon": "3.3.3",
