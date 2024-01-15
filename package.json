@@ -51,7 +51,7 @@
     "@types/fuzzyset.js": "0.0.5",
     "@types/jasmine": "4.6.4",
     "@types/lodash": "4.14.202",
-    "@types/luxon": "3.4.0",
+    "@types/luxon": "3.4.1",
     "@types/node-schedule": "2.1.5",
     "@types/tmp": "0.2.6",
     "@types/ws": "8.5.10",
