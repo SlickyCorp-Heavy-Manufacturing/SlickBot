@@ -41,7 +41,7 @@
     "soundcloud.ts": "0.5.2",
     "tmp-promise": "3.0.3",
     "yargs": "17.7.2",
-    "youtube-dl-exec": "^2.0.12",
+    "youtube-dl-exec": "^3.0.0",
     "ytdl-core": "^4.11.5",
     "ytpl": "^2.3.0"
   },
