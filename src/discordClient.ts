@@ -1,5 +1,5 @@
 import { generateDependencyReport } from '@discordjs/voice';
-import Discord, { Intents } from 'discord.js';
+import Discord, { Events, GatewayIntentBits } from 'discord.js';
 
 export class DiscordClient {
   private discordClient: Discord.Client;
@@ -11,10 +11,11 @@ export class DiscordClient {
     if (!this.discordClient) {
       const client = new Discord.Client({
         intents: [
-          Intents.FLAGS.DIRECT_MESSAGES,
-          Intents.FLAGS.GUILD_MESSAGES,
-          Intents.FLAGS.GUILD_VOICE_STATES,
-          Intents.FLAGS.GUILDS,
+          GatewayIntentBits.DirectMessages,
+          GatewayIntentBits.Guilds,
+          GatewayIntentBits.GuildMessages,
+          GatewayIntentBits.GuildVoiceStates,
+          GatewayIntentBits.MessageContent,
         ],
       });
       let clientToken: string;
@@ -26,7 +27,7 @@ export class DiscordClient {
       client.login(clientToken);
 
       return new Promise((resolve) => {
-        client.on('ready', () => {
+        client.on(Events.ClientReady, () => {
           this.discordClient = client;
           console.info(`Logged in as ${client.user.tag}!`);
           console.info(generateDependencyReport());

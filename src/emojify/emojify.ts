@@ -10,10 +10,10 @@ export const EmojifyCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!emojify'),
   command: async (msg: Message) => {
-    const previousMessage = (await msg.channel.messages.fetch(
-      { before: msg.id, limit: 1 },
-      { cache: false, force: false },
-    )).first();
+    const previousMessage = (await msg.channel.messages.fetch({
+      before: msg.id,
+      limit: 1,
+    })).last();
 
     if (previousMessage !== undefined && msg.content.trim() !== '') {
       const emojified: string = translate.translate(previousMessage.content, false);
