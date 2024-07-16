@@ -9,7 +9,7 @@ on:
 concurrency: none # integration tests fail when running concurrently
 
 env:
-  NODE_VERSION: '18.x'
+  NODE_VERSION: '20.x'
   TOKEN: ${{ secrets.TEST_TOKEN }}
   TEST_USER_TOKEN: ${{ secrets.TEST_USER_TOKEN }}
   IMGFLIP_USER: ${{ secrets.IMGFLIP_USER }}
