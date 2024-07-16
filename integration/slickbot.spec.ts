@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { Events } from 'discord.js';
 import { Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
@@ -20,7 +20,7 @@ describe('slickbot', () => {
         _buttUnderTest = new DiscordClient();
         await _buttUnderTest.init();
 
-        _buttUnderTest.client.on('message', (msg: Discord.Message) => {
+        _buttUnderTest.client.on(Events.MessageCreate, (msg: Discord.Message) => {
             _lastMessage.next(msg);
 
             const commands = commandList.filter((command) => command.trigger(msg));
