@@ -1,3 +1,4 @@
+import { generateDependencyReport } from '@discordjs/voice';
 import Discord, { Events, GatewayIntentBits } from 'discord.js';
 
 export class DiscordClient {
@@ -11,9 +12,10 @@ export class DiscordClient {
       const client = new Discord.Client({
         intents: [
           GatewayIntentBits.DirectMessages,
+          GatewayIntentBits.Guilds,
           GatewayIntentBits.GuildMessages,
           GatewayIntentBits.GuildVoiceStates,
-          GatewayIntentBits.Guilds,
+          GatewayIntentBits.MessageContent,
         ],
       });
       let clientToken: string;
