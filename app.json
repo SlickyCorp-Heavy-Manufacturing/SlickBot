@@ -1,10 +1,15 @@
 {
-    "formation": {
-      "web": {
-        "quantity": 0
-      },
-      "worker": {
-        "quantity": 1
-      }
+  "formation": {
+    "web": {
+      "quantity": 0
+    },
+    "worker": {
+      "quantity": 1
+    }
+  },
+  "scripts": {
+    "dokku": {
+      "predeploy": "echo \"$GOOGLE_CREDENTIALS\" > \"$GOOGLE_APPLICATION_CREDENTIALS\""
     }
   }
+}
