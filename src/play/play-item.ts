@@ -6,7 +6,7 @@ import { protos, TextToSpeechClient } from '@google-cloud/text-to-speech';
 import { Message } from 'discord.js';
 import Soundcloud from 'soundcloud.ts';
 import { exec as ytdl } from 'youtube-dl-exec';
-import { getInfo } from 'ytdl-core';
+import { getInfo } from '@distube/ytdl-core';
 
 export interface PlayItem {
   createAudioResource: () => Promise<AudioResource<PlayItem>>
