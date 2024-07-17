@@ -23,6 +23,7 @@ export class PlayItemYoutube implements PlayItem {
     this.title = title;
     this.onError = async (error: Error) => {
       await msg.reply(`Slickyboi pooped: ${error} 🎶`);
+      console.error(error);
       return Promise.resolve();
     };
     this.onFinish = async () => {};
