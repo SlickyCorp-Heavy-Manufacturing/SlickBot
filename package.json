@@ -27,7 +27,7 @@
     "discord-ytdl-core": "5.0.4",
     "discord.js": "^14.15.3",
     "dotenv": "16.4.5",
-    "eslint-import-resolver-typescript": "3.6.1",
+    "eslint-import-resolver-typescript": "3.6.3",
     "ffmpeg-static": "5.2.0",
     "fuzzyset.js": "1.0.7",
     "got": "11.8.6",
