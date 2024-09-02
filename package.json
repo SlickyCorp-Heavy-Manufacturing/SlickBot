@@ -32,7 +32,7 @@
     "fuzzyset.js": "1.0.7",
     "got": "11.8.6",
     "imgflip": "2.0.0",
-    "iso-639-1": "3.1.2",
+    "iso-639-1": "3.1.3",
     "libsodium-wrappers": "^0.7.10",
     "lodash": "4.17.21",
     "luxon": "3.5.0",
