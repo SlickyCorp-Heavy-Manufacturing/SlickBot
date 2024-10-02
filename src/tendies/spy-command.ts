@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import got from 'got/dist/source';
 import { sample as _sample } from 'lodash';
 import { withFile } from 'tmp-promise';
@@ -24,7 +24,7 @@ export const SpyCommand: ICommand = {
           },
         );
         fs.writeFileSync(tmpFile.path, response.body);
-        await msg.channel.send({ files: [tmpFile.path] });
+        await (msg.channel as TextChannel).send({ files: [tmpFile.path] });
       },
       { postfix: '.png' },
     );
@@ -37,7 +37,7 @@ export const DowCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => (msg.content.startsWith('!dow') || msg.content.startsWith('!dji')),
   command: async (msg: Message) => {
-    await msg.channel.send(_sample([
+    await (msg.channel as TextChannel).send(_sample([
       'https://tenor.com/bdkoy.gif',
       'https://tenor.com/bbCLu.gif',
       'https://tenor.com/beDbD.gif',
@@ -64,7 +64,7 @@ export const EtfCommand: ICommand = {
           },
         );
         fs.writeFileSync(tmpFile.path, response.body);
-        await msg.channel.send({ files: [tmpFile.path] });
+        await (msg.channel as TextChannel).send({ files: [tmpFile.path] });
       },
       { postfix: '.png' },
     );
@@ -89,7 +89,7 @@ export const WorldCommand: ICommand = {
           },
         );
         fs.writeFileSync(tmpFile.path, response.body);
-        await msg.channel.send({ files: [tmpFile.path] });
+        await (msg.channel as TextChannel).send({ files: [tmpFile.path] });
       },
       { postfix: '.png' },
     );

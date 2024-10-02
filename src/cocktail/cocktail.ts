@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import { ICommand } from '../icommand';
 import { findCocktail, getIngredientsAsArray } from './cocktail-db';
 
@@ -11,7 +11,7 @@ export const GetCocktail: ICommand = {
     const cocktailName = msg.content.replace('!cocktail', '').trim();
     const drink = await findCocktail(cocktailName);
     if (drink) {
-      msg.channel.send(`*${drink.strDrink}* is best served in a ${drink.strGlass}.
+      (msg.channel as TextChannel).send(`*${drink.strDrink}* is best served in a ${drink.strGlass}.
 
 Ingredients: ${getIngredientsAsArray(drink).join(', ')}
               
@@ -19,7 +19,7 @@ ${drink.strInstructions}
               
 ${drink.strDrinkThumb}`);
     } else {
-      msg.channel.send('Sorry. I\'m not familiar wth that cocktail.');
+      (msg.channel as TextChannel).send('Sorry. I\'m not familiar wth that cocktail.');
     }
   },
 };
