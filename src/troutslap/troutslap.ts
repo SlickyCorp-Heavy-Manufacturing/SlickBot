@@ -1,4 +1,4 @@
-import Discord, { ChannelType, DMChannel } from 'discord.js';
+import Discord, { ChannelType, DMChannel, TextChannel } from 'discord.js';
 import { escapeMarkdown } from '../utils';
 
 export class Troutslap {
@@ -34,7 +34,7 @@ export class Troutslap {
     // Assign a random trout
     // Reply in the publicly messaged channel.
     const slapMessage = `_slaps ${escapeMarkdown(item)} around with a ${Troutslap.randomTrout()}_`;
-    return msg.channel.send(slapMessage)
+    return (msg.channel as TextChannel).send(slapMessage)
       .catch(console.error);
   }
 

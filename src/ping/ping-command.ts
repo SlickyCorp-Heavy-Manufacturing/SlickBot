@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import { ICommand } from '../icommand';
 
 export const PingCommand: ICommand = {
@@ -7,6 +7,6 @@ export const PingCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.content === 'ping',
   command: async (msg: Message) => {
-    await msg.channel.send('pong');
+    await (msg.channel as TextChannel).send('pong');
   },
 };

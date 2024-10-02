@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import { ICommand } from '../icommand';
 import { commandList } from '../commandList';
 
@@ -22,7 +22,7 @@ export const HelpCommand: ICommand = {
 
     /* eslint-disable no-await-in-loop */
     for (const message of messages) {
-      await msg.channel.send(message);
+      await (msg.channel as TextChannel).send(message);
     }
     /* eslint-enable no-await-in-loop */
     return Promise.resolve();

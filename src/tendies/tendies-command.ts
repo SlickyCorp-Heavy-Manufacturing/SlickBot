@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import { ICommand } from '../icommand';
 import { Tendies } from './tendies';
 
@@ -9,6 +9,6 @@ export const TendiesCommand: ICommand = {
   trigger: (msg: Message) => msg.content.startsWith('!tendies'),
   command: async (msg: Message) => {
     const value = await Tendies.tendies(msg.content.replace('!tendies', '').trim());
-    await msg.channel.send(value);
+    await (msg.channel as TextChannel).send(value);
   },
 };

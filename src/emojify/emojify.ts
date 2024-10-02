@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 // @ts-ignore
 import * as translate from 'moji-translate';
 
@@ -18,7 +18,7 @@ export const EmojifyCommand: ICommand = {
     if (previousMessage !== undefined && msg.content.trim() !== '') {
       const emojified: string = translate.translate(previousMessage.content, false);
       if (previousMessage.content.toLowerCase() !== emojified.toLowerCase()) {
-        msg.channel.send(emojified);
+        (msg.channel as TextChannel).send(emojified);
       }
     }
   },

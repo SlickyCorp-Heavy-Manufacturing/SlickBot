@@ -1,4 +1,4 @@
-import { Message, User } from 'discord.js';
+import { Message, TextChannel, User } from 'discord.js';
 import { sample as _sample } from 'lodash';
 import { ICommand } from '../icommand';
 
@@ -62,7 +62,7 @@ export const TechTrackCommand: ICommand = {
         '277609530915946497', // MarkT
       ],
     );
-    await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
+    await (msg.channel as TextChannel).send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
   },
 };
 
@@ -78,6 +78,6 @@ export const DevOpsCommand: ICommand = {
       'RAIDOPS01',
       ['622595355153793045', '436298366952144907'], // Brian, MarkF
     );
-    await msg.channel.send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
+    await (msg.channel as TextChannel).send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
   },
 };
