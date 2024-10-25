@@ -1,4 +1,5 @@
-import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
+import { AudioResource, createAudioResource } from '@discordjs/voice';
+import * as cookie from 'cookie';
 import { Message } from 'discord.js';
 import ytdl = require('@distube/ytdl-core');
 import { PlayItem } from './play-item';
@@ -36,8 +37,20 @@ export class PlayItemYoutube implements PlayItem {
   }
 
   public async createAudioResource(): Promise<AudioResource<PlayItem>> {
+    let agent: ytdl.Agent;
+    if (process.env.YOUTUBE_COOKIE) {
+      const parsedCookies = cookie.parse(process.env.YOUTUBE_COOKIE);
+      const cookies: ytdl.Cookie[] = [];
+      for (const key in parsedCookies) {
+        if (Object.prototype.hasOwnProperty.call(parsedCookies, key)) {
+          cookies.push({ name: key, value: parsedCookies[key] });
+        }
+      }
+      agent = ytdl.createAgent(cookies);
+    }
+
     return createAudioResource(
-      ytdl(this.url, { filter: 'audioonly', dlChunkSize: 0 }),
+      ytdl(this.url, { agent, filter: 'audioonly', dlChunkSize: 0 }),
       { metadata: this },
     );
   }
