@@ -37,16 +37,18 @@ export class PlayItemYoutube implements PlayItem {
   }
 
   public async createAudioResource(): Promise<AudioResource<PlayItem>> {
-    let agent: ytdl.Agent | undefined = undefined;
+    let agent: ytdl.Agent;
     if (process.env.YOUTUBE_COOKIE) {
       const parsedCookies = cookie.parse(process.env.YOUTUBE_COOKIE);
       const cookies: ytdl.Cookie[] = [];
       for (const key in parsedCookies) {
-        cookies.push({name: key, value: parsedCookies[key]});
+        if (Object.prototype.hasOwnProperty.call(parsedCookies, key)) {
+          cookies.push({ name: key, value: parsedCookies[key] });
+        }
       }
       agent = ytdl.createAgent(cookies);
     }
-    
+
     return createAudioResource(
       ytdl(this.url, { agent, filter: 'audioonly', dlChunkSize: 0 }),
       { metadata: this },
