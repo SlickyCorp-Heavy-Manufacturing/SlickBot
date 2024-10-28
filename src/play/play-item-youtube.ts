@@ -17,6 +17,8 @@ export class PlayItemYoutube implements PlayItem {
 
   public readonly volume: number;
 
+  private static agent: ytdl.Agent;
+
   private readonly url: string;
 
   private constructor(msg: Message, title: string, url: string, volume: number) {
@@ -36,9 +38,8 @@ export class PlayItemYoutube implements PlayItem {
     this.volume = volume;
   }
 
-  public async createAudioResource(): Promise<AudioResource<PlayItem>> {
-    let agent: ytdl.Agent;
-    if (process.env.YOUTUBE_COOKIE) {
+  public static get Agent() {
+    if (process.env.YOUTUBE_COOKIE && this.agent === undefined) {
       const parsedCookies = cookie.parse(process.env.YOUTUBE_COOKIE);
       const cookies: ytdl.Cookie[] = [];
       for (const key in parsedCookies) {
@@ -47,17 +48,21 @@ export class PlayItemYoutube implements PlayItem {
           cookies.push({ name: key, value: parsedCookies[key] });
         }
       }
-      agent = ytdl.createAgent(cookies);
+      this.agent = ytdl.createAgent(cookies);
     }
 
+    return this.agent;
+  }
+
+  public async createAudioResource(): Promise<AudioResource<PlayItem>> {
     return createAudioResource(
-      ytdl(this.url, { agent, filter: 'audioonly', dlChunkSize: 0 }),
+      ytdl(this.url, { agent: PlayItemYoutube.Agent, filter: 'audioonly', dlChunkSize: 0 }),
       { metadata: this },
     );
   }
 
   public static async from(msg: Message, url: string, volume: number) {
-    const info = await ytdl.getInfo(url);
+    const info = await ytdl.getInfo(url, { agent: PlayItemYoutube.Agent });
     return new PlayItemYoutube(msg, info.videoDetails.title, url, volume);
   }
 }
