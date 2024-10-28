@@ -43,6 +43,7 @@ export class PlayItemYoutube implements PlayItem {
       const cookies: ytdl.Cookie[] = [];
       for (const key in parsedCookies) {
         if (Object.prototype.hasOwnProperty.call(parsedCookies, key)) {
+          console.log(`Adding YouTube Cookie: ${key}`);
           cookies.push({ name: key, value: parsedCookies[key] });
         }
       }
