@@ -46,15 +46,16 @@ export class PlayItemYoutube implements PlayItem {
         if (Object.prototype.hasOwnProperty.call(parsedCookies, key)) {
           console.log(`Adding YouTube Cookie: ${key}`);
           cookies.push({
-            domain: ".youtube.com",
+            domain: '.youtube.com',
             expirationDate: Date.now() + (365 * 24 * 60 * 60 * 1000),
             hostOnly: false,
             httpOnly: true,
             name: key,
-            path: "/",
-            sameSite: "no_restriction",
+            path: '/',
+            sameSite: 'no_restriction',
             secure: true,
-            value: parsedCookies[key] });
+            value: parsedCookies[key],
+          });
         }
       }
       this.agent = ytdl.createAgent(cookies, {});
