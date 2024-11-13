@@ -23,3 +23,6 @@ RUN npm ci --only=production
 COPY --from=build /app/dist ./dist
 
 CMD ["node", "dist/index.js"]
+
+LABEL org.opencontainers.image.source=https://github.com/SlickyCorp-Heavy-Manufacturing/SlickBot
+LABEL org.opencontainers.image.description="Discord bot that does important features"

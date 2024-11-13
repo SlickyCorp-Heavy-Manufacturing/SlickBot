@@ -2,12 +2,16 @@
   "$schema": "https://json.schemastore.org/semantic-release.json",
   "branches": ["main"],
   "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/github",
-    "@semantic-release/release-notes-generator",
     ["@codedependant/semantic-release-docker", {
+      "dockerBuildQuiet": false,
       "dockerPlatform": ["linux/arm64/v8", "linux/amd64"],
       "dockerRegistry": "ghcr.io"
-    }]
+    }],
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/github",
+    ["@semantic-release/npm", {
+      "npmPublish": false
+    }],
+    "@semantic-release/release-notes-generator"
   ]
 }
