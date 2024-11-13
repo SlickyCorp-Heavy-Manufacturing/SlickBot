@@ -1,6 +1,7 @@
 {
-  "name": "slick-bot",
+  "name": "SlickBot",
   "version": "1.0.0",
+  "private": "true",
   "description": "Discord bot",
   "main": "./dist/index.js",
   "engines": {
@@ -47,6 +48,8 @@
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
+    "@codedependant/semantic-release-docker": "^5.0.3",
+    "@semantic-release/exec": "^6.0.3",
     "@types/cheerio": "0.22.35",
     "@types/ffmpeg-static": "3.0.3",
     "@types/fuzzyset.js": "0.0.5",
@@ -68,6 +71,7 @@
     "nock": "13.5.6",
     "nodemon": "3.1.7",
     "nyc": "17.1.0",
+    "semantic-release": "^24.2.0",
     "ts-node": "10.9.2",
     "typescript": "5.6.3"
   }

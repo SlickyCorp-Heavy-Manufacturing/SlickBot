@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/semantic-release.json",
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/github",
+    "@semantic-release/release-notes-generator",
+    "@codedependant/semantic-release-docker"
+  ]
+}
