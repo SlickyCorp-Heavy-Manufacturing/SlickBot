@@ -31,7 +31,7 @@ jobs:
         with:
           node-version-file: package.json
       - name: Publish
-        run: npm run release
+        run: npx semantic-release
         env:
           DOCKER_REGISTRY_USER: ${{ github.actor }}
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
