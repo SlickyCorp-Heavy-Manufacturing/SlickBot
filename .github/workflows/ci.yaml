@@ -1,10 +1,8 @@
 name: Slickybot CI
 
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [main]
+  - push
+  - pull_request
 
 jobs:
   lint:
@@ -16,17 +14,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: package.json
-      - run: npm ci
-      - run: npm run lint
-  unit-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: package.json
-      - run: npm ci
-      - run: npm run build
-      - run: npm run test:coverage
+      - name: Validate Commit Message (on push)
+        if: github.event_name == 'push'
+        run: npx commitlint --last --verbose
+      - name: Validate Commit Message (on PR)
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
+      - name: Install Dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+      - name: Unit Test
+        run: npm run test:coverage
