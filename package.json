@@ -1,5 +1,5 @@
 {
-  "name": "SlickBot",
+  "name": "@slickycorp-heavy-manufacturing/slickbot",
   "version": "1.0.0",
   "private": "true",
   "description": "Discord bot",
