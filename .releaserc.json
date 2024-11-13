@@ -6,6 +6,7 @@
     "@semantic-release/github",
     "@semantic-release/release-notes-generator",
     ["@codedependant/semantic-release-docker", {
+      "dockerPlatform": ["linux/arm64/v8", "linux/amd64"],
       "dockerRegistry": "ghcr.io"
     }]
   ]

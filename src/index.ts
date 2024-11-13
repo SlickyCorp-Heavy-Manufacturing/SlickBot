@@ -1,12 +1,11 @@
 import Discord, { Events } from 'discord.js';
+import 'dotenv/config';
 import { scheduleJob } from 'node-schedule';
 
 import { commandList } from './commandList';
 import { scheduledPosts } from './scheduledPosts';
 import { findChannelById, unpinBotMessages } from './utils';
 import { DiscordClient } from './discordClient';
-
-require('dotenv').config();
 
 process.on('unhandledRejection', (reason: Error | any, p: Promise<any>) => {
   console.log('caught your junk %s', reason);
