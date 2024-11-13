@@ -5,11 +5,14 @@ on:
   - pull_request
 
 jobs:
-  lint:
+  ci:
+    name: Slickybot CI
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Setup NodeJS
         uses: actions/setup-node@v4
         with:
