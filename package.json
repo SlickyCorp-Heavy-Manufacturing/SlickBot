@@ -14,10 +14,9 @@
     "lint:fix": "eslint --fix src/**/*.ts",
     "test": "jasmine-ts --config=jasmine-ts.json",
     "test:integration": "jasmine-ts --config=jasmine-ts-integration.json",
-    "test:coverage": "ts-node node_modules/nyc/bin/nyc.js npm test",
+    "test:coverage": "tsc && nyc --require ts-node/register jasmine --config=jasmine-ts.json",
     "start": "node ./dist/index.js",
-    "release": "semantic-release",
-    "release:dry-run": "semantic-release --dry-run"
+    "release": "semantic-release"
   },
   "author": "SlickyCorp-Heavy-Manufacturing",
   "license": "ISC",
@@ -75,9 +74,10 @@
     "jasmine-ts": "0.4.0",
     "nock": "13.5.6",
     "nodemon": "3.1.7",
-    "nyc": "17.1.0",
+    "nyc": "^17.1.0",
     "semantic-release": "^24.2.0",
-    "ts-node": "10.9.2",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.2",
     "typescript": "5.6.3"
   }
 }

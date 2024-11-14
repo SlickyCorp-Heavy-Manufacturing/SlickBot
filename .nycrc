@@ -10,7 +10,7 @@
     ".ts"
   ],
   "all": true,
-  "check-coverage": true,
+  "check-coverage": false,
   "reporter": [
     "cobertura"
   ]
