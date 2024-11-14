@@ -1,13 +1,17 @@
 {
-    "include":[
-        "src/**/*.ts"
-    ],
-    "exclude": [
-        "src/**/*.spec.ts"
-    ],
-    "extentions": [
-        ".ts"
-    ],
-    "all": true,
-    "check-coverage": true
+  "extends": "@istanbuljs/nyc-config-typescript",
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
+  ],
+  "extentions": [
+    ".ts"
+  ],
+  "all": true,
+  "check-coverage": true,
+  "reporter": [
+    "cobertura"
+  ]
 }

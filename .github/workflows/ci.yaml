@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
       - name: Setup NodeJS
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.1.0
         with:
           node-version-file: package.json
       - name: Install Dependencies
@@ -23,3 +23,12 @@ jobs:
         run: npm run build
       - name: Unit Tests
         run: npm run test:coverage
+      - name: Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage/cobertura-coverage.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          output: both
+          thresholds: '60 80'
