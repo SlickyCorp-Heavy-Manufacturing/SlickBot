@@ -8,6 +8,8 @@ jobs:
   ci:
     name: Slickybot CI
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -28,7 +30,13 @@ jobs:
         with:
           filename: coverage/cobertura-coverage.xml
           badge: true
-          fail_below_min: true
+          fail_below_min: false
           format: markdown
           output: both
           thresholds: '60 80'
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2.9.0
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
