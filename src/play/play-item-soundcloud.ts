@@ -1,4 +1,4 @@
-import { AudioResource, createAudioResource, StreamType } from '@discordjs/voice';
+import { AudioResource, createAudioResource } from '@discordjs/voice';
 import { Message } from 'discord.js';
 import Soundcloud from 'soundcloud.ts';
 
