@@ -32,7 +32,7 @@ jobs:
           node-version-file: package.json
       - name: Install Dependencies
         run: npm ci
-      - name: Publish
+      - name: Publish Release
         run: npm run release
         env:
           DOCKER_REGISTRY_USER: ${{ github.actor }}
