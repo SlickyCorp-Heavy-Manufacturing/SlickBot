@@ -23,5 +23,3 @@ jobs:
         run: npm run build
       - name: Unit Tests
         run: npm run test:coverage
-      - name: Dry-run Release
-        run: npm run release --dry-run
