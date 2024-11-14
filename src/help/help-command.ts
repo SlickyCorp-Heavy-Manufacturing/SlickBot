@@ -20,11 +20,10 @@ export const HelpCommand: ICommand = {
     });
     messages[messages.length - 1] = `${messages[messages.length - 1]}\`\`\`\n`;
 
-    /* eslint-disable no-await-in-loop */
     for (const message of messages) {
       await (msg.channel as TextChannel).send(message);
     }
-    /* eslint-enable no-await-in-loop */
+
     return Promise.resolve();
   },
 };
