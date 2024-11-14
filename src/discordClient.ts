@@ -1,5 +1,6 @@
 import { generateDependencyReport } from '@discordjs/voice';
 import Discord, { Events, GatewayIntentBits } from 'discord.js';
+import { readFileSync } from 'fs';
 
 export class DiscordClient {
   private discordClient: Discord.Client;
@@ -47,10 +48,15 @@ export class DiscordClient {
 
   private static note(): string {
     const commit = process.env.GIT_REV;
-
     if (commit) {
       return commit;
     }
+
+    const nodeEnv = process.env.NODE_ENV;
+    if (nodeEnv === 'production') {
+      return JSON.parse(readFileSync('/app/package.json', 'utf8')).version;
+    }
+
     return 'haha you dont test in prod';
   }
 }
