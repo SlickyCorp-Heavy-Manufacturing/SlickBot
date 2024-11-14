@@ -19,6 +19,7 @@ export const DalleCommand: ICommand = {
           body: JSON.stringify({ prompt }),
         });
       } catch (e) {
+        console.debug(e);
         retryCounter += 1;
       }
     }

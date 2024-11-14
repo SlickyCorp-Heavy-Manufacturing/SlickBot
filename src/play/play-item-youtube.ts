@@ -1,7 +1,7 @@
 import { AudioResource, createAudioResource } from '@discordjs/voice';
 import * as cookie from 'cookie';
 import { Message } from 'discord.js';
-import ytdl = require('@distube/ytdl-core');
+import ytdl from '@distube/ytdl-core';
 import { PlayItem } from './play-item';
 
 export class PlayItemYoutube implements PlayItem {

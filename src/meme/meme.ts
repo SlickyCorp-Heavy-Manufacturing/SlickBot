@@ -1,15 +1,13 @@
 import * as yargs from 'yargs';
-// @ts-ignore
-import Imgflip from 'imgflip';
+import Imgflip, { MemeFormat } from 'imgflip';
 import { Message } from 'discord.js';
 
 import FuzzySet from 'fuzzyset.js';
 
-import * as types from './types';
 import * as memes from './meme-list';
 
 export class Meme {
-  private static MEMES: types.meme[];
+  private static MEMES: MemeFormat[];
 
   private static TEMPLATE_NAMES: FuzzySet;
 
@@ -27,7 +25,7 @@ export class Meme {
     return imgflip;
   }
 
-  private static findTemplate(name: string): types.meme {
+  private static findTemplate(name: string): MemeFormat {
     const template = this.TEMPLATE_NAMES.get(name);
     if (!template) {
       return Meme.MEMES[69]; // hehe its bad luck brian
@@ -43,7 +41,7 @@ export class Meme {
     }).parseSync(msg.content);
 
     const template = this.findTemplate(args.template);
-    return `${template.name} boxes ${template.box_count}`;
+    return `${template.name} boxes ${template.boxCount}`;
   }
 
   public static async getImage(msg: Message): Promise<string> {
@@ -71,8 +69,8 @@ export class Meme {
     captions = captions.filter((x) => x);
     const template = this.findTemplate(args.template);
 
-    if (captions.length > template.box_count) {
-      return `${template.name} requires ${template.box_count} strings`;
+    if (captions.length > template.boxCount) {
+      return `${template.name} requires ${template.boxCount} strings`;
     }
 
     const img = await imgflip.meme(template.id, {

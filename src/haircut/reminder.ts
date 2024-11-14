@@ -1,4 +1,3 @@
-import Discord from 'discord.js';
 import { IScheduledPost } from '../ischeduledpost';
 
 const IRL_CHANNEL = '614482862363770903';

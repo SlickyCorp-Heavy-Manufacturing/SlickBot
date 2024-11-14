@@ -1,6 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
-// @ts-ignore
-import * as translate from 'moji-translate';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const translate = require('moji-translate');
 
 import { ICommand } from '../icommand';
 
