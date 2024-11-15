@@ -1,4 +1,4 @@
-import { IScheduledPost } from '../ischeduledpost';
+import { IScheduledPost } from '../ischeduledpost.js';
 
 const IRL_CHANNEL = '614482862363770903';
 

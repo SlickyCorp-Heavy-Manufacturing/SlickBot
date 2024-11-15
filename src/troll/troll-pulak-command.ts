@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { ICommand } from '../icommand';
+import { ICommand } from '../icommand.js';
 
 export const TrollPulakCommand: ICommand = {
   name: 'TrollJPulak',

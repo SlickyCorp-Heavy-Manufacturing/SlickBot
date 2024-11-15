@@ -1,7 +1,7 @@
-import Discord from 'discord.js';
+import { Client } from 'discord.js';
 
-import { IScheduledPost } from '../ischeduledpost';
-import { findChannelById } from '../utils';
+import { IScheduledPost } from '../ischeduledpost.js';
+import { findChannelById } from '../utils.js';
 
 const CHANNEL = '614482862363770903';
 const HANGOVER_CURES = [
@@ -15,7 +15,7 @@ const HANGOVER_CURES = [
 const HUNGOVER_ROLE = '819072708951146547';
 
 async function hangoverCures(
-  client: Discord.Client,
+  client: Client,
 ): Promise<string[]> {
   const messages: string[] = [];
   const channel = await findChannelById(client, CHANNEL);
@@ -36,6 +36,6 @@ export const scheduledHangoverCures: IScheduledPost[] = [
   {
     cronDate: '0 8 * * *',
     channel: CHANNEL,
-    getMessage: (client: Discord.Client) => hangoverCures(client),
+    getMessage: (client: Client) => hangoverCures(client),
   },
 ];

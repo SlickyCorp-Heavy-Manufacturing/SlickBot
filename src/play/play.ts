@@ -1,13 +1,13 @@
 import { URL } from 'url';
 import { ChannelType, Message } from 'discord.js';
-import * as yargs from 'yargs';
+import yargs from 'yargs/yargs';
 import ytpl from 'ytpl';
 
-import { PlayQueue } from './play-queue';
-import { PlayItem } from './play-item';
-import { PlayItemYoutube } from './play-item-youtube';
-import { PlayItemSoundcloud } from './play-item-soundcloud';
-import { PlayItemTTS } from './play-item-tts';
+import { PlayQueue } from './play-queue.js';
+import { PlayItem } from './play-item.js';
+import { PlayItemYoutube } from './play-item-youtube.js';
+import { PlayItemSoundcloud } from './play-item-soundcloud.js';
+import { PlayItemTTS } from './play-item-tts.js';
 
 export class Play {
   private static queue: PlayQueue;
@@ -33,17 +33,16 @@ export class Play {
     // Does this contain a URL?
     const items: PlayItem[] = [];
     if (msg.content.includes('http')) {
-      const args = yargs
+      const args = await yargs(msg.content)
         .number('volume').number('v')
         .options({
           url: { type: 'string', default: 'https://youtu.be/dQw4w9WgXcQ' },
           volume: { type: 'number', alias: 'v', default: '100' },
-        }).parseSync(msg.content);
+        }).parse();
 
       // If the url is provided as the last arg (without --url), use that
-      const additionalArgs: string[] = (yargs.argv as any)._ as string[];
-      if (additionalArgs.length > 1) {
-        args.url = additionalArgs.pop();
+      if (args._.length > 1) {
+        args.url = args._.pop() as string;
       }
 
       if (args.url.startsWith('https://')) {

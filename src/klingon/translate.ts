@@ -1,4 +1,4 @@
-import got from 'got';
+import got, { HTTPError, MaxRedirectsError, ReadError, TimeoutError } from 'got';
 
 export class Translate {
   // Ratelimiting
@@ -14,13 +14,20 @@ export class Translate {
   public static async translateToKlingon(message: string): Promise<string> {
     const everythingButBangKlingon = message.substr('!klingon '.length);
 
-    const response = got.post(Translate.FUN_TRANSLATIONS, {
-      json: {
-        text: everythingButBangKlingon,
-      },
-      timeout: 10000,
-      responseType: 'json',
-    });
+    const response = got.post(
+      Translate.FUN_TRANSLATIONS,
+      {
+        json: {
+          text: everythingButBangKlingon,
+        },
+        timeout: {
+          connect: 10000,
+          response: 10000,
+          secureConnect: 10000,
+        },
+        responseType: 'json',
+      }
+    );
 
     try {
       await response;
@@ -28,15 +35,13 @@ export class Translate {
       return translation;
     } catch (e) {
       switch (e.constructor) {
-        case got.ReadError:
+        case ReadError:
           return 'Read Error';
-        case got.HTTPError:
+        case HTTPError:
           return `HTTP Error ${e.response.statusCode}: ${e.response.statusMessage}`;
-        case got.MaxRedirectsError:
+        case MaxRedirectsError:
           return `Max Redirects Error ${e.response.statusCode}: ${e.response.statusMessage}, URL: ${e.response.redirectUrls}`;
-        case got.UnsupportedProtocolError:
-          return 'Unsupported Protocol Error';
-        case got.TimeoutError:
+        case TimeoutError:
           return 'Request timed out; waited more than 10s';
         default:
           throw e;

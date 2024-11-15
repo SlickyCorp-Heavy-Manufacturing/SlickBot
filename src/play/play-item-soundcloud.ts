@@ -1,8 +1,8 @@
 import { AudioResource, createAudioResource } from '@discordjs/voice';
 import { Message } from 'discord.js';
-import Soundcloud from 'soundcloud.ts';
+import { Soundcloud } from 'soundcloud.ts';
 
-import { PlayItem } from './play-item';
+import { PlayItem } from './play-item.js';
 
 export class PlayItemSoundcloud implements PlayItem {
   public readonly msg: Message;

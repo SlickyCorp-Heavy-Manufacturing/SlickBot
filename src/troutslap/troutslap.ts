@@ -1,8 +1,8 @@
-import Discord, { ChannelType, DMChannel, TextChannel } from 'discord.js';
-import { escapeMarkdown } from '../utils';
+import { ChannelType, DMChannel, Message, TextChannel } from 'discord.js';
+import { escapeMarkdown } from '../utils.js';
 
 export class Troutslap {
-  public static async slap(msg: Discord.Message): Promise<void> {
+  public static async slap(msg: Message): Promise<void> {
     if (msg.channel.type === ChannelType.GuildText) {
       // If @everyone or @here...
       if (msg.mentions.users.size > 0) {
@@ -30,7 +30,7 @@ export class Troutslap {
     }
   }
 
-  private static sendMessage(msg: Discord.Message, item: string) {
+  private static sendMessage(msg: Message, item: string) {
     // Assign a random trout
     // Reply in the publicly messaged channel.
     const slapMessage = `_slaps ${escapeMarkdown(item)} around with a ${Troutslap.randomTrout()}_`;
@@ -38,7 +38,7 @@ export class Troutslap {
       .catch(console.error);
   }
 
-  private static dmUsage(msg: Discord.Message) {
+  private static dmUsage(msg: Message) {
     // Slide into author's DMs with usage.
     if (msg.author.dmChannel === null) {
       msg.author.createDM()

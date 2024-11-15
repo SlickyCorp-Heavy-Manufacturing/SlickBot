@@ -3,7 +3,7 @@ import { AudioResource, createAudioResource, StreamType } from '@discordjs/voice
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 import { Message } from 'discord.js';
 
-import { PlayItem } from './play-item';
+import { PlayItem } from './play-item.js';
 
 export class PlayItemTTS implements PlayItem {
   public readonly msg: Message;

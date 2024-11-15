@@ -5,7 +5,7 @@ import {
   Quote,
   ShortInterest,
   Stock,
-} from './tendies-types';
+} from './tendies-types.js';
 
 export class Tendies {
   private static readonly FINNHUB_URL: string = 'https://finnhub.io/api/v1';

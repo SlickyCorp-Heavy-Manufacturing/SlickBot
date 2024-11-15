@@ -1,13 +1,13 @@
-import Discord, { Events } from 'discord.js';
+import { Events, Message } from 'discord.js';
 import 'dotenv/config';
 import { scheduleJob } from 'node-schedule';
 
-import { commandList } from './commandList';
-import { scheduledPosts } from './scheduledPosts';
-import { findChannelById, unpinBotMessages } from './utils';
-import { DiscordClient } from './discordClient';
+import { commandList } from './commandList.js';
+import { scheduledPosts } from './scheduledPosts.js';
+import { findChannelById, unpinBotMessages } from './utils.js';
+import { DiscordClient } from './discordClient.js';
 
-process.on('unhandledRejection', (reason: Error | any, p: Promise<any>) => {
+process.on('unhandledRejection', (reason: Error | any) => {
   console.log('caught your junk %s', reason);
   if (reason.stack) {
     console.log(reason.stack);
@@ -16,7 +16,7 @@ process.on('unhandledRejection', (reason: Error | any, p: Promise<any>) => {
 
 const discordClient = new DiscordClient();
 discordClient.init().then(() => {
-  discordClient.client.on(Events.MessageCreate, (msg: Discord.Message) => {
+  discordClient.client.on(Events.MessageCreate, (msg: Message) => {
     const commands = commandList.filter((command) => command.trigger(msg));
     Promise.all(commands.map(async (command) => {
       command.command(msg);

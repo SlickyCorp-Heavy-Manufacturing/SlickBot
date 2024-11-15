@@ -1,8 +1,7 @@
 import { Message, TextChannel } from 'discord.js';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const translate = require('moji-translate');
+import translate from 'moji-translate';
 
-import { ICommand } from '../icommand';
+import { ICommand } from '../icommand.js';
 
 export const EmojifyCommand: ICommand = {
   name: '!emojify',

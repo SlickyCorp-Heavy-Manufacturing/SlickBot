@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
-import { ICommand } from '../icommand';
-import { Meme } from './meme';
+import { ICommand } from '../icommand.js';
+import { Meme } from './meme.js';
 
 export const MemeCommand: ICommand = {
   name: '!meme',

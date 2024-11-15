@@ -1,6 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
-import { ICommand } from '../icommand';
-import { Flavor, FlavorForecast, KoppsFlavorForecast } from './kopps-flavor-forecast';
+import { ICommand } from '../icommand.js';
+import { Flavor, FlavorForecast, KoppsFlavorForecast } from './kopps-flavor-forecast.js';
 
 export const FlavorForecastCommand: ICommand = {
   name: '!flavor-forecast',

@@ -1,6 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
-import { ICommand } from '../icommand';
-import { findCocktail, getIngredientsAsArray } from './cocktail-db';
+import { ICommand } from '../icommand.js';
+import { findCocktail, getIngredientsAsArray } from './cocktail-db.js';
 
 export const GetCocktail: ICommand = {
   name: '!cocktail',

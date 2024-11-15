@@ -1,7 +1,8 @@
-import 'jasmine';
+import { expect } from 'chai';
+import 'mocha';
 import nock from 'nock';
 
-import { Weather } from './weather';
+import { Weather } from '../../src/weather/weather.js';
 
 describe('Weather', () => {
   it('should get current weather', async () => {
@@ -21,6 +22,6 @@ describe('Weather', () => {
       .reply(200, { ...forcast });
 
     const weather = await Weather.currentWeather();
-    expect(weather).toBe('Tonight its gonna rain');
+    expect(weather).to.equal('Tonight its gonna rain');
   });
 });

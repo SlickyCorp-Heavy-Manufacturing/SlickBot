@@ -11,7 +11,7 @@ import {
   VoiceConnectionDisconnectReason,
   VoiceConnectionStatus,
 } from '@discordjs/voice';
-import type { PlayItem } from './play-item';
+import type { PlayItem } from './play-item.js';
 
 const wait = promisify(setTimeout);
 
@@ -189,7 +189,7 @@ export class PlayQueue {
         this.createVoiceConnection(
           nextItem.msg.member.voice.channel.id,
           nextItem.msg.member.voice.guild.id,
-          nextItem.msg.member.voice.guild.voiceAdapterCreator,
+          nextItem.msg.member.voice.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
         );
       }
 

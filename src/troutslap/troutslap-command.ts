@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
-import { ICommand } from '../icommand';
-import { Troutslap } from './troutslap';
+import { ICommand } from '../icommand.js';
+import { Troutslap } from './troutslap.js';
 
 export const TroutslapCommand: ICommand = {
   name: '!troutslap',

@@ -1,6 +1,6 @@
-import { IScheduledPost } from './ischeduledpost';
-import { PulakHairCut } from './haircut/reminder';
-import { scheduledHangoverCures } from './hungover';
+import { IScheduledPost } from './ischeduledpost.js';
+import { PulakHairCut } from './haircut/reminder.js';
+import { scheduledHangoverCures } from './hungover/index.js';
 
 export const scheduledPosts: IScheduledPost[] = [
   ...scheduledHangoverCures,

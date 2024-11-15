@@ -1,6 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
-import { ICommand } from '../icommand';
-import { commandList } from '../commandList';
+import { ICommand } from '../icommand.js';
+import { commandList } from '../commandList.js';
 
 export const HelpCommand: ICommand = {
   name: '!help',

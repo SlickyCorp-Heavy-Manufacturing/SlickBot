@@ -1,10 +1,10 @@
-import * as yargs from 'yargs';
+import yargs from 'yargs';
 import Imgflip, { MemeFormat } from 'imgflip';
 import { Message } from 'discord.js';
 
 import FuzzySet from 'fuzzyset.js';
 
-import * as memes from './meme-list';
+import * as memes from './meme-list.js';
 
 export class Meme {
   private static MEMES: MemeFormat[];
@@ -36,9 +36,9 @@ export class Meme {
   public static async memeSearch(msg: Message): Promise<string> {
     await this.login();
 
-    const args = yargs.options({
+    const args = await yargs(msg.content).options({
       template: { type: 'string' },
-    }).parseSync(msg.content);
+    }).parse();
 
     const template = this.findTemplate(args.template);
     return `${template.name} boxes ${template.boxCount}`;
@@ -47,7 +47,7 @@ export class Meme {
   public static async getImage(msg: Message): Promise<string> {
     const imgflip = await this.login();
 
-    const args = yargs.options({
+    const args = await yargs(msg.content).options({
       template: { type: 'string', default: 'pigeon' },
       box1: { type: 'string', default: ' ' },
       box2: { type: 'string' },
@@ -55,7 +55,7 @@ export class Meme {
       box4: { type: 'string' },
       box5: { type: 'string' },
       box6: { type: 'string' },
-    }).parseSync(msg.content);
+    }).parse();
 
     let captions = [
       args.box1,

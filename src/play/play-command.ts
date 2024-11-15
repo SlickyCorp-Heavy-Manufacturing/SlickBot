@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
-import { ICommand } from '../icommand';
-import { Play } from './play';
+import { ICommand } from '../icommand.js';
+import { Play } from './play.js';
 
 export const PlayCommand: ICommand = {
   name: '!play',

@@ -1,8 +1,8 @@
-export { TendiesCommand } from './tendies-command';
-export { ShortsCommand } from './shorts-command';
+export { TendiesCommand } from './tendies-command.js';
+export { ShortsCommand } from './shorts-command.js';
 export {
   DowCommand,
   EtfCommand,
   SpyCommand,
   WorldCommand,
-} from './spy-command';
+} from './spy-command.js';
