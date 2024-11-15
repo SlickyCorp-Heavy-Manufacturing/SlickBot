@@ -16,12 +16,6 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    overrides: {
-      files: ["test/**/.ts"],
-      rules: {
-        "@typescript-eslint/no-unused-expressions": "off"
-      }
-    },
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
     }
