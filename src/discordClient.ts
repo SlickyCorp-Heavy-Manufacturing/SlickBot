@@ -1,16 +1,16 @@
 import { generateDependencyReport } from '@discordjs/voice';
-import Discord, { Events, GatewayIntentBits } from 'discord.js';
+import { Client, Events, GatewayIntentBits } from 'discord.js';
 import { readFileSync } from 'fs';
 
 export class DiscordClient {
-  private discordClient: Discord.Client;
+  private discordClient: Client;
 
   constructor(private token?: string) {
   }
 
-  public init(): Promise<Discord.Client> {
+  public init(): Promise<Client> {
     if (!this.discordClient) {
-      const client = new Discord.Client({
+      const client = new Client({
         intents: [
           GatewayIntentBits.DirectMessages,
           GatewayIntentBits.Guilds,
@@ -42,7 +42,7 @@ export class DiscordClient {
     return Promise.resolve(this.discordClient);
   }
 
-  public get client(): Discord.Client {
+  public get client(): Client {
     return this.discordClient;
   }
 

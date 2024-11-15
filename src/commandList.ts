@@ -1,12 +1,12 @@
-import { ICommand } from './icommand';
-import { HelpCommand } from './help/help-command';
-import { PingCommand } from './ping/ping-command';
-import { WeatherCommand } from './weather/weather-command';
-import { TrollPulakCommand } from './troll/troll-pulak-command';
-import { TroutslapCommand } from './troutslap/troutslap-command';
-import { MemeCommand, MemeSearchCommand } from './meme';
-import { KlingonCommand } from './klingon/klingon-command';
-import { PlayCommand } from './play/play-command';
+import { ICommand } from './icommand.js';
+import { HelpCommand } from './help/help-command.js';
+import { PingCommand } from './ping/ping-command.js';
+import { WeatherCommand } from './weather/weather-command.js';
+import { TrollPulakCommand } from './troll/troll-pulak-command.js';
+import { TroutslapCommand } from './troutslap/troutslap-command.js';
+import { MemeCommand, MemeSearchCommand } from './meme/index.js';
+import { KlingonCommand } from './klingon/klingon-command.js';
+import { PlayCommand } from './play/play-command.js';
 import {
   TendiesCommand,
   ShortsCommand,
@@ -14,18 +14,17 @@ import {
   EtfCommand,
   WorldCommand,
   DowCommand,
-} from './tendies';
-import { NiceReaction, ChulasRecation } from './reactions';
-import { DevNullCommand } from './dev_null/dev-null-command';
-import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps';
-import { DevOpsCommand, TechTrackCommand } from './teams/teams';
-import { EmojifyCommand } from './emojify/emojify';
-import { LMGTFYCommand } from './lmgtfy';
-import { CocktailRecommendation, GetCocktail } from './cocktail';
-import { PlayNowCommand } from './play';
-import { MinerStatsCommand } from './miner';
-import { DefineCommand } from './dictionary';
-import { DalleCommand } from './dalle-mini';
+} from './tendies/index.js';
+import { NiceReaction, ChulasRecation } from './reactions/index.js';
+import { DevNullCommand } from './dev_null/dev-null-command.js';
+import { FlavorForecastCommand, FlavorOfTheDayCommand } from './kopps/index.js';
+import { DevOpsCommand, TechTrackCommand } from './teams/teams.js';
+import { EmojifyCommand } from './emojify/emojify.js';
+import { LMGTFYCommand } from './lmgtfy/index.js';
+import { CocktailRecommendation, GetCocktail } from './cocktail/index.js';
+import { PlayNowCommand } from './play/index.js';
+import { DefineCommand } from './dictionary/index.js';
+import { DalleCommand } from './dalle-mini/index.js';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -55,7 +54,6 @@ export const commandList: ICommand[] = [
   LMGTFYCommand,
   CocktailRecommendation,
   GetCocktail,
-  MinerStatsCommand,
   DefineCommand,
   DalleCommand,
 ];

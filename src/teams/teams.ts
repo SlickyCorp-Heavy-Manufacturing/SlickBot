@@ -1,6 +1,6 @@
 import { Message, TextChannel, User } from 'discord.js';
 import { sample as _sample } from 'lodash';
-import { ICommand } from '../icommand';
+import { ICommand } from '../icommand.js';
 
 export class TeamStory {
   public readonly assignee: User;

@@ -1,6 +1,6 @@
 import { Message, MessagePayload } from 'discord.js';
 import got, { Response } from 'got';
-import { ICommand } from '../icommand';
+import { ICommand } from '../icommand.js';
 
 export const DalleCommand: ICommand = {
   name: '!dalle',

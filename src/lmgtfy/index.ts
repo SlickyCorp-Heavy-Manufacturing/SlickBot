@@ -1,1 +1,1 @@
-export { LMGTFYCommand } from './lmgtfy-command';
+export { LMGTFYCommand } from './lmgtfy-command.js';

@@ -1,1 +1,1 @@
-export { WeatherCommand } from './weather-command';
+export { WeatherCommand } from './weather-command.js';

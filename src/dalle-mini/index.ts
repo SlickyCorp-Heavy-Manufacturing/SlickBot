@@ -1,1 +1,1 @@
-export * from './dalle-mini';
+export * from './dalle-mini.js';

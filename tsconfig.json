@@ -1,23 +1,36 @@
 {
-    "compilerOptions": {
-      "sourceMap": true,
-      "esModuleInterop": true,
-      "allowJs": true,
-      "noImplicitAny": true,
-      "moduleResolution": "node",
-      "resolveJsonModule": true,
-      "lib": ["es2018"],
-      "module": "commonjs",
-      "target": "es2018",
-      "baseUrl": ".",
-      "paths": {
-        "*": ["node_modules/*", "src/types/*"]
-      },
-      "typeRoots": ["node_modules/@types", "src/types"],
-      "outDir": "./dist",
-      "skipLibCheck": true,
+  "compilerOptions": {
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node16",
+    "resolveJsonModule": true,
+    "lib": [
+      "es2018"
+    ],
+    "module": "NodeNext",
+    "target": "ESNext",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "src/types/*"
+      ]
     },
-    "include": ["./src/**/*"],
-    "exclude": ["node_modules", "**/*.spec.ts"]
-  }
-  
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types"
+    ],
+    "outDir": "./dist",
+    "skipLibCheck": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}

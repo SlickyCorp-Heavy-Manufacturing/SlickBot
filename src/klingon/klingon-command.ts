@@ -1,6 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
-import { ICommand } from '../icommand';
-import { Translate } from './translate';
+import { ICommand } from '../icommand.js';
+import { Translate } from './translate.js';
 
 export const KlingonCommand: ICommand = {
   name: 'Klingon',

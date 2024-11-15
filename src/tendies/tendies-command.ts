@@ -1,6 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
-import { ICommand } from '../icommand';
-import { Tendies } from './tendies';
+import { ICommand } from '../icommand.js';
+import { Tendies } from './tendies.js';
 
 export const TendiesCommand: ICommand = {
   name: '!tendies',

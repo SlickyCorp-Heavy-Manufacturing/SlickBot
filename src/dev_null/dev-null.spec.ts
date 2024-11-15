@@ -1,7 +1,7 @@
 import nock from 'nock';
 
 import { Message } from 'discord.js';
-import { DevNullCommand } from './dev-null-command';
+import { DevNullCommand } from './dev-null-command.js';
 
 describe('dev-null', () => {
   it('should send your message to /dev/null', async () => {

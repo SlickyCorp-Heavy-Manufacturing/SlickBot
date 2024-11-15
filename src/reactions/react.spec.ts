@@ -1,7 +1,7 @@
 import 'jasmine';
 
 import { Message } from 'discord.js';
-import { NiceReaction } from './react';
+import { NiceReaction } from './react.js';
 
 describe('React', () => {
   describe('Nice', () => {

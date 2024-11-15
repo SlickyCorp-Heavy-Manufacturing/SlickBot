@@ -1,2 +1,2 @@
-export * from './cocktail';
-export * from './cocktail-recommendation';
+export * from './cocktail.js';
+export * from './cocktail-recommendation.js';

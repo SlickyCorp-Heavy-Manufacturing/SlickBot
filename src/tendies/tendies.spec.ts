@@ -1,8 +1,8 @@
 import 'jasmine';
 import nock from 'nock';
 
-import { Tendies } from './tendies';
-import { Quote, Stock } from './tendies-types';
+import { Tendies } from './tendies.js';
+import { Quote, Stock } from './tendies-types.js';
 
 describe('tendies', () => {
   const quote: Quote = {

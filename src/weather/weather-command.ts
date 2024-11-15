@@ -1,6 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
-import { ICommand } from '../icommand';
-import { Weather } from './weather';
+import { ICommand } from '../icommand.js';
+import { Weather } from './weather.js';
 
 export const WeatherCommand: ICommand = {
   name: '!weather',

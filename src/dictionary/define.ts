@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
-import { ICommand } from '../icommand';
-import { search } from './dictionary';
+import { ICommand } from '../icommand.js';
+import { search } from './dictionary.js';
 
 export const DefineCommand: ICommand = {
   name: '!define',

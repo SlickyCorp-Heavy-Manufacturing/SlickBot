@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { ICommand } from '../icommand';
+import { ICommand } from '../icommand.js';
 
 export const LMGTFYCommand: ICommand = {
   name: 'lmgtfy',

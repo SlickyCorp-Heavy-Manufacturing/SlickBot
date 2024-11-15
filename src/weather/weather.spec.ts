@@ -1,7 +1,7 @@
 import 'jasmine';
 import nock from 'nock';
 
-import { Weather } from './weather';
+import { Weather } from './weather.js';
 
 describe('Weather', () => {
   it('should get current weather', async () => {

@@ -1,6 +1,6 @@
 import 'jasmine';
 
-import { TeamStory } from './teams';
+import { TeamStory } from './teams.js';
 
 describe('teams', () => {
   it('creates story from message', async () => {

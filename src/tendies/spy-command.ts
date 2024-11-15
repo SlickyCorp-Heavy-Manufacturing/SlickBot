@@ -1,10 +1,10 @@
 import fs from 'fs';
 import { Message, TextChannel } from 'discord.js';
-import got from 'got/dist/source';
+import got from 'got';
 import { sample as _sample } from 'lodash';
 import { withFile } from 'tmp-promise';
 
-import { ICommand } from '../icommand';
+import { ICommand } from '../icommand.js';
 
 export const SpyCommand: ICommand = {
   name: '!spy',

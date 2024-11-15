@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
-import { ICommand } from '../icommand';
-import { DevNull } from './dev-null-service';
+import { ICommand } from '../icommand.js';
+import { DevNull } from './dev-null-service.js';
 
 export const DevNullCommand: ICommand = {
   name: '/dev/null',

@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { ICommand } from '../icommand';
+import { ICommand } from '../icommand.js';
 
 export const NiceReaction: ICommand = {
   name: 'nice reaction',
