@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ESNext",
     "isolatedModules": true,
     "esModuleInterop": true,
-    "noEmit": true,
-    "allowImportingTsExtensions": true,
-    "outDir": "dist",
+    "outDir": "./dist",
     "lib": [ "esnext" ],
     "types": [ "node" ],
     "baseUrl": "./",

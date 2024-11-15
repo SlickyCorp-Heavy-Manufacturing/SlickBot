@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 
-import { TeamStory } from '../../src/teams/teams.ts';
+import { TeamStory } from '../../src/teams/teams.js';
 
 describe('teams', () => {
   it('creates story from message', async () => {

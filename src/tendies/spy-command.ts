@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { Message, TextChannel } from 'discord.js';
 import got from 'got';
-import { sample as _sample } from 'lodash';
+import { sample } from 'lodash-es';
 import { withFile } from 'tmp-promise';
 
 import { ICommand } from '../icommand.js';
@@ -37,7 +37,7 @@ export const DowCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => (msg.content.startsWith('!dow') || msg.content.startsWith('!dji')),
   command: async (msg: Message) => {
-    await (msg.channel as TextChannel).send(_sample([
+    await (msg.channel as TextChannel).send(sample([
       'https://tenor.com/bdkoy.gif',
       'https://tenor.com/bbCLu.gif',
       'https://tenor.com/beDbD.gif',

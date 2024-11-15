@@ -1,5 +1,5 @@
 import { Message, TextChannel, User } from 'discord.js';
-import lodash from 'lodash';
+import { sample } from 'lodash-es';
 import { ICommand } from '../icommand.js';
 
 export class TeamStory {
@@ -36,10 +36,10 @@ export class TeamStory {
     );
     const id = `${storyPrefix}-${Math.floor(Math.random() * 9000) + 1000}`;
     const description = `${descriptionPrefix}, ${msg.cleanContent.replace(/^@[^\s]+\s+/i, '')}`;
-    const points = lodash.sample([2, 3, 5, 8, 13]);
+    const points = sample([2, 3, 5, 8, 13]);
 
     return new TeamStory(
-      lodash.sample(potentialAssignees.filter((user) => user !== undefined)),
+      sample(potentialAssignees.filter((user) => user !== undefined)),
       description,
       id,
       points,
