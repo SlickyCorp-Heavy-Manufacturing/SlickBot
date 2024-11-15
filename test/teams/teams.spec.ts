@@ -1,6 +1,7 @@
-import 'jasmine';
+import { expect } from 'chai';
+import 'mocha';
 
-import { TeamStory } from './teams.js';
+import { TeamStory } from '../../src/teams/teams.ts';
 
 describe('teams', () => {
   it('creates story from message', async () => {
@@ -21,9 +22,9 @@ describe('teams', () => {
       ['foo'],
     );
 
-    expect(story.assignee.id).toEqual('bar');
-    expect(story.description).toEqual('This is a test, why did my build fail?');
-    expect(story.id).toMatch(/STORY-[1-9]\d\d\d/);
-    expect(story.points).toMatch(/2|3|5|8|13/);
+    expect(story.assignee.id).to.equal('bar');
+    expect(story.description).to.equal('This is a test, why did my build fail?');
+    expect(story.id).to.match(/STORY-[1-9]\d\d\d/);
+    expect(story.points).to.match(/2|3|5|8|13/);
   });
 });

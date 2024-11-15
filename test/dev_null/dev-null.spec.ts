@@ -8,10 +8,9 @@ import sinonChai from 'sinon-chai';
 import { DevNullCommand } from '../../src/dev_null/dev-null-command.js';
 
 const expect = chai.expect;
+chai.use(sinonChai);
 
 describe('dev-null', () => {
-  chai.use(sinonChai);
-
   it('should send your message to /dev/null', async () => {
     const spy = {
       content: 'tsla 420.69 meme',

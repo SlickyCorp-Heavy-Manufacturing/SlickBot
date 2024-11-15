@@ -23,7 +23,7 @@ export const SpyCommand: ICommand = {
             responseType: 'buffer',
           },
         );
-        fs.writeFileSync(tmpFile.path, response.body);
+        fs.writeFileSync(tmpFile.path, new Uint32Array(response.body));
         await (msg.channel as TextChannel).send({ files: [tmpFile.path] });
       },
       { postfix: '.png' },
@@ -63,7 +63,7 @@ export const EtfCommand: ICommand = {
             responseType: 'buffer',
           },
         );
-        fs.writeFileSync(tmpFile.path, response.body);
+        fs.writeFileSync(tmpFile.path, new Uint32Array(response.body));
         await (msg.channel as TextChannel).send({ files: [tmpFile.path] });
       },
       { postfix: '.png' },
@@ -88,7 +88,7 @@ export const WorldCommand: ICommand = {
             responseType: 'buffer',
           },
         );
-        fs.writeFileSync(tmpFile.path, response.body);
+        fs.writeFileSync(tmpFile.path, new Uint32Array(response.body));
         await (msg.channel as TextChannel).send({ files: [tmpFile.path] });
       },
       { postfix: '.png' },

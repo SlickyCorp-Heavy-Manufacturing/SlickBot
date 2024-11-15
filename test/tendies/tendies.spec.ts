@@ -1,8 +1,9 @@
-import 'jasmine';
+import { expect } from 'chai';
+import 'mocha';
 import nock from 'nock';
 
-import { Tendies } from './tendies.js';
-import { Quote, Stock } from './tendies-types.js';
+import { Tendies } from '../../src/tendies/tendies.js';
+import { Quote, Stock } from '../../src/tendies/tendies-types.js';
 
 describe('tendies', () => {
   const quote: Quote = {
@@ -39,8 +40,8 @@ describe('tendies', () => {
   };
 
   it('calculateQuotePercentage() calculates percentage', () => {
-    expect(Tendies.calculateQuotePercentage(quote)).toBeCloseTo(-0.81, 2);
-    expect(Tendies.calculateQuotePercentage(zeroQuote)).toBeCloseTo(0.0, 2);
+    expect(Tendies.calculateQuotePercentage(quote)).to.be.closeTo(-0.81, 2);
+    expect(Tendies.calculateQuotePercentage(zeroQuote)).to.be.closeTo(0.0, 2);
   });
 
   it('quote() should get most recent stock numbers', async () => {
@@ -50,7 +51,7 @@ describe('tendies', () => {
       .reply(200, quote);
 
     const fooQuote = await Tendies.quote('foo');
-    expect(fooQuote.c).toEqual(226.83);
+    expect(fooQuote.c).to.equal(226.83);
   });
 
   it('randomStock() should get a random stock from the exchange', async () => {
@@ -60,6 +61,6 @@ describe('tendies', () => {
       .reply(200, stocks);
 
     const fooStock = await Tendies.randomStock('foo');
-    expect(fooStock).toMatch(/SPCE|TSLA/);
+    expect(fooStock).to.match(/SPCE|TSLA/);
   });
 });
