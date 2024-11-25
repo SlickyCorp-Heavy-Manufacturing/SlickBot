@@ -27,7 +27,7 @@
     "@distube/ytdl-core": "^4.15.1",
     "@google-cloud/text-to-speech": "5.6.0",
     "cheerio": "1.0.0",
-    "cookie": "^1.0.1",
+    "cookie": "^1.0.2",
     "discord-ytdl-core": "5.0.4",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
