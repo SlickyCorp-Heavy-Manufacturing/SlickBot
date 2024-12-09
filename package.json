@@ -30,7 +30,7 @@
     "cookie": "^1.0.2",
     "discord-ytdl-core": "5.0.4",
     "discord.js": "^14.15.3",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "ffmpeg-static": "5.2.0",
     "fuzzyset.js": "1.0.7",
     "got": "14.4.5",
