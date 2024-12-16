@@ -70,7 +70,7 @@
     "chai": "^5.1.2",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "eslint": "^9.16.0",
-    "globals": "^15.12.0",
+    "globals": "^15.13.0",
     "mocha": "^11.0.1",
     "nock": "13.5.6",
     "nodemon": "3.1.7",
