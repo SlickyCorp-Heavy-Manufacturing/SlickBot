@@ -1,6 +1,6 @@
+import { Cron } from 'croner';
 import { Events, Message } from 'discord.js';
 import 'dotenv/config';
-import { scheduleJob } from 'node-schedule';
 
 import { commandList } from './commandList.js';
 import { scheduledPosts } from './scheduledPosts.js';
@@ -24,7 +24,7 @@ discordClient.init().then(() => {
   });
 
   scheduledPosts.forEach((scheduledPost) => {
-    scheduleJob({ rule: scheduledPost.cronDate, tz: 'America/Chicago' }, async () => {
+    new Cron(scheduledPost.cronDate, { timezone: 'America/Chicago' }, async () => {
       const message = await scheduledPost.getMessage(discordClient.client);
       if (
         (Array.isArray(message) && message.length > 0)
