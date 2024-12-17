@@ -5,6 +5,11 @@ import nock from 'nock';
 import { Weather } from '../../src/weather/weather.js';
 
 describe('Weather', () => {
+  afterEach(() => {
+    nock.cleanAll();
+    nock.restore();
+  });
+
   it('should get current weather', async () => {
     const forcast = {
       properties: {

@@ -1,8 +1,8 @@
 {
   "extends": "@istanbuljs/nyc-config-typescript",
   "include": ["src/**"],
+  "exclude": ["test/**/*.ts"],
   "reporter": ["cobertura", "text"],
   "report-dir": "coverage",
-
   "all": true
 }
