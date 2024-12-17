@@ -5,7 +5,8 @@
     ["@semantic-release/commit-analyzer", {
       "preset": "conventionalcommits",
       "releaseRules": [
-        { "type": "build", "release": "patch" }
+        { "type": "build", "release": "patch" },
+        { "type": "feature", "release": "minor" }
       ]
     }],
     "@semantic-release/release-notes-generator",
