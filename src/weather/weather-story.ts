@@ -17,7 +17,7 @@ export const scheduledWeatherStory: IScheduledPost = {
 }
 
 export class WeatherStory {
-  private static checksums: string[];
+  private static checksums: string[] = [];
 
   public static async getWeatherStories(): Promise<Uint8Array[]> {
     // If this is the first time we've run this function, then assume existing images were already posted
