@@ -1,10 +1,38 @@
-import { expect } from 'chai';
+import * as chai from 'chai';
 import 'mocha';
 import nock from 'nock';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
-import { WeatherStory } from '../../src/weather/weather-story.js';
+import { scheduledWeatherStory, WeatherStory } from '../../src/weather/weather-story.js';
+
+const expect = chai.expect;
+chai.use(sinonChai);
+
+describe('scheduledWeatherStory', () => {
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('should return images as files', async () => {
+    // Mock method
+    sinon.stub(WeatherStory, 'getWeatherStories').callsFake(async () => {
+      return Promise.resolve([Uint8Array.from(Buffer.from('foo', 'utf8'))]);
+    });
+
+    // Execute unit under test
+    const messages = await scheduledWeatherStory.getMessage(undefined);
+
+    // Verify
+    expect(messages).to.deep.equal([{files: [Buffer.from('foo', 'utf8')]}]);
+  });
+});
 
 describe('WeatherStory', () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   it('should return empty array on first run', async () => {
     const storyPage = '\
       <html>\

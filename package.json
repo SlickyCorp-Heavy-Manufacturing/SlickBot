@@ -14,7 +14,6 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts",
     "test": "mocha",
-    "test:integration": "jasmine-ts --config=jasmine-ts-integration.json",
     "test:coverage": "c8 mocha",
     "start": "node ./dist/index.js",
     "release": "semantic-release"
