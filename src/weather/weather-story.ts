@@ -3,7 +3,7 @@ import { BaseMessageOptions } from 'discord.js';
 import got from 'got';
 import { createHash } from 'node:crypto';
 
-import { IScheduledPost } from 'src/ischeduledpost';
+import { IScheduledPost } from 'src/ischeduledpost.js';
 
 export const scheduledWeatherStory: IScheduledPost = {
   channel: '742469521977376980',
