@@ -1,5 +1,5 @@
 import { Cron } from 'croner';
-import { Events, Message } from 'discord.js';
+import { Events, Message, MessageCreateOptions, MessagePayload } from 'discord.js';
 import 'dotenv/config';
 
 import { commandList } from './commandList.js';
@@ -28,7 +28,7 @@ discordClient.init().then(() => {
       const message = await scheduledPost.getMessage(discordClient.client);
       if (
         (Array.isArray(message) && message.length > 0)
-        || (!Array.isArray(message) && message.trim() !== '')
+        || (!Array.isArray(message) && ((typeof message === 'string' || message instanceof String) &&  message.trim() !== ''))
       ) {
         const channel = await findChannelById(discordClient.client, scheduledPost.channel);
 
@@ -38,7 +38,7 @@ discordClient.init().then(() => {
         }
 
         if (Array.isArray(message)) {
-          message.forEach(async (msg) => {
+          message.forEach(async (msg: string | MessagePayload | MessageCreateOptions) => {
             const sent = await channel.send(msg);
             if (scheduledPost.pinMessage === true) {
               await sent.pin();
