@@ -3,6 +3,7 @@ name: Slickybot CI
 on:
   pull_request:
     branches: [main]
+    types: [opened, edited, reopened, synchronize]
 
 jobs:
   ci:
@@ -13,6 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
       - name: Setup NodeJS
         uses: actions/setup-node@v4.1.0
         with:
@@ -40,3 +43,8 @@ jobs:
         with:
           recreate: true
           path: code-coverage-results.md
+      - name: Validate PR commits with commitlint
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+      - name: Validate PR title with commitlint
+        uses: kevintyj/prlint@v2.2.0
