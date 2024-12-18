@@ -28,7 +28,7 @@ export class WeatherStory {
 
     // Download all images
     const images = await Promise.all(page('#tabs .c-tab img').toArray().map(async (img) => {
-      return Uint8Array.from(((await got.get(img.attribs['src'], { responseType: 'buffer'})).body));
+      return Uint8Array.from(((await got.get(img.attribs.src, { responseType: 'buffer'})).body));
     }));
 
     // Return only unposted images
@@ -42,7 +42,7 @@ export class WeatherStory {
         return false;
       } else {
         // Use this image if it hasn't been posted already
-        if (this.checksums.indexOf(hash) > -1) {
+        if (this.checksums.includes(hash)) {
           return false;
         } else {
           this.checksums.push(hash);

@@ -5,16 +5,17 @@ import nock from 'nock';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { DevNullCommand } from '../../src/dev_null/dev-null-command.js';
+import { DevNullCommand } from './dev-null-command.js';
 
 const expect = chai.expect;
 chai.use(sinonChai);
 
 describe('dev-null', () => {
   it('should send your message to /dev/null', async () => {
+    const stubbedDelete = sinon.stub().returns(Promise.resolve({} as any));
     const spy = {
       content: 'tsla 420.69 meme',
-      delete: sinon.stub().returns(Promise.resolve({} as any))
+      delete: stubbedDelete,
     } as unknown as Message<boolean>;
     expect(DevNullCommand.trigger(spy));
 
@@ -23,6 +24,6 @@ describe('dev-null', () => {
       .reply(200, { });
 
     await DevNullCommand.command(spy);
-    expect(spy.delete).to.be.called;
+    expect(stubbedDelete).to.be.called;
   });
 });

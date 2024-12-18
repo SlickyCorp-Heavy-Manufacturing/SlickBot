@@ -25,12 +25,13 @@ export const DalleCommand: ICommand = {
     }
 
     if (res) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const json: { images: string[] } = JSON.parse(res.body);
       const buffers = json.images.map((base64Img) => Buffer.from(base64Img, 'base64'));
       const msgReply = MessagePayload.create(msg.channel, { files: buffers });
-      msg.reply(msgReply);
+      await msg.reply(msgReply);
     } else {
-      msg.reply('Unable to complete request at this time');
+      await msg.reply('Unable to complete request at this time');
     }
   },
 };

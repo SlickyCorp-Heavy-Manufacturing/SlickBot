@@ -18,7 +18,7 @@ const wait = promisify(setTimeout);
 export class PlayQueue {
   public readonly audioPlayer: AudioPlayer;
 
-  private voiceConnection: VoiceConnection;
+  private voiceConnection?: VoiceConnection;
 
   public queue: PlayItem[];
 
@@ -42,8 +42,8 @@ export class PlayQueue {
           && oldState.status !== AudioPlayerStatus.Idle
         ) {
           // Playing is finished
-          (oldState.resource as AudioResource<PlayItem>).metadata.onFinish();
-          this.processQueue();
+          void (oldState.resource as AudioResource<PlayItem>).metadata.onFinish();
+          void this.processQueue();
         }
       },
     );
@@ -51,7 +51,7 @@ export class PlayQueue {
     this.audioPlayer.on(
       'error',
       (error: { resource: any; }) => {
-        (error.resource as AudioResource<PlayItem>).metadata.onError(error as unknown as Error);
+        void (error.resource as AudioResource<PlayItem>).metadata.onError(error as unknown as Error);
       },
     );
   }
@@ -61,9 +61,9 @@ export class PlayQueue {
    *
    * @param item The item to add to the queue
    */
-  public enqueue(item: PlayItem) {
+  public async enqueue(item: PlayItem) {
     this.queue.push(item);
-    this.processQueue();
+    await this.processQueue();
   }
 
   /**
@@ -89,11 +89,12 @@ export class PlayQueue {
 
     this.voiceConnection.on(
       'stateChange',
-      async (_: any, newState: { status: any; reason: any; closeCode: number; }) => {
+      (_: any, newState: { status: any; reason: any; closeCode: number; }) => {
         if (newState.status === VoiceConnectionStatus.Disconnected) {
           if (
             newState.reason === VoiceConnectionDisconnectReason.WebSocketClose
             && newState.closeCode === 4014
+            && this.voiceConnection
           ) {
             /**
              * If the WebSocket closed with a 4014 code, this means that we should not manually
@@ -104,25 +105,25 @@ export class PlayQueue {
              * destroy the voice connection.
              */
             try {
-              await entersState(this.voiceConnection, VoiceConnectionStatus.Connecting, 5_000);
+              void entersState(this.voiceConnection, VoiceConnectionStatus.Connecting, 5_000);
               // Probably moved voice channel
             } catch {
-              this.voiceConnection.destroy();
+              this.voiceConnection?.destroy();
               this.voiceConnection = undefined;
               // Probably removed from voice channel
             }
-          } else if (this.voiceConnection.rejoinAttempts < 5) {
+          } else if (this.voiceConnection?.rejoinAttempts && this.voiceConnection.rejoinAttempts < 5) {
           /**
            * The disconnect in this case is recoverable, and we also have <5 repeated attempts
            * so we will reconnect.
            */
-            await wait((this.voiceConnection.rejoinAttempts + 1) * 5_000);
-            this.voiceConnection.rejoin();
+            void wait((this.voiceConnection.rejoinAttempts + 1) * 5_000);
+            this.voiceConnection?.rejoin();
           } else {
           /**
            * The disconnect in this case may be recoverable, but we have no more remaining attempts
            */
-            this.voiceConnection.destroy();
+            this.voiceConnection?.destroy();
             this.voiceConnection = undefined;
           }
         } else if (newState.status === VoiceConnectionStatus.Destroyed) {
@@ -132,10 +133,10 @@ export class PlayQueue {
           this.stop();
         } else if (
           !this.readyLock
-        && (
-          newState.status === VoiceConnectionStatus.Connecting
-          || newState.status === VoiceConnectionStatus.Signalling
-        )
+          && (
+            newState.status === VoiceConnectionStatus.Connecting
+            || newState.status === VoiceConnectionStatus.Signalling
+          )
         ) {
         /**
          * In the Signalling or Connecting states, we set a 20 second time limit for the
@@ -144,10 +145,12 @@ export class PlayQueue {
          */
           this.readyLock = true;
           try {
-            await entersState(this.voiceConnection, VoiceConnectionStatus.Ready, 20_000);
+            if (this.voiceConnection) {
+              void entersState(this.voiceConnection, VoiceConnectionStatus.Ready, 20_000);
+            }
           } catch {
-            if (this.voiceConnection.state.status !== VoiceConnectionStatus.Destroyed) {
-              this.voiceConnection.destroy();
+            if (this.voiceConnection?.state.status !== VoiceConnectionStatus.Destroyed) {
+              this.voiceConnection?.destroy();
               this.voiceConnection = undefined;
             }
           } finally {
@@ -182,28 +185,32 @@ export class PlayQueue {
     this.queueLock = true;
 
     // Take the first item from the queue.
-    const nextItem = this.queue.shift()!;
-    try {
-      // Create a new voice connection (if necessary)
-      if (!this.voiceConnection) {
-        this.createVoiceConnection(
-          nextItem.msg.member.voice.channel.id,
-          nextItem.msg.member.voice.guild.id,
-          nextItem.msg.member.voice.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
-        );
+    const nextItem = this.queue.shift();
+    if (nextItem) {
+      try {
+        // Create a new voice connection (if necessary)
+        if (!this.voiceConnection) {
+          if (nextItem.msg.member?.voice.channel) {
+            this.createVoiceConnection(
+              nextItem.msg.member.voice.channel.id,
+              nextItem.msg.member.voice.guild.id,
+              nextItem.msg.member.voice.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
+            );
+          }
+        }
+
+        // Attempt to convert the Item into an AudioResource (i.e. start streaming the item)
+        const resource = await nextItem.createAudioResource();
+        this.audioPlayer.play(resource);
+        await nextItem.onStart();
+
+        this.queueLock = false;
+      } catch (error) {
+        // If an error occurred, try the next item of the queue instead
+        await nextItem.onError(error as Error);
+        this.queueLock = false;
+        await this.processQueue();
       }
-
-      // Attempt to convert the Item into an AudioResource (i.e. start streaming the item)
-      const resource = await nextItem.createAudioResource();
-      this.audioPlayer.play(resource);
-      nextItem.onStart();
-
-      this.queueLock = false;
-    } catch (error) {
-      // If an error occurred, try the next item of the queue instead
-      nextItem.onError(error as Error);
-      this.queueLock = false;
-      this.processQueue();
     }
   }
 }

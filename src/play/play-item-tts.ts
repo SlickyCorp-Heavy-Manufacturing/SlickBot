@@ -16,11 +16,11 @@ export class PlayItemTTS implements PlayItem {
 
   public readonly onError: (error: Error) => Promise<void>;
 
-  public readonly volume: number;
+  public readonly volume?: number;
 
   private readonly text: string;
 
-  public constructor(msg: Message, text: string, title: string, volume: number) {
+  public constructor(msg: Message, text: string, title: string, volume?: number) {
     this.msg = msg;
     this.text = text;
     this.title = title;
@@ -28,7 +28,7 @@ export class PlayItemTTS implements PlayItem {
       await msg.reply(`Slickyboi pooped: ${error} 🎙️`);
       return Promise.resolve();
     };
-    this.onFinish = async () => {};
+    this.onFinish = async () => { /* do nothing */ };
     this.onStart = async () => {
       await msg.reply(`🎙️ Slickyboi started speaking:\n> ${text.replace(/\n{1,}/gm, '\n> ')}`);
       return Promise.resolve();
@@ -43,9 +43,13 @@ export class PlayItemTTS implements PlayItem {
       voice: { name: 'en-US-Wavenet-C', languageCode: 'en-US' },
       audioConfig: { audioEncoding: 'OGG_OPUS', volumeGainDb: 16 },
     });
-    return createAudioResource(
-      Readable.from(response.audioContent),
-      { metadata: this, inputType: StreamType.OggOpus },
-    );
+    if (response.audioContent) {
+      return createAudioResource(
+        Readable.from(response.audioContent),
+        { metadata: this, inputType: StreamType.OggOpus },
+      );
+    } else {
+      throw new Error('Received undefined audioContent');
+    }
   }
 }

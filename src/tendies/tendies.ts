@@ -10,7 +10,7 @@ import {
 export class Tendies {
   private static readonly FINNHUB_URL: string = 'https://finnhub.io/api/v1';
 
-  private static readonly FINNHUB_TOKEN: string = process.env.FINNHUB_TOKEN;
+  private static readonly FINNHUB_TOKEN: string | undefined = process.env.FINNHUB_TOKEN;
 
   /**
    * Calculate the percentage change in a stock price.
@@ -36,12 +36,12 @@ export class Tendies {
         },
       },
     );
-    if (Object.entries(response.body).length === 0) {
+    if (JSON.stringify(response.body) === '{}') {
       // Returns empty object when ticker symbol not found.
       throw new Error(`Ticker symbol '${symbol}' was not found.`);
     }
     if (response.statusCode !== 200) {
-      throw new Error(`\`\`\`json\n${response.body}\n\`\`\``);
+      throw new Error(`\`\`\`json\n${JSON.stringify(response.body)}\n\`\`\``);
     }
 
     return response.body as Quote;
@@ -60,11 +60,14 @@ export class Tendies {
     symbolValue = symbolValue.toUpperCase();
 
     // Get the quote
-    let quote;
+    let quote: Quote;
     try {
       quote = await Tendies.quote(symbolValue);
-    } catch (error) {
-      return (error.message ? error.message : `Unknown error fetching quote for '${symbolValue}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return error.message;
+      }
+      return `Unknown error fetching quote for '${symbolValue}`;
     }
     const priceChange = quote.c - quote.pc;
     const percentChange = Tendies.calculateQuotePercentage(quote);

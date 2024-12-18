@@ -17,18 +17,11 @@ export class Troutslap {
       } else {
         await Promise.all(msg.cleanContent.split(', ').map((item: string) => {
           // Handle case where first split contains command
-          const strToRemove = '!troutslap ';
-          if (item.startsWith(strToRemove)) {
-            // remove !troutslap string
-            const strippedString = item.substr(strToRemove.length);
-            return Troutslap.sendMessage(msg, strippedString);
-          }
-
-          return Troutslap.sendMessage(msg, item);
+          return Troutslap.sendMessage(msg, item.replace(/^!troutslap\s+/, ''));
         }));
       }
     } else {
-      Troutslap.dmUsage(msg);
+      await Troutslap.dmUsage(msg);
     }
   }
 
@@ -40,13 +33,12 @@ export class Troutslap {
       .catch(console.error);
   }
 
-  private static dmUsage(msg: Message) {
+  private static async dmUsage(msg: Message) {
     // Slide into author's DMs with usage.
     if (msg.author.dmChannel === null) {
-      msg.author.createDM()
-        .then((channel: DMChannel) => channel.send(this.usage()));
+      await msg.author.createDM().then((channel: DMChannel) => channel.send(this.usage()));
     } else {
-      msg.author.dmChannel.send(this.usage());
+      await msg.author.dmChannel.send(this.usage());
     }
   }
 
@@ -102,7 +94,7 @@ Usage:
     'MR402-sized trout',
   ];
 
-  private static randomTrout(): string {
+  private static randomTrout(): string | undefined {
     return sample(this.TROUT_LIST);
   }
 }

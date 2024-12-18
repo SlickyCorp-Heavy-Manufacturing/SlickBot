@@ -8,7 +8,7 @@ export class DiscordClient {
   constructor(private token?: string) {
   }
 
-  public init(): Promise<Client> {
+  public async init(): Promise<Client> {
     if (!this.discordClient) {
       const client = new Client({
         intents: [
@@ -19,25 +19,28 @@ export class DiscordClient {
           GatewayIntentBits.MessageContent,
         ],
       });
-      let clientToken: string;
+      let clientToken: string | undefined;
       if (this.token) {
         clientToken = this.token;
       } else {
         clientToken = process.env.TOKEN;
       }
-      client.login(clientToken);
 
-      return new Promise((resolve) => {
-        client.on(Events.ClientReady, () => {
-          this.discordClient = client;
-          console.info(`Logged in as ${client.user.tag}!`);
-          console.info(generateDependencyReport());
+      if (clientToken) {
+        await client.login(clientToken);
 
-          client.user.setActivity(DiscordClient.note());
+        return new Promise((resolve) => {
+          client.on(Events.ClientReady, () => {
+            this.discordClient = client;
+            console.info(`Logged in as ${client.user?.tag}!`);
+            console.info(generateDependencyReport());
 
-          resolve(client);
+            client.user?.setActivity(DiscordClient.note());
+
+            resolve(client);
+          });
         });
-      });
+      }
     }
     return Promise.resolve(this.discordClient);
   }
@@ -54,7 +57,10 @@ export class DiscordClient {
 
     const nodeEnv = process.env.NODE_ENV;
     if (nodeEnv === 'production') {
-      return JSON.parse(readFileSync('/app/package.json', 'utf8')).version;
+      const packageJson = JSON.parse(readFileSync('/app/package.json', 'utf8')) as { version?: string };
+      if (packageJson.version) {
+        return packageJson.version;
+      }
     }
 
     return 'haha you dont test in prod';

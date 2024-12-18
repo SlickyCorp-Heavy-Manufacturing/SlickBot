@@ -1,11 +1,11 @@
 import * as chai from 'chai';
-import { ChannelType, Collection, Message, User } from 'discord.js';
+import { Message } from 'discord.js';
 import 'mocha';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { TroutslapCommand } from '../../src/troutslap/troutslap-command.js';
-import { Troutslap } from '../../src/troutslap/troutslap.js';
+import { TroutslapCommand } from './troutslap-command.js';
+import { Troutslap } from './troutslap.js';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -15,7 +15,7 @@ describe('TroutslapCommand', () => {
     sinon.restore();
   });
 
-  it('should trigger when !troutslap', async () => {
+  it('should trigger when !troutslap', () => {
     // Mock Message
     const message = {
       content: '!troutslap foo',
@@ -25,7 +25,7 @@ describe('TroutslapCommand', () => {
     expect(TroutslapCommand.trigger(message)).to.be.true;
   });
 
-  it('should not trigger when not !troutslap', async () => {
+  it('should not trigger when not !troutslap', () => {
     // Mock Message
     const message = {
       content: '!tunaslap foo',

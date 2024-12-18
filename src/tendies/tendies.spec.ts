@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import 'mocha';
 import nock from 'nock';
 
-import { Tendies } from '../../src/tendies/tendies.js';
-import { Quote, Stock } from '../../src/tendies/tendies-types.js';
+import { Tendies } from './tendies.js';
+import { Quote, Stock } from './tendies-types.js';
 
 describe('tendies', () => {
   const quote: Quote = {

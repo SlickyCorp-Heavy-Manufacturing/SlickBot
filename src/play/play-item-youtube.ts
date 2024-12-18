@@ -15,13 +15,13 @@ export class PlayItemYoutube implements PlayItem {
 
   public readonly onError: (error: Error) => Promise<void>;
 
-  public readonly volume: number;
+  public readonly volume?: number;
 
   private static agent: ytdl.Agent;
 
   private readonly url: string;
 
-  private constructor(msg: Message, title: string, url: string, volume: number) {
+  private constructor(msg: Message, title: string, url: string, volume?: number) {
     this.msg = msg;
     this.title = title;
     this.onError = async (error: Error) => {
@@ -29,7 +29,7 @@ export class PlayItemYoutube implements PlayItem {
       console.error(error);
       return Promise.resolve();
     };
-    this.onFinish = async () => {};
+    this.onFinish = async () => { /* do nothing */ };
     this.onStart = async () => {
       await msg.reply(`🎶 Slickyboi started playing: ${title} 🎶`);
       return Promise.resolve();
@@ -42,20 +42,22 @@ export class PlayItemYoutube implements PlayItem {
     if (process.env.YOUTUBE_COOKIE && this.agent === undefined) {
       const parsedCookies = cookie.parse(process.env.YOUTUBE_COOKIE);
       const cookies: ytdl.Cookie[] = [];
-      for (const key in parsedCookies) {
-        if (Object.prototype.hasOwnProperty.call(parsedCookies, key)) {
-          console.log(`Adding YouTube Cookie: ${key}`);
-          cookies.push({
-            domain: '.youtube.com',
-            expirationDate: Date.now() + (365 * 24 * 60 * 60 * 1000),
-            hostOnly: false,
-            httpOnly: true,
-            name: key,
-            path: '/',
-            sameSite: 'no_restriction',
-            secure: true,
-            value: parsedCookies[key],
-          });
+      if (parsedCookies) {
+        for (const key in parsedCookies) {
+          if (Object.prototype.hasOwnProperty.call(parsedCookies, key) && parsedCookies[key]) {
+            console.log(`Adding YouTube Cookie: ${key}`);
+            cookies.push({
+              domain: '.youtube.com',
+              expirationDate: Date.now() + (365 * 24 * 60 * 60 * 1000),
+              hostOnly: false,
+              httpOnly: true,
+              name: key,
+              path: '/',
+              sameSite: 'no_restriction',
+              secure: true,
+              value: parsedCookies[key],
+            });
+          }
         }
       }
       this.agent = ytdl.createAgent(cookies, {});
@@ -64,14 +66,14 @@ export class PlayItemYoutube implements PlayItem {
     return this.agent;
   }
 
-  public async createAudioResource(): Promise<AudioResource<PlayItem>> {
-    return createAudioResource(
+  public createAudioResource(): Promise<AudioResource<PlayItem>> {
+    return Promise.resolve(createAudioResource(
       ytdl(this.url, { agent: PlayItemYoutube.Agent, filter: 'audioonly', dlChunkSize: 0 }),
       { metadata: this },
-    );
+    ));
   }
 
-  public static async from(msg: Message, url: string, volume: number) {
+  public static async from(msg: Message, url: string, volume?: number) {
     const info = await ytdl.getInfo(url, { agent: PlayItemYoutube.Agent });
     return new PlayItemYoutube(msg, info.videoDetails.title, url, volume);
   }

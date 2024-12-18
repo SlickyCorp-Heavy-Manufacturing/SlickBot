@@ -23,11 +23,6 @@ export const FlavorForecastCommand: ICommand = {
       })
       .map((forecast: string) => (msg.channel as TextChannel).send(forecast));
 
-    forecastMessages.reduce(
-      (promiseChain, currentPromise) => promiseChain.then((chainResults) => currentPromise.then(
-        (currentResult) => [...chainResults, currentResult],
-      )),
-      Promise.resolve([]),
-    ).then();
+    await Promise.all(forecastMessages);
   },
 };

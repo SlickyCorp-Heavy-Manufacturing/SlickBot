@@ -7,8 +7,9 @@ export const LMGTFYCommand: ICommand = {
   showInHelp: true,
   trigger: (msg: Message) => msg.cleanContent.startsWith('!lmgtfy'),
   command: async (msg: Message) => {
-    msg.channel.messages.fetch({ limit: 2 }).then((messages) => {
-      messages.last().reply(`https://lmgtfy.app/?q=${encodeURIComponent(messages.last().cleanContent)}`);
-    });
+    const message = (await msg.channel.messages.fetch({ limit: 2 })).last();
+    if (message) {
+      await message.reply(`https://lmgtfy.app/?q=${encodeURIComponent(message.cleanContent)}`);
+    }
   },
 };

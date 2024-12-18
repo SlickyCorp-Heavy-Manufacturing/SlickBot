@@ -4,8 +4,8 @@ import 'mocha';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { WeatherCommand } from '../../src/weather/weather-command.js';
-import { Weather } from '../../src/weather/weather.js';
+import { WeatherCommand } from './weather-command.js';
+import { Weather } from './weather.js';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -15,7 +15,7 @@ describe('WeatherCommand', () => {
     sinon.restore();
   })
 
-  it('should trigger on !weather message', async () => {
+  it('should trigger on !weather message', () => {
     const message = {
       content: '!weather'
     } as Message;
@@ -23,7 +23,7 @@ describe('WeatherCommand', () => {
     expect(WeatherCommand.trigger(message)).to.be.true;
   });
 
-  it('should not trigger on not !weather message', async () => {
+  it('should not trigger on not !weather message', () => {
     const message = {
       content: '!whether'
     } as Message;

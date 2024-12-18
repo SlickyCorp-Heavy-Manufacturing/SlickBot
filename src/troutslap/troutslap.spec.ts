@@ -4,7 +4,7 @@ import 'mocha';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { Troutslap } from '../../src/troutslap/troutslap.js';
+import { Troutslap } from './troutslap.js';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -91,7 +91,7 @@ describe('Troutslap', () => {
   });
 
   it('should slap comma-separated list of people', async () => {
-// Mock send method
+    // Mock send method
     const mockedSend = sinon.stub().returns(Promise.resolve());
 
     // Mock Message

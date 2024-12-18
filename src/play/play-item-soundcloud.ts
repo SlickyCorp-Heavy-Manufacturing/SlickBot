@@ -15,18 +15,18 @@ export class PlayItemSoundcloud implements PlayItem {
 
   public readonly onError: (error: Error) => Promise<void>;
 
-  public readonly volume: number;
+  public readonly volume?: number;
 
   private readonly url: string;
 
-  private constructor(msg: Message, title: string, url: string, volume: number) {
+  private constructor(msg: Message, title: string, url: string, volume?: number) {
     this.msg = msg;
     this.title = title;
     this.onError = async (error: Error) => {
       await msg.reply(`Slickyboi pooped: ${error} 🎶`);
       return Promise.resolve();
     };
-    this.onFinish = async () => {};
+    this.onFinish = async () => { /* do nothing */ };
     this.onStart = async () => {
       await msg.reply(`🎶 Slickyboi started playing: ${title}`);
       return Promise.resolve();
@@ -36,10 +36,10 @@ export class PlayItemSoundcloud implements PlayItem {
   }
 
   public async createAudioResource(): Promise<AudioResource<PlayItem>> {
-    return createAudioResource(this.url, { metadata: this });
+    return Promise.resolve(createAudioResource(this.url, { metadata: this }));
   }
 
-  public static async from(msg: Message, url: string, volume: number): Promise<PlayItemSoundcloud> {
+  public static async from(msg: Message, url: string, volume?: number): Promise<PlayItemSoundcloud> {
     const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_ID);
     const track = await soundcloud.tracks.get(url);
     const streamUrl = await soundcloud.util.streamLink(url);

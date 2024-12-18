@@ -4,8 +4,7 @@
     "src/**/*.ts"
   ],
   "exclude": [
-    "test/**/*.ts",
-    "src/**/*-command.ts"
+    "src/**/*.spec.ts"
   ],
   "extentions": [
     ".ts"
