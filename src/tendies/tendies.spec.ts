@@ -39,6 +39,10 @@ describe('tendies', () => {
     t: 1597969605,
   };
 
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   it('calculateQuotePercentage() calculates percentage', () => {
     expect(Tendies.calculateQuotePercentage(quote)).to.be.closeTo(-0.81, 2);
     expect(Tendies.calculateQuotePercentage(zeroQuote)).to.be.closeTo(0.0, 2);
@@ -54,6 +58,39 @@ describe('tendies', () => {
     expect(fooQuote.c).to.equal(226.83);
   });
 
+  it('quote() should throw error when stock not found', async () => {
+    nock('https://finnhub.io')
+      .get('/api/v1/quote')
+      .query((query) => query.symbol === 'foo')
+      .reply(200, {});
+
+    let error: unknown;
+    try {
+      await Tendies.quote('foo');
+    } catch (err: unknown) {
+      error = err;
+    }
+
+    expect(error).to.not.be.undefined;
+  });
+
+  it('quote() should throw error when non-200 response', async () => {
+    nock('https://finnhub.io')
+      .get('/api/v1/quote')
+      .query((query) => query.symbol === 'foo')
+      .reply(204, '{"error": "No Content"}');
+
+    let error: unknown;
+    try {
+      await Tendies.quote('foo');
+    } catch (err: unknown) {
+      error = err;
+    }
+
+    expect(error).to.not.be.undefined;
+    expect((error as Error).message).to.include('json');
+  });
+
   it('randomStock() should get a random stock from the exchange', async () => {
     nock('https://finnhub.io')
       .get('/api/v1/stock/symbol')
@@ -62,5 +99,15 @@ describe('tendies', () => {
 
     const fooStock = await Tendies.randomStock('foo');
     expect(fooStock).to.match(/SPCE|TSLA/);
+  });
+
+  it('tendies() should return GIF URL', async () => {
+    nock('https://finnhub.io')
+      .get('/api/v1/quote')
+      .query((query) => query.symbol === 'FOO') // only care about the symbol parameter
+      .reply(200, quote);
+
+    const tendies = await Tendies.tendies('FOO');
+    expect(tendies).to.include('https://tenor.com/view/cmon-do-something-original-cmon-something-original-poke-gif-16424397');
   });
 });
