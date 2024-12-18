@@ -32,7 +32,7 @@ export function isSlickBotEmployee(user: string): boolean {
 export async function unpinBotMessages(client: Client, channel: TextChannel): Promise<void> {
   const pinnedMessages = await channel.messages.fetchPinned(false);
   pinnedMessages.forEach(async (pinnedMessage) => {
-    if (pinnedMessage.author.id === client.user.id) {
+    if (pinnedMessage.author.id === client.user?.id) {
       await pinnedMessage.unpin();
     }
   });

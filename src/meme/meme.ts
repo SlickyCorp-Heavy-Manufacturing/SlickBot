@@ -1,5 +1,5 @@
 import yargs from 'yargs';
-import Imgflip, { MemeFormat } from 'imgflip';
+import Imgflip, { BaseMemeOptions, MemeFormat } from 'imgflip';
 import { Message } from 'discord.js';
 
 import FuzzySet from 'fuzzyset.js';
@@ -12,10 +12,17 @@ export class Meme {
   private static TEMPLATE_NAMES: FuzzySet;
 
   private static async login(): Promise<Imgflip> {
+    const password = process.env.IMGFLIP_PASS;
+    const username = process.env.IMGFLIP_USER;
+
+    if (!password || !username) {
+      throw new Error('ImgFlip Username and/or password not specified');
+    }
+
     // https://imgflip.com/signup
     const imgflip = new Imgflip({
-      username: process.env.IMGFLIP_USER,
-      password: process.env.IMGFLIP_PASS,
+      username: username,
+      password: password,
     });
     if (!Meme.MEMES) {
       Meme.MEMES = [...await imgflip.memes(), ...memes.memeList];
@@ -25,12 +32,17 @@ export class Meme {
     return imgflip;
   }
 
-  private static findTemplate(name: string): MemeFormat {
-    const template = this.TEMPLATE_NAMES.get(name);
-    if (!template) {
-      return Meme.MEMES[69]; // hehe its bad luck brian
+  private static findTemplate(name?: string): MemeFormat {
+    if (name) {
+      const template = this.TEMPLATE_NAMES.get(name);
+      if (template) {
+        const meme = Meme.MEMES.find((x) => x.name === template[0][1]);
+        if (meme) {
+          return meme;
+        }
+      }
     }
-    return Meme.MEMES.find((x) => x.name === template[0][1]);
+    return Meme.MEMES[69]; // hehe its bad luck brian
   }
 
   public static async memeSearch(msg: Message): Promise<string> {
@@ -73,9 +85,12 @@ export class Meme {
       return `${template.name} requires ${template.boxCount} strings`;
     }
 
-    const img = await imgflip.meme(template.id, {
-      captions: captions.filter((x) => x),
-    });
+    const img = await imgflip.meme(
+      template.id,
+      {
+        captions: captions.filter((x) => x) ?? [],
+      } as BaseMemeOptions
+    );
 
     return img;
   }

@@ -4,7 +4,8 @@ import nock from 'nock';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { scheduledWeatherStory, WeatherStory } from '../../src/weather/weather-story.js';
+import { scheduledWeatherStory, WeatherStory } from './weather-story.js';
+import { Client } from 'discord.js';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -21,7 +22,7 @@ describe('scheduledWeatherStory', () => {
     });
 
     // Execute unit under test
-    const messages = await scheduledWeatherStory.getMessage(undefined);
+    const messages = await scheduledWeatherStory.getMessage({} as Client);
 
     // Verify
     expect(messages).to.deep.equal([{files: [Buffer.from('foo', 'utf8')]}]);
@@ -45,7 +46,7 @@ describe('WeatherStory', () => {
         </body>\
       </html>\
     ';
-    const storyImage = new Buffer('foo', 'utf-8');
+    const storyImage = Buffer.from('foo', 'utf-8');
 
     nock('https://www.weather.gov')
       .get('/mkx/weatherstory')

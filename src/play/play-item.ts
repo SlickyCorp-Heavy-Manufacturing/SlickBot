@@ -8,5 +8,5 @@ export interface PlayItem {
   onStart: () => Promise<void>;
   onFinish: () => Promise<void>;
   onError: (error: Error) => Promise<void>;
-  volume: number;
+  volume?: number;
 }

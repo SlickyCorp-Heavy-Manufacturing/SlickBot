@@ -12,7 +12,7 @@ export const DefineCommand: ICommand = {
 
     const results = await search(word);
     if (results.length <= 0) {
-      msg.reply(`hmm... I'm not sure what ${word} means`);
+      await msg.reply(`hmm... I'm not sure what ${word} means`);
       return;
     }
 
@@ -28,6 +28,6 @@ export const DefineCommand: ICommand = {
       });
     });
 
-    msg.reply(response);
+    await msg.reply(response);
   },
 };

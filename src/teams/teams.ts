@@ -30,7 +30,7 @@ export class TeamStory {
     msg: Message,
     storyPrefix: string,
     users: string[],
-  ): Promise<TeamStory> {
+  ): Promise<TeamStory | undefined> {
     const potentialAssignees = await Promise.all(
       users.map(async (userId) => msg.client.users.fetch(userId)),
     );
@@ -38,12 +38,16 @@ export class TeamStory {
     const description = `${descriptionPrefix}, ${msg.cleanContent.replace(/^@[^\s]+\s+/i, '')}`;
     const points = sample([2, 3, 5, 8, 13]);
 
-    return new TeamStory(
-      sample(potentialAssignees.filter((user) => user !== undefined)),
-      description,
-      id,
-      points,
-    );
+    const assignee = sample(potentialAssignees.filter((user) => user !== undefined));
+    if (assignee) {
+      return new TeamStory(
+        assignee,
+        description,
+        id,
+        points,
+      );
+    }
+    return Promise.resolve(undefined);
   }
 }
 
@@ -62,7 +66,9 @@ export const TechTrackCommand: ICommand = {
         '277609530915946497', // MarkT
       ],
     );
-    await (msg.channel as TextChannel).send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
+    if (story) {
+      await (msg.channel as TextChannel).send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
+    }
   },
 };
 
@@ -78,6 +84,8 @@ export const DevOpsCommand: ICommand = {
       'RAIDOPS01',
       ['622595355153793045', '436298366952144907'], // Brian, MarkF
     );
-    await (msg.channel as TextChannel).send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
+    if (story) {
+      await (msg.channel as TextChannel).send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
+    }
   },
 };

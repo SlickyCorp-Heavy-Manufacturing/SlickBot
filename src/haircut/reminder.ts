@@ -10,7 +10,10 @@ export const PulakHairCut: IScheduledPost[] = [
     channel: IRL_CHANNEL,
     getMessage: (client: Client) => {
       const pulakUser = client.users.cache.find((user) => user.username === 'Pulak');
-      return Promise.resolve(`<@${pulakUser.id}> reminder, its haircut day! Don't forget it's tax deductible`);
+      if (pulakUser) {
+        return Promise.resolve(`<@${pulakUser.id}> reminder, its haircut day! Don't forget it's tax deductible`);
+      }
+      return Promise.resolve(undefined);
     },
   },
 ];

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 import nock from 'nock';
 
-import { Weather } from '../../src/weather/weather.js';
+import { Weather } from './weather.js';
 
 describe('Weather', () => {
   afterEach(() => {

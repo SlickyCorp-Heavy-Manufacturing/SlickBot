@@ -18,13 +18,13 @@ export class Play {
       return;
     }
 
-    const DRUNK_ROLE = msg.guild.roles.cache.find((role) => role.name === 'drunk');
-    if (DRUNK_ROLE && msg.member.roles.cache.has(DRUNK_ROLE.id)) {
+    const DRUNK_ROLE = msg.guild?.roles.cache.find((role) => role.name === 'drunk');
+    if (DRUNK_ROLE && msg.member?.roles.cache.has(DRUNK_ROLE.id)) {
       await msg.reply('You\'re drunk, go home.');
       return;
     }
 
-    const voiceChannel = msg.member.voice.channel;
+    const voiceChannel = msg.member?.voice.channel;
     if (!voiceChannel) {
       await msg.reply('Join a voice channel, Dumas!');
       return;
@@ -50,9 +50,12 @@ export class Play {
         if (['youtu.be', 'youtube.com', 'www.youtube.com'].includes(url.hostname)) {
           // Check if this is a youtube playlist or not
           if (url.pathname === '/playlist' && url.searchParams.has('list')) {
-            const playlist = await ytpl(url.searchParams.get('list'));
-            for (const playlistItem of playlist.items) {
-              items.push(await PlayItemYoutube.from(msg, playlistItem.url, args.v));
+            const list = url.searchParams.get('list');
+            if (list) {
+              const playlist = await ytpl(list);
+              for (const playlistItem of playlist.items) {
+                items.push(await PlayItemYoutube.from(msg, playlistItem.url, args.v));
+              }
             }
           } else {
             items.push(await PlayItemYoutube.from(msg, args.url, args.v));
@@ -60,8 +63,12 @@ export class Play {
         } else if (url.hostname === 'soundcloud.com') {
           try {
             items.push(await PlayItemSoundcloud.from(msg, args.url, args.v));
-          } catch (err) {
-            await msg.reply(err.message);
+          } catch (err: unknown) {
+            if (err instanceof Error) {
+              await msg.reply(err.message);
+            } else {
+              await msg.reply(JSON.stringify(err));
+            }
           }
         } else {
           await msg.reply(`${args.url} is not a dank enough beat, try again.`);
@@ -70,7 +77,10 @@ export class Play {
       }
     } else {
       const text = msg.content.replace(/^![^\s]+\s+/, '');
-      items.push(...text.match(/.{1,5000}(\s|$)/gs).map((part) => new PlayItemTTS(msg, part, 'Some Text', 150)));
+      const textParts = text.match(/.{1,5000}(\s|$)/gs)?.map((part) => new PlayItemTTS(msg, part, 'Some Text', 150));
+      if (textParts) {
+        items.push(...textParts);
+      }
     }
 
     // Setup Queue if we haven't already
@@ -84,7 +94,7 @@ export class Play {
 
     // queue all remaining items
     for (const item of items) {
-      this.queue.enqueue(item);
+      await this.queue.enqueue(item);
     }
   }
 }

@@ -11,8 +11,9 @@
     "lib": [ "esnext" ],
     "types": [ "node" ],
     "baseUrl": "./",
+    "strictNullChecks": true,
   },
-  "exclude": [ "node_modules" ],
+  "exclude": [ "node_modules", "src/**/*.spec.ts" ],
   "include": [ "src/**/*.ts" ],
   "ts-node": {
     "esm": true

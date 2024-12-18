@@ -80,7 +80,7 @@ export const randomCocktail = async (): Promise<Drink> => {
 export const findCocktail = async (cocktailName: string): Promise<Drink|null> => {
   const response = await got(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${cocktailName}`, { responseType: 'json' });
   const drinks = response.body as Drinks;
-  if (drinks && drinks.drinks && drinks.drinks.length > 0) {
+  if (drinks?.drinks && drinks.drinks.length > 0) {
     return drinks.drinks[0];
   }
   return null;
