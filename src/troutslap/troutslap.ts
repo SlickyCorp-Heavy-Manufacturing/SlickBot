@@ -1,4 +1,6 @@
 import { ChannelType, DMChannel, Message, TextChannel } from 'discord.js';
+import { sample } from 'lodash-es';
+
 import { escapeMarkdown } from '../utils.js';
 
 export class Troutslap {
@@ -101,7 +103,6 @@ Usage:
   ];
 
   private static randomTrout(): string {
-    // Actually random. Unlike https://xkcd.com/221/
-    return this.TROUT_LIST[Math.floor(Math.random() * this.TROUT_LIST.length)];
+    return sample(this.TROUT_LIST);
   }
 }
