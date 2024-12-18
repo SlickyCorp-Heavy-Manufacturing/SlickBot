@@ -34,6 +34,7 @@ export class Tendies {
           symbol,
           token: Tendies.FINNHUB_TOKEN,
         },
+        throwHttpErrors: false,
       },
     );
     if (JSON.stringify(response.body) === '{}') {
