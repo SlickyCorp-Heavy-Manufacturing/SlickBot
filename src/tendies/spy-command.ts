@@ -5,29 +5,27 @@ import { sample } from 'lodash-es';
 import { withFile } from 'tmp-promise';
 
 import { ICommand } from '../icommand.js';
+import screenshot from '../screenshot/index.js';
 
 export const SpyCommand: ICommand = {
   name: '!spy',
   helpDescription: 'Bot will respond with a box chart of spy',
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!spy'),
-  command: async (msg: Message) => {
-    await withFile(
-      async (tmpFile) => {
-        const response = await got.get(
-          'https://website-snapshot.krischeonline.com/spy',
-          {
-            headers: {
-              API_KEY: process.env.SNAPSHOT_API_TOKEN,
-            },
-            responseType: 'buffer',
+  command: async (msg: Message): Promise<void> => {
+    await (msg.channel as TextChannel).send({
+      files: [
+        Buffer.from(await screenshot({
+          element: 'canvas.chart',
+          url: 'https://finviz.com/map.ashx?t=spy',
+          viewport: { height: 1200, width: 1200 },
+          waitFor: {
+            selector: 'canvas.chart',
+            timeout: 20_000,
           },
-        );
-        fs.writeFileSync(tmpFile.path, new Uint32Array(response.body));
-        await (msg.channel as TextChannel).send({ files: [tmpFile.path] });
-      },
-      { postfix: '.png' },
-    );
+        })),
+      ],
+    });
   },
 };
 
