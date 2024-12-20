@@ -8,7 +8,7 @@ import { findChannelById, unpinBotMessages } from './utils.js';
 import { DiscordClient } from './discordClient.js';
 
 process.on('unhandledRejection', (reason: Error | any) => {
-  console.log('caught your junk %s', reason);
+  console.log('caught your junk \n%s', reason);
   if (reason.stack) {
     console.log(reason.stack);
   }

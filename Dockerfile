@@ -22,12 +22,12 @@ WORKDIR /app
 COPY package*.json .
 
 RUN apt update && \
-  apt install --yes libasound2 libgtk-3-0 libx11-xcb1 && \
+  apt install --yes ffmpeg libnss3 && \
   apt-get clean autoclean && \
   apt-get autoremove --yes && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
   npm ci --ignore-scripts --omit=dev && \
-  npx --yes puppeteer browsers install firefox
+  npx --yes puppeteer browsers install chrome
 
 COPY --from=build /app/dist ./dist
 

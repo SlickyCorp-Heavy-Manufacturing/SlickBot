@@ -10,6 +10,7 @@ export class DiscordClient {
 
   public async init(): Promise<Client> {
     if (!this.discordClient) {
+      console.log('Creating Discord client...');
       const client = new Client({
         intents: [
           GatewayIntentBits.DirectMessages,
@@ -27,6 +28,7 @@ export class DiscordClient {
       }
 
       if (clientToken) {
+        console.log('Logging into Discord...');
         await client.login(clientToken);
 
         return new Promise((resolve) => {

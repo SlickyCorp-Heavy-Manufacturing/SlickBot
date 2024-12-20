@@ -1,4 +1,6 @@
+import { PuppeteerBlocker } from '@ghostery/adblocker-puppeteer';
 import puppeteer, { Browser, Viewport } from 'puppeteer';
+import fetch from 'cross-fetch';
 
 /**
  * Options for the screenshot command.
@@ -39,22 +41,29 @@ export declare interface ScreenshotOptions {
 export default async (options: ScreenshotOptions): Promise<Uint8Array<ArrayBufferLike>> => {
   let browser: Browser | undefined;
   try {
+    console.log('Loading browser for screenshot...');
     // Load Browser
     browser = await puppeteer.launch({
-      browser: 'firefox',
+      browser: 'chrome',
       defaultViewport: null,
       args: ['--no-sandbox'],
     });
+    console.log('  - done');
 
     // Load Page
+    console.log('Loading page for screenshot...');
     const page = await browser.newPage();
+    const blocker = await PuppeteerBlocker.fromPrebuiltAdsAndTracking(fetch)
+    await blocker.enableBlockingInPage(page);
     await page.setViewport(options.viewport);
     await page.goto(options.url);
     if (options.waitFor.selector) {
       await page.waitForSelector(options.waitFor.selector, { timeout: options.waitFor.timeout });
     }
+    console.log('  - done');
 
     // Get Screenshot
+    console.log('Grabbing screenshot...');
     const element = await page.$(options.element);
     if (!element) {
       throw new Error(`Element matching selector '${options.element}' was not found.`);
@@ -70,7 +79,9 @@ export default async (options: ScreenshotOptions): Promise<Uint8Array<ArrayBuffe
     });
   } finally {
     if (browser) {
+      console.log('Closing screenshot browser...');
       await browser.close();
+      console.log('  - done');
     }
   }
 }
