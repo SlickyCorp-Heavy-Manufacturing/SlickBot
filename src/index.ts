@@ -57,6 +57,7 @@ await discordClient.init().then((client) => {
 
 process.on('exit', () => {
   if (discordClient) {
+    console.log('Destroying client...');
     void discordClient.client?.destroy();
   }
 });

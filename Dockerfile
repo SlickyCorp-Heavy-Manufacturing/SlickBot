@@ -22,7 +22,7 @@ WORKDIR /app
 COPY package*.json .
 
 RUN apt update && \
-  apt install --yes ffmpeg libnss3 && \
+  apt install --yes ffmpeg libatk1.0-0 libnss3 && \
   apt-get clean autoclean && \
   apt-get autoremove --yes && \
   rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
