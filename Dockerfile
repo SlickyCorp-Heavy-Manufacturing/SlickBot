@@ -21,7 +21,13 @@ WORKDIR /app
 
 COPY package*.json .
 
-RUN npm ci --omit=dev && npx puppeteer browsers install firefox
+RUN apt update && \
+  apt install --yes libasound2 libgtk-3-0 libx11-xcb1 && \
+  apt-get clean autoclean && \
+  apt-get autoremove --yes && \
+  rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
+  npm ci --ignore-scripts --omit=dev && \
+  npx --yes puppeteer browsers install firefox
 
 COPY --from=build /app/dist ./dist
 
