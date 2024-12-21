@@ -72,6 +72,7 @@ export default class Screenshot {
       console.log('Loading browser for screenshot...');
       // Load Browser
       browser = await puppeteer.launch({
+        args: ['--no-sandbox'],
         browser: 'chrome',
         defaultViewport: null,
         headless: true,
