@@ -3,49 +3,54 @@ import { Client, Events, GatewayIntentBits } from 'discord.js';
 import { readFileSync } from 'fs';
 
 export class DiscordClient {
-  private discordClient: Client;
+  private discordClient?: Client;
 
   constructor(private token?: string) {
   }
 
   public async init(): Promise<Client> {
-    if (!this.discordClient) {
-      const client = new Client({
-        intents: [
-          GatewayIntentBits.DirectMessages,
-          GatewayIntentBits.Guilds,
-          GatewayIntentBits.GuildMessages,
-          GatewayIntentBits.GuildVoiceStates,
-          GatewayIntentBits.MessageContent,
-        ],
-      });
-      let clientToken: string | undefined;
-      if (this.token) {
-        clientToken = this.token;
-      } else {
-        clientToken = process.env.TOKEN;
-      }
-
-      if (clientToken) {
-        await client.login(clientToken);
-
-        return new Promise((resolve) => {
-          client.on(Events.ClientReady, () => {
-            this.discordClient = client;
-            console.info(`Logged in as ${client.user?.tag}!`);
-            console.info(generateDependencyReport());
-
-            client.user?.setActivity(DiscordClient.note());
-
-            resolve(client);
-          });
-        });
-      }
+    if (this.discordClient) {
+      return this.discordClient;
     }
-    return Promise.resolve(this.discordClient);
+
+    console.log('Creating Discord client...');
+    const client = new Client({
+      intents: [
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.MessageContent,
+      ],
+    });
+    let clientToken: string | undefined;
+    if (this.token) {
+      clientToken = this.token;
+    } else {
+      clientToken = process.env.TOKEN;
+    }
+
+    if (clientToken) {
+      console.log('Logging into Discord...');
+      await client.login(clientToken);
+
+      return new Promise((resolve) => {
+        client.on(Events.ClientReady, () => {
+          this.discordClient = client;
+          console.info(`Logged in as ${client.user?.tag}!`);
+          console.info(generateDependencyReport());
+
+          client.user?.setActivity(DiscordClient.note());
+
+          resolve(client);
+        });
+      });
+    } else {
+      throw new Error('No token to login to Discord');
+    }
   }
 
-  public get client(): Client {
+  public get client(): Client | undefined {
     return this.discordClient;
   }
 

@@ -4,7 +4,7 @@ import { Tendies } from './tendies.js';
 
 export const ShortsCommand: ICommand = {
   name: '!shorts',
-  helpDescription: 'Bot will respond with the short interest of a specific symbol. Usage: !tendies SYMBOL',
+  helpDescription: 'Bot will respond with the short interest of a specific symbol. Usage: !shorts SYMBOL',
   showInHelp: true,
   trigger: (msg: Message) => msg.content.startsWith('!shorts'),
   command: async (msg: Message) => {
