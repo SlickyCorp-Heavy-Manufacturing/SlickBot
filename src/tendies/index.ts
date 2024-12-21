@@ -5,4 +5,4 @@ export {
   EtfCommand,
   SpyCommand,
   WorldCommand,
-} from './spy-command.js';
+} from './finviz-command.js';
