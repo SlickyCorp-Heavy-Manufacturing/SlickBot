@@ -22,6 +22,10 @@ export declare interface ScreenshotOptions {
        */
       readonly waitFor?: {
         /**
+         * Wait for the timeout duration.
+         */
+        readonly duration?: boolean;
+        /**
          * Wait for the element matching this selector to appear on the page.
          */
         readonly selector?: string;
@@ -86,8 +90,8 @@ export default class Screenshot {
       await blocker.enableBlockingInPage(page);
       await page.setViewport(options.viewport);
       await page.goto(options.url);
-      //await page.solveRecaptchas();
-      //await page.waitForNavigation();
+      await page.solveRecaptchas();
+      await page.waitForNavigation();
       if (options.waitFor.selector) {
         console.log(`  - Waiting for element '${options.waitFor.selector}'...`);
         try {
@@ -119,6 +123,9 @@ export default class Screenshot {
           await page.click(click.element);
           console.log('    - done');
           if (click.waitFor) {
+            if (click.waitFor.duration) {
+              await new Promise(res => setTimeout(res, click.waitFor.timeout));
+            }
             if (click.waitFor.selector) {
               console.log(`  - Waiting for element '${click.waitFor.selector}'...`);
               await page.waitForSelector(click.waitFor.selector, { timeout: click.waitFor.timeout });
