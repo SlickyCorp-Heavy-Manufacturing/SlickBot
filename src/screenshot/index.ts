@@ -90,6 +90,7 @@ export default class Screenshot {
       await blocker.enableBlockingInPage(page);
       await page.setViewport(options.viewport);
       await page.goto(options.url);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       await page.solveRecaptchas();
       await page.waitForNavigation();
       if (options.waitFor.selector) {
