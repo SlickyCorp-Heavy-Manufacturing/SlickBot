@@ -27,7 +27,7 @@ RUN rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
   apt update && \
   apt install --yes ffmpeg && \
   apt-get clean autoclean && \
-  apt-get autoremove --yes && \
+  apt-get autoremove --yes
 
 COPY --from=build /app/dist ./dist
 
