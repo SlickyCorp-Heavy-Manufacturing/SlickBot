@@ -10,7 +10,6 @@
   },
   "scripts": {
     "build": "tsc",
-    "brian": "tsx src/brian.ts",
     "dev": "tsx src/index.ts",
     "lint": "eslint src/**/*",
     "lint:fix": "eslint --fix src/**/*",
