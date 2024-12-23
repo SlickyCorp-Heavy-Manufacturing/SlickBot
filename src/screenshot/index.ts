@@ -73,6 +73,7 @@ export default class Screenshot {
         for (const click of options.clicks) {
           console.log(`Clicking '${click.selector}...`);
           await page.locator(click.selector).click();
+          console.log('  - done');
         }
       }
 
