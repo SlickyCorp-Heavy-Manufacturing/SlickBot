@@ -14,7 +14,11 @@
     "strictNullChecks": true,
   },
   "exclude": [ "node_modules", "src/**/*.spec.ts" ],
-  "include": [ "src/**/*.ts" ],
+  "include": [
+    "node_modules/puppeteer-extra/*.d.ts",
+    "./node_modules/puppeteer-extra-*/*.d.ts",
+    "src/**/*.ts"
+  ],
   "ts-node": {
     "esm": true
   }

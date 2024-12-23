@@ -21,13 +21,13 @@ WORKDIR /app
 
 COPY package*.json .
 
-RUN apt update && \
-  apt install --yes ffmpeg libatk1.0-0 libatk-bridge2.0-0 libcups2 libnss3 libxcomposite1 libxdamage1 && \
+RUN rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
+  npm ci --ignore-scripts --omit=dev && \
+  npx --yes playwright install --with-deps chromium && \
+  apt update && \
+  apt install --yes ffmpeg && \
   apt-get clean autoclean && \
   apt-get autoremove --yes && \
-  rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
-  npm ci --ignore-scripts --omit=dev && \
-  npx --yes puppeteer browsers install chrome
 
 COPY --from=build /app/dist ./dist
 

@@ -5,23 +5,16 @@ import { ICommand } from '../icommand.js';
 import Screenshot from '../screenshot/index.js';
 
 async function finvizScreenshot(map: string): Promise<Buffer> {
-  return Buffer.from(await Screenshot.get({
+  return await Screenshot.get({
     clicks: [
       {
-        element: 'button ::-p-text(Fullscreen)',
-        waitFor: {
-          selector: 'body.is-map-expanded',
-          timeout: 10_000,
-        }},
+        selector: 'button:has-text("Fullscreen")',
+      },
     ],
-    element: 'canvas.chart',
+    selector: 'canvas.chart',
     url: `https://finviz.com/map.ashx?t=${map}`,
-    viewport: { height: 1200, width: 1200 },
-    waitFor: {
-      selector: 'canvas.chart',
-      timeout: 20_000,
-    },
-  }));
+    viewportSize: { height: 1200, width: 1200 },
+  });
 }
 
 export const SpyCommand: ICommand = {
