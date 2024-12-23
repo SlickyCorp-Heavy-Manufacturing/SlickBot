@@ -1,8 +1,8 @@
-import { PuppeteerBlocker } from '@ghostery/adblocker-puppeteer';
-import { Browser, TimeoutError, Viewport } from 'puppeteer';
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { PlaywrightBlocker } from '@ghostery/adblocker-playwright';
 import fetch from 'cross-fetch';
+import { Browser } from 'playwright';
+import { chromium } from 'playwright-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 /**
  * Options for the screenshot command.
@@ -16,30 +16,13 @@ export declare interface ScreenshotOptions {
       /**
        * The selector string of the elment to click.
        */
-      readonly element: string;
-      /**
-       * Wait for this after clicking.
-       */
-      readonly waitFor?: {
-        /**
-         * Wait for the timeout duration.
-         */
-        readonly duration?: boolean;
-        /**
-         * Wait for the element matching this selector to appear on the page.
-         */
-        readonly selector?: string;
-        /**
-         * Maximum time to wait in milliseconds. Pass `0` to disable timeout.
-         */
-        readonly timeout: number;
-      }
+      readonly selector: string;
     }
   ];
   /**
    * The selector string of the element that should be screenshotted.
    */
-  readonly element: string;
+  readonly selector: string;
   /**
    * The URL of the page that should be loaded.
    */
@@ -47,20 +30,16 @@ export declare interface ScreenshotOptions {
   /**
    * The viewport of the page.
    */
-  readonly viewport: Viewport;
-  /**
-   * Wait for this before screnshotting.
-   */
-  readonly waitFor: {
+  readonly viewportSize: {
     /**
-     * Wait for the element matching this selector to appear on the page.
+     * Page height in pixels.
      */
-    readonly selector?: string;
+    readonly height: number;
     /**
-     * Maximum time to wait in milliseconds. Pass `0` to disable timeout.
+     * Page width in pixels.
      */
-    readonly timeout: number;
-  }
+    readonly width: number;
+  };
 }
 
 /**
@@ -69,16 +48,13 @@ export declare interface ScreenshotOptions {
    * @returns Binary array of PNG screenshot.
  */
 export default class Screenshot {
-  public static async get(options: ScreenshotOptions): Promise<Uint8Array<ArrayBufferLike>> {
-    puppeteer.use(StealthPlugin());
+  public static async get(options: ScreenshotOptions): Promise<Buffer> {
     let browser: Browser | undefined;
     try {
-      console.log('Loading browser for screenshot...');
       // Load Browser
-      browser = await puppeteer.launch({
-        args: ['--no-sandbox'],
-        browser: 'chrome',
-        defaultViewport: null,
+      console.log('Loading browser for screenshot...');
+      chromium.use(StealthPlugin());
+      browser = await chromium.launch({
         headless: true,
       });
       console.log('  - done');
@@ -86,72 +62,24 @@ export default class Screenshot {
       // Load Page
       console.log('Loading page for screenshot...');
       const page = await browser.newPage();
-      const blocker = await PuppeteerBlocker.fromPrebuiltAdsAndTracking(fetch)
+      await page.setViewportSize(options.viewportSize);
+      const blocker = await PlaywrightBlocker.fromPrebuiltAdsAndTracking(fetch);
       await blocker.enableBlockingInPage(page);
-      await page.setViewport(options.viewport);
-      await page.goto(options.url);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      await page.solveRecaptchas();
-      await page.waitForNavigation();
-      if (options.waitFor.selector) {
-        console.log(`  - Waiting for element '${options.waitFor.selector}'...`);
-        try {
-          await page.waitForSelector(options.waitFor.selector, { timeout: options.waitFor.timeout });
-        } catch (error: unknown) {
-          if (error instanceof TimeoutError) {
-            console.error('Timeout occurred, grabbing screenshot of whole page');
-            const element = await page.$('body');
-            if (element) {
-              const boundingBox = await element.boundingBox();
-              if (boundingBox) {
-                return await page.screenshot({
-                  clip: boundingBox,
-                  encoding: 'binary',
-                  type: 'png',
-                });
-              }
-            }
-          }
-          throw error;
-        }
-        console.log('    - done');
-      }
+      await page.goto(options.url, { waitUntil: 'networkidle' });
+      console.log('  - done');
 
-      // Click any elements
+      // Clicks
       if (options.clicks) {
         for (const click of options.clicks) {
-          console.log(`  - Clicking '${click.element}'...`);
-          await page.click(click.element);
-          console.log('    - done');
-          if (click.waitFor) {
-            if (click.waitFor.duration) {
-              await new Promise(res => setTimeout(res, click.waitFor.timeout));
-            }
-            if (click.waitFor.selector) {
-              console.log(`  - Waiting for element '${click.waitFor.selector}'...`);
-              await page.waitForSelector(click.waitFor.selector, { timeout: click.waitFor.timeout });
-              console.log('    - done');
-            }
-          }
+          console.log(`Clicking '${click.selector}...`);
+          await page.locator(click.selector).click();
         }
       }
-      console.log('  - done');
 
       // Get Screenshot
       console.log('Grabbing screenshot...');
-      const element = await page.$(options.element);
-      if (!element) {
-        throw new Error(`Element matching selector '${options.element}' was not found.`);
-      }
-      const boundingBox = await element.boundingBox();
-      if (!boundingBox) {
-        throw new Error(`Unable to get boundinb box of element '${options.element}.`);
-      }
-      return await page.screenshot({
-        clip: boundingBox,
-        encoding: 'binary',
-        type: 'png',
-      });
+      console.log(`  - locating element ${options.selector}...`);
+      return await page.locator(options.selector).screenshot({type: 'png'});
     } finally {
       if (browser) {
         console.log('Closing screenshot browser...');
