@@ -8,14 +8,10 @@ export default {
 	parserPreset: 'conventional-changelog-conventionalcommits',
 	rules: {
 		'body-leading-blank': [RuleConfigSeverity.Warning, 'always'] as const,
-		'body-max-line-length': [RuleConfigSeverity.Error, 'always', 100] as const,
+		'body-max-line-length': [RuleConfigSeverity.Error, 'always', 120] as const,
 		'footer-leading-blank': [RuleConfigSeverity.Warning, 'always'] as const,
-		'footer-max-line-length': [
-			RuleConfigSeverity.Error,
-			'always',
-			100,
-		] as const,
-		'header-max-length': [RuleConfigSeverity.Error, 'always', 100] as const,
+		'footer-max-line-length': [RuleConfigSeverity.Error, 'always', 120] as const,
+		'header-max-length': [RuleConfigSeverity.Error, 'always', 120] as const,
 		'header-trim': [RuleConfigSeverity.Error, 'always'] as const,
 		'subject-case': [
 			RuleConfigSeverity.Error,
