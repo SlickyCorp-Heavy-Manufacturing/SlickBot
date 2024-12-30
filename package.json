@@ -57,7 +57,7 @@
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
-    "@codedependant/semantic-release-docker": "^5.0.4",
+    "@codedependant/semantic-release-docker": "^5.1.0",
     "@commitlint/cli": "^19.6.1",
     "@eslint/js": "^9.15.0",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
