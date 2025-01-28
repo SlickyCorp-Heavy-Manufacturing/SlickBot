@@ -22,7 +22,7 @@ WORKDIR /app
 COPY package*.json .
 
 RUN rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
-  npm ci --ignore-scripts --omit=dev && \
+  npm ci --build-from-source --ignore-scripts --omit=dev && \
   npx --yes playwright install --with-deps chromium && \
   apt update && \
   apt install --yes ffmpeg && \
