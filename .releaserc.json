@@ -15,7 +15,7 @@
     }],
     ["@codedependant/semantic-release-docker", {
       "dockerBuildQuiet": false,
-      "dockerPlatform": ["linux/arm64/v8", "linux/amd64"],
+      "dockerPlatform": ["linux/amd64"],
       "dockerRegistry": "ghcr.io"
     }],
     "@semantic-release/github"
