@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         platform:
-          - linux/arm64/v8
           - linux/amd64
+          # - linux/arm64/v8
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -21,11 +21,10 @@ jobs:
         uses: docker/setup-qemu-action@v3.4.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.9.0
-        with:
-          platforms: ${{ matrix.platform }}
       - name: Docker Build
         uses: docker/build-push-action@v6.13.0
         with:
+          platforms: ${{ matrix.platform }}
           push: false
 
   test:
