@@ -6,8 +6,30 @@ on:
     types: [opened, edited, reopened, synchronize]
 
 jobs:
-  ci:
-    name: Slickybot CI
+  build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - linux/arm64/v8
+          - linux/amd64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3.4.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.9.0
+        with:
+          platforms: ${{ matrix.platform }}
+      - name: Docker Build
+        uses: docker/build-push-action@v6.13.0
+        with:
+          push: false
+
+  test:
+    name: Unit Tests
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -48,3 +70,16 @@ jobs:
         run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
       - name: Validate PR title with commitlint
         uses: kevintyj/prlint@v2.2.0
+
+  ci:
+    name: SlickyBot CI
+    if: always()
+    needs:
+      - build
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Jobs Succeeded
+        uses: re-actors/alls-green@v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}
