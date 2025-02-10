@@ -25,7 +25,7 @@
   "dependencies": {
     "@discordjs/opus": "0.10.0",
     "@discordjs/voice": "^0.18.0",
-    "@distube/ytdl-core": "^4.16.0",
+    "@distube/ytdl-core": "^4.16.3",
     "@ghostery/adblocker-playwright": "^2.5.0",
     "@google-cloud/text-to-speech": "5.8.0",
     "cheerio": "1.0.0",
