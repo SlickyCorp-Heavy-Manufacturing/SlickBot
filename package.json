@@ -79,7 +79,7 @@
     "chai": "^5.1.2",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "eslint": "^9.20.1",
-    "globals": "^15.14.0",
+    "globals": "^15.15.0",
     "husky": "^9.1.7",
     "mocha": "^11.1.0",
     "nock": "14.0.1",
