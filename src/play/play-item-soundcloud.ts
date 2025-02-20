@@ -42,11 +42,11 @@ export class PlayItemSoundcloud implements PlayItem {
   public static async from(msg: Message, url: string, volume?: number): Promise<PlayItemSoundcloud> {
     const soundcloud = new Soundcloud(process.env.SOUNDCLOUD_ID);
     const track = await soundcloud.tracks.get(url);
-    const streamUrl = await soundcloud.util.streamLink(url);
+    const streamUrl = await soundcloud.util.streamLink(url) as string | undefined;
     if (!streamUrl) {
       throw new Error('This SoundCloud song is unable to be played');
     }
 
-    return new PlayItemSoundcloud(msg, track.title, url, volume);
+    return new PlayItemSoundcloud(msg, track.title, streamUrl, volume);
   }
 }
