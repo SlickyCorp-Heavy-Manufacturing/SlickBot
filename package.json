@@ -48,10 +48,10 @@
     "playwright-extra": "^4.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "rxjs": "7.8.1",
-    "soundcloud.ts": "0.6.2",
+    "soundcloud.ts": "0.6.3",
     "tmp-promise": "3.0.3",
-    "tsx": "^4.19.2",
-    "uuid": "^11.0.5",
+    "tsx": "^4.19.3",
+    "uuid": "^11.1.0",
     "yargs": "17.7.2",
     "youtube-dl-exec": "^3.0.15",
     "ytpl": "^2.3.0"
