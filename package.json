@@ -53,7 +53,7 @@
     "tsx": "^4.19.3",
     "uuid": "^11.1.0",
     "yargs": "17.7.2",
-    "youtube-dl-exec": "^3.0.19",
+    "youtube-dl-exec": "^3.0.20",
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
