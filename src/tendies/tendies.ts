@@ -55,9 +55,7 @@ export class Tendies {
   public static async tendies(symbol?: string): Promise<string> {
     // Grab a random US stock if none given
     let symbolValue = symbol;
-    if (!symbolValue) {
-      symbolValue = await Tendies.randomStock('US');
-    }
+    symbolValue ??= await Tendies.randomStock('US');
     symbolValue = symbolValue.toUpperCase();
 
     // Get the quote
