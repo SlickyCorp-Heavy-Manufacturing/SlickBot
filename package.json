@@ -27,7 +27,7 @@
     "@discordjs/voice": "^0.18.0",
     "@distube/ytdl-core": "^4.16.10",
     "@ghostery/adblocker-playwright": "^2.5.2",
-    "@google-cloud/text-to-speech": "6.0.1",
+    "@google-cloud/text-to-speech": "6.1.0",
     "cheerio": "1.0.0",
     "cookie": "^1.0.2",
     "croner": "^9.0.0",
