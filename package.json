@@ -48,7 +48,7 @@
     "playwright-extra": "^4.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "rxjs": "7.8.2",
-    "soundcloud.ts": "0.6.3",
+    "soundcloud.ts": "0.6.5",
     "tmp-promise": "3.0.3",
     "tsx": "^4.19.4",
     "uuid": "^11.1.0",
