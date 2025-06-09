@@ -28,7 +28,7 @@
     "@distube/ytdl-core": "^4.16.11",
     "@ghostery/adblocker-playwright": "^2.6.1",
     "@google-cloud/text-to-speech": "6.1.0",
-    "cheerio": "1.0.0",
+    "cheerio": "1.1.0",
     "cookie": "^1.0.2",
     "croner": "^9.0.0",
     "cross-fetch": "^4.1.0",
