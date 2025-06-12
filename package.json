@@ -26,7 +26,7 @@
     "@discordjs/opus": "0.10.0",
     "@discordjs/voice": "^0.18.0",
     "@distube/ytdl-core": "^4.16.11",
-    "@ghostery/adblocker-playwright": "^2.6.1",
+    "@ghostery/adblocker-playwright": "^2.7.0",
     "@google-cloud/text-to-speech": "6.1.0",
     "cheerio": "1.1.0",
     "cookie": "^1.0.2",
@@ -44,13 +44,13 @@
     "lodash-es": "^4.17.21",
     "luxon": "3.6.1",
     "moji-translate": "1.0.8",
-    "playwright": "^1.52.0",
+    "playwright": "^1.53.0",
     "playwright-extra": "^4.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "rxjs": "7.8.2",
     "soundcloud.ts": "0.6.5",
     "tmp-promise": "3.0.3",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.1",
     "uuid": "^11.1.0",
     "yargs": "18.0.0",
     "youtube-dl-exec": "^3.0.22",
@@ -81,7 +81,7 @@
     "eslint": "^9.28.0",
     "globals": "^16.2.0",
     "husky": "^9.1.7",
-    "mocha": "^11.5.0",
+    "mocha": "^11.6.0",
     "nock": "14.0.5",
     "nodemon": "3.1.10",
     "nyc": "^17.1.0",
@@ -91,6 +91,6 @@
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.1"
+    "typescript-eslint": "^8.34.0"
   }
 }
