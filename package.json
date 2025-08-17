@@ -6,7 +6,7 @@
   "exports": "./dist/index.js",
   "type": "module",
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   },
   "scripts": {
     "build": "tsc",
