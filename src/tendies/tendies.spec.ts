@@ -3,7 +3,7 @@ import 'mocha';
 import nock from 'nock';
 
 import { Tendies } from './tendies.js';
-import { Quote, Stock } from './tendies-types.js';
+import type { Quote, Stock } from './tendies-types.js';
 
 describe('tendies', () => {
   const quote: Quote = {
