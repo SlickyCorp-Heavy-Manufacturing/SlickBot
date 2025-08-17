@@ -5,7 +5,8 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { DowCommand, EtfCommand, SpyCommand, WorldCommand } from './finviz-command.js';
-import Screenshot, { ScreenshotOptions } from '../screenshot/index.js';
+import Screenshot from '../screenshot/screenshot.js';
+import type ScreenshotOptions from '../screenshot/screenshot-options.js';
 
 const expect = chai.expect;
 chai.use(sinonChai);
