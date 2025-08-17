@@ -2,7 +2,7 @@ import { Message, TextChannel } from 'discord.js';
 import { sample } from 'lodash-es';
 
 import { ICommand } from '../icommand.js';
-import Screenshot from '../screenshot/index.js';
+import Screenshot from '../screenshot/screenshot.js';
 
 async function finvizScreenshot(map: string): Promise<Buffer> {
   return await Screenshot.get({
