@@ -50,7 +50,7 @@
     "rxjs": "7.8.2",
     "soundcloud.ts": "0.6.7",
     "tmp-promise": "3.0.3",
-    "tsx": "^4.20.5",
+    "tsx": "^4.20.6",
     "uuid": "^13.0.0",
     "yargs": "18.0.0",
     "youtube-dl-exec": "^3.0.25",
