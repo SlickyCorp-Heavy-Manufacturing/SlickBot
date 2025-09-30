@@ -34,7 +34,7 @@
     "cross-fetch": "^4.1.0",
     "discord-ytdl-core": "5.0.4",
     "discord.js": "^14.22.1",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "ffmpeg-static": "5.2.0",
     "fuzzyset.js": "1.0.7",
     "got": "14.4.9",
