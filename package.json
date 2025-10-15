@@ -83,7 +83,7 @@
     "nock": "14.0.10",
     "nodemon": "3.1.10",
     "nyc": "^17.1.0",
-    "semantic-release": "^24.2.9",
+    "semantic-release": "^25.0.0",
     "sinon": "^21.0.0",
     "sinon-chai": "^4.0.1",
     "source-map-support": "^0.5.21",
