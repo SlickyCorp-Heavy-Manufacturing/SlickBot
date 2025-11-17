@@ -1,5 +1,5 @@
 #Build stage
-FROM docker.io/node:25.2.0 AS build
+FROM docker.io/node:25.2.1 AS build
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 #Production stage
-FROM docker.io/node:25.2.0 AS production
+FROM docker.io/node:25.2.1 AS production
 
 LABEL org.opencontainers.image.source=https://github.com/SlickyCorp-Heavy-Manufacturing/SlickBot
 LABEL org.opencontainers.image.description="Discord bot that does important features"
