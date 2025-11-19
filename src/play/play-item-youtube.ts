@@ -1,7 +1,9 @@
 import { AudioResource, createAudioResource } from '@discordjs/voice';
-import * as cookie from 'cookie';
 import { Message } from 'discord.js';
-import ytdl from '@distube/ytdl-core';
+import { Readable } from 'node:stream';
+import type { ReadableStream } from 'node:stream/web'
+import { Innertube } from 'youtubei.js';
+
 import { PlayItem } from './play-item.js';
 
 export class PlayItemYoutube implements PlayItem {
@@ -17,11 +19,13 @@ export class PlayItemYoutube implements PlayItem {
 
   public readonly volume?: number;
 
-  private static agent: ytdl.Agent;
+  private static innertube: Innertube;
 
-  private readonly url: string;
+  private static readonly urlRegex = /(?:youtube(?:-nocookie)?\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]vi?=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
 
-  private constructor(msg: Message, title: string, url: string, volume?: number) {
+  private readonly videoId: string;
+
+  private constructor(msg: Message, title: string, videoId: string, volume?: number) {
     this.msg = msg;
     this.title = title;
     this.onError = async (error: Error) => {
@@ -34,47 +38,29 @@ export class PlayItemYoutube implements PlayItem {
       await msg.reply(`🎶 Slickyboi started playing: ${title} 🎶`);
       return Promise.resolve();
     };
-    this.url = url;
+    this.videoId = videoId;
     this.volume = volume;
   }
 
-  public static get Agent() {
-    if (process.env.YOUTUBE_COOKIE && this.agent === undefined) {
-      const parsedCookies = cookie.parse(process.env.YOUTUBE_COOKIE);
-      const cookies: ytdl.Cookie[] = [];
-      if (parsedCookies) {
-        for (const key in parsedCookies) {
-          if (Object.prototype.hasOwnProperty.call(parsedCookies, key) && parsedCookies[key]) {
-            console.log(`Adding YouTube Cookie: ${key}`);
-            cookies.push({
-              domain: '.youtube.com',
-              expirationDate: Date.now() + (365 * 24 * 60 * 60 * 1000),
-              hostOnly: false,
-              httpOnly: true,
-              name: key,
-              path: '/',
-              sameSite: 'no_restriction',
-              secure: true,
-              value: parsedCookies[key],
-            });
-          }
-        }
-      }
-      this.agent = ytdl.createAgent(cookies, {});
-    }
-
-    return this.agent;
-  }
-
-  public createAudioResource(): Promise<AudioResource<PlayItem>> {
+  public async createAudioResource(): Promise<AudioResource<PlayItem>> {
     return Promise.resolve(createAudioResource(
-      ytdl(this.url, { agent: PlayItemYoutube.Agent, filter: 'audioonly', dlChunkSize: 0 }),
+      Readable.fromWeb(await PlayItemYoutube.innertube.download(this.videoId, { codec: 'opus', type: 'audio' }) as ReadableStream<Uint8Array>),
       { metadata: this },
     ));
   }
 
   public static async from(msg: Message, url: string, volume?: number) {
-    const info = await ytdl.getInfo(url, { agent: PlayItemYoutube.Agent });
-    return new PlayItemYoutube(msg, info.videoDetails.title, url, volume);
+    this.innertube ??= await Innertube.create();
+
+    // Get video ID from the URL
+    const videoId = this.urlRegex.exec(url)?.[1];
+    if (!videoId) {
+      throw new Error('Unable to determine video ID from URL');
+    }
+
+    // Get basic info about the video
+    const info = await this.innertube.getBasicInfo(videoId);
+
+    return new PlayItemYoutube(msg, info.basic_info.title ?? '<unknown title>', videoId, volume);
   }
 }

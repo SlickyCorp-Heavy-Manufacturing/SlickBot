@@ -25,7 +25,6 @@
   "dependencies": {
     "@discordjs/opus": "0.10.0",
     "@discordjs/voice": "^0.19.0",
-    "@distube/ytdl-core": "^4.16.12",
     "@ghostery/adblocker-playwright": "^2.12.5",
     "@google-cloud/text-to-speech": "6.4.0",
     "@snazzah/davey": "^0.1.8",
@@ -55,6 +54,7 @@
     "uuid": "^13.0.0",
     "yargs": "18.0.0",
     "youtube-dl-exec": "^3.0.26",
+    "youtubei.js": "^16.0.1",
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
@@ -69,6 +69,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/luxon": "3.7.1",
     "@types/mocha": "^10.0.10",
+    "@types/node": "^24.10.1",
     "@types/node-schedule": "2.1.8",
     "@types/sinon-chai": "^4.0.0",
     "@types/tmp": "0.2.6",
