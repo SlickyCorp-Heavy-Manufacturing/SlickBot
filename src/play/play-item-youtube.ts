@@ -44,7 +44,12 @@ export class PlayItemYoutube implements PlayItem {
 
   public async createAudioResource(): Promise<AudioResource<PlayItem>> {
     return Promise.resolve(createAudioResource(
-      Readable.fromWeb(await PlayItemYoutube.innertube.download(this.videoId, { codec: 'opus', type: 'audio' }) as ReadableStream<Uint8Array>),
+      Readable.fromWeb(
+        await PlayItemYoutube.innertube.download(
+          this.videoId,
+          { codec: 'opus', format: 'any', type: 'audio' },
+        ) as ReadableStream<Uint8Array>
+      ),
       { metadata: this },
     ));
   }
