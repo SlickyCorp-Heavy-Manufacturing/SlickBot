@@ -1,10 +1,12 @@
 import { AudioResource, createAudioResource } from '@discordjs/voice';
 import { Message } from 'discord.js';
+import { EnabledTrackTypes } from 'googlevideo/utils';
 import { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web'
 import { Innertube } from 'youtubei.js';
 
 import { PlayItem } from './play-item.js';
+import { createSabrStream } from './utils/sabr-stream-factory.js';
 
 export class PlayItemYoutube implements PlayItem {
   public readonly msg: Message;
@@ -43,13 +45,13 @@ export class PlayItemYoutube implements PlayItem {
   }
 
   public async createAudioResource(): Promise<AudioResource<PlayItem>> {
+    console.log(`Creating audio resource for YouTube video ID: ${this.videoId}`);
+    const { streamResults } = await createSabrStream(
+      this.videoId,
+      { audioQuality: 'AUDIO_QUALITY_MEDIUM', enabledTrackTypes: EnabledTrackTypes.AUDIO_ONLY, preferOpus: true }
+    );
     return Promise.resolve(createAudioResource(
-      Readable.fromWeb(
-        await PlayItemYoutube.innertube.download(
-          this.videoId,
-          { format: 'any', quality: 'bestefficiency', type: 'audio' },
-        ) as ReadableStream<Uint8Array>
-      ),
+      Readable.fromWeb(streamResults.audioStream as ReadableStream<Uint8Array>),
       { metadata: this },
     ));
   }
@@ -58,6 +60,7 @@ export class PlayItemYoutube implements PlayItem {
     this.innertube ??= await Innertube.create();
 
     // Get video ID from the URL
+    console.log(`Extracting video ID from URL: ${url}`);
     const videoId = this.urlRegex.exec(url)?.[1];
     if (!videoId) {
       throw new Error('Unable to determine video ID from URL');
@@ -65,6 +68,7 @@ export class PlayItemYoutube implements PlayItem {
 
     // Get basic info about the video
     const info = await this.innertube.getBasicInfo(videoId);
+    console.log(`Retrieved video info: ${JSON.stringify(info.basic_info)}`);
 
     return new PlayItemYoutube(msg, info.basic_info.title ?? '<unknown title>', videoId, volume);
   }
