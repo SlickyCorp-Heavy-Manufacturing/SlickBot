@@ -1,8 +1,6 @@
- 
+
 /* eslint-disable @typescript-eslint/no-implied-eval */
- 
 /* eslint-disable @typescript-eslint/no-unsafe-call */
- 
 import { BG, type BgConfig } from 'bgutils-js';
 import { JSDOM } from 'jsdom';
 

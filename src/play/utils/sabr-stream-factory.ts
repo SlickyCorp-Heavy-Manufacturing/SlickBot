@@ -3,9 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
- 
 /* eslint-disable @typescript-eslint/no-unsafe-call */
- 
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import type { ReloadPlaybackContext } from 'googlevideo/protos';
 import { SabrStream, type SabrPlaybackOptions } from 'googlevideo/sabr-stream';
@@ -15,7 +13,7 @@ import { createWriteStream, type WriteStream } from 'node:fs';
 import { Constants, Innertube, type IPlayerResponse, Platform, UniversalCache, YTNodes } from 'youtubei.js';
 import type { Types } from 'youtubei.js';
 
-import { generateWebPoToken } from './webpo-helper';
+import { generateWebPoToken } from './webpo-helper.js';
 
 export interface DownloadOutput {
   stream: WriteStream;
