@@ -47,7 +47,7 @@ export class PlayItemYoutube implements PlayItem {
       Readable.fromWeb(
         await PlayItemYoutube.innertube.download(
           this.videoId,
-          { codec: 'opus', format: 'any', type: 'audio' },
+          { format: 'any', quality: 'bestefficiency', type: 'audio' },
         ) as ReadableStream<Uint8Array>
       ),
       { metadata: this },
