@@ -3,7 +3,6 @@ import { HelpCommand } from './help/help-command.js';
 import { PingCommand } from './ping/ping-command.js';
 import { WeatherCommand } from './weather/weather-command.js';
 import { TroutslapCommand } from './troutslap/troutslap-command.js';
-import { MemeCommand, MemeSearchCommand } from './meme/index.js';
 import { KlingonCommand } from './klingon/klingon-command.js';
 import { PlayCommand } from './play/play-command.js';
 import {
@@ -30,8 +29,6 @@ export const commandList: ICommand[] = [
   PingCommand,
   WeatherCommand,
   TroutslapCommand,
-  MemeCommand,
-  MemeSearchCommand,
   KlingonCommand,
   TendiesCommand,
   NiceReaction,
