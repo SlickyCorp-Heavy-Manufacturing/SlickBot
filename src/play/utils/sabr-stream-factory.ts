@@ -54,7 +54,6 @@ export async function makePlayerRequest(innertube: Innertube, videoId: string, r
 
   const extraArgs: Record<string, any> = {
     playbackContext: {
-      adPlaybackContext: { pyv: true },
       contentPlaybackContext: {
         vis: 0,
         splay: false,
