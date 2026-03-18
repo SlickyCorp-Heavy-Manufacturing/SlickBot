@@ -48,7 +48,11 @@ export class PlayItemYoutube implements PlayItem {
     console.log(`Creating audio resource for YouTube video ID: ${this.videoId}`);
     const { streamResults } = await createSabrStream(
       this.videoId,
-      { audioQuality: 'AUDIO_QUALITY_MEDIUM', enabledTrackTypes: EnabledTrackTypes.AUDIO_ONLY, preferOpus: true }
+      {
+        audioQuality: 'AUDIO_QUALITY_MEDIUM',
+        enabledTrackTypes: EnabledTrackTypes.AUDIO_ONLY,
+        preferOpus: true,
+      }
     );
     return Promise.resolve(createAudioResource(
       Readable.fromWeb(streamResults.audioStream as ReadableStream<Uint8Array>),

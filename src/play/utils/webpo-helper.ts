@@ -41,7 +41,7 @@ export async function generateWebPoToken(contentBinding: string) {
     bgConfig
   });
 
-  const placeholderPoToken = BG.PoToken.generateColdStartToken(contentBinding);
+  const placeholderPoToken = BG.PoToken.generatePlaceholder(contentBinding);
 
   return {
     visitorData: contentBinding,

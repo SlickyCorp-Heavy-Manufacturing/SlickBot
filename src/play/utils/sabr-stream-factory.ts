@@ -5,15 +5,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import type { ReloadPlaybackContext } from 'googlevideo/protos';
-import { SabrStream, type SabrPlaybackOptions } from 'googlevideo/sabr-stream';
-import type { SabrFormat } from 'googlevideo/shared-types';
-import { buildSabrFormat } from 'googlevideo/utils';
 import { createWriteStream, type WriteStream } from 'node:fs';
 import { Constants, Innertube, type IPlayerResponse, Platform, UniversalCache, YTNodes } from 'youtubei.js';
 import type { Types } from 'youtubei.js';
 
 import { generateWebPoToken } from './webpo-helper.js';
+import type { SabrFormat } from 'googlevideo/shared-types';
+import type { ReloadPlaybackContext } from 'googlevideo/protos';
+import { SabrStream, type SabrPlaybackOptions } from 'googlevideo/sabr-stream';
+import { buildSabrFormat } from 'googlevideo/utils';
 
 export interface DownloadOutput {
   stream: WriteStream;
