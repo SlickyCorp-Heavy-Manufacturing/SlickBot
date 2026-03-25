@@ -82,7 +82,7 @@ export const DevOpsCommand: ICommand = {
       'As a DevOps customer',
       msg,
       'RAIDOPS01',
-      ['622595355153793045', '436298366952144907'], // Brian, MarkF
+      ['188663133244489729', '622595355153793045', '436298366952144907'], // Andrew, Brian, MarkF
     );
     if (story) {
       await (msg.channel as TextChannel).send(`<@${story.assignee.id}> ${story.id} (${story.points} points) has been created and assigned to you.\n> ${story.description}`);
