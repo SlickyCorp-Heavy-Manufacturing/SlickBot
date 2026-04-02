@@ -7,11 +7,11 @@
     "target": "ESNext",
     "isolatedModules": true,
     "esModuleInterop": true,
-    "outDir": "./dist",
+    "outDir": "dist",
+    "rootDir": "src",
     "lib": [ "esnext" ],
     "types": [ "node" ],
-    "baseUrl": "./",
-    "strictNullChecks": true,
+    "strictNullChecks": true
   },
   "exclude": [ "node_modules", "src/**/*.spec.ts" ],
   "include": [
