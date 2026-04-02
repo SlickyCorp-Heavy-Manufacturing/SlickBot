@@ -7,8 +7,8 @@
     "target": "ESNext",
     "isolatedModules": true,
     "esModuleInterop": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "dist",
+    "rootDir": "src",
     "lib": [ "esnext" ],
     "types": [ "node" ],
     "strictNullChecks": true
