@@ -8,9 +8,10 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "outDir": "./dist",
+    "rootDir": "./src",
     "lib": [ "esnext" ],
     "types": [ "node" ],
-    "strictNullChecks": true,
+    "strictNullChecks": true
   },
   "exclude": [ "node_modules", "src/**/*.spec.ts" ],
   "include": [
