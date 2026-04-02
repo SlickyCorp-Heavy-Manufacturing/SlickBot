@@ -10,7 +10,6 @@
     "outDir": "./dist",
     "lib": [ "esnext" ],
     "types": [ "node" ],
-    "baseUrl": "./",
     "strictNullChecks": true,
   },
   "exclude": [ "node_modules", "src/**/*.spec.ts" ],
