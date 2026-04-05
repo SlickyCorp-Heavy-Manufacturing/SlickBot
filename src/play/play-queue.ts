@@ -1,6 +1,7 @@
 import { promisify } from 'node:util';
 import {
   AudioPlayer,
+  AudioPlayerState,
   AudioPlayerStatus,
   AudioResource,
   createAudioPlayer,
@@ -9,6 +10,7 @@ import {
   joinVoiceChannel,
   VoiceConnection,
   VoiceConnectionDisconnectReason,
+  VoiceConnectionState,
   VoiceConnectionStatus,
 } from '@discordjs/voice';
 import type { PlayItem } from './play-item.js';
@@ -34,8 +36,8 @@ export class PlayQueue {
     this.audioPlayer.on(
       'stateChange',
       (
-        oldState: { status: any; resource: any; },
-        newState: { status: any; resource: any; },
+        oldState: AudioPlayerState,
+        newState: AudioPlayerState,
       ) => {
         if (
           newState.status === AudioPlayerStatus.Idle
@@ -89,7 +91,7 @@ export class PlayQueue {
 
     this.voiceConnection.on(
       'stateChange',
-      (_: any, newState: { status: any; reason: any; closeCode: number; }) => {
+      (oldState: VoiceConnectionState, newState: VoiceConnectionState) => {
         if (newState.status === VoiceConnectionStatus.Disconnected) {
           if (
             newState.reason === VoiceConnectionDisconnectReason.WebSocketClose

@@ -15,7 +15,6 @@ export const EmojifyCommand: ICommand = {
     })).last();
 
     if (previousMessage !== undefined && msg.content.trim() !== '') {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       const emojified: string = translate.translate(previousMessage.content, false);
       if (previousMessage.content.toLowerCase() !== emojified.toLowerCase()) {
         await (msg.channel as TextChannel).send(emojified);
