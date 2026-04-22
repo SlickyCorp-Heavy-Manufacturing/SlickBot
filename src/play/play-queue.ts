@@ -196,7 +196,7 @@ export class PlayQueue {
             this.createVoiceConnection(
               nextItem.msg.member.voice.channel.id,
               nextItem.msg.member.voice.guild.id,
-              nextItem.msg.member.voice.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator,
+              nextItem.msg.member.voice.guild.voiceAdapterCreator,
             );
           }
         }
