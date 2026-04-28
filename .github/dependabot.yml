@@ -3,14 +3,15 @@ updates:
   - package-ecosystem: npm
     directory: /
     groups:
-      production:
-        dependency-type: "production"
-      development:
-        dependency-type: "development"
+      npm:
+        patterns: ["*"]
     schedule:
       interval: daily
   - package-ecosystem: github-actions
     directory: /
+    groups:
+      github-actions:
+        patterns: ["*"]
     schedule:
       interval: daily
   - package-ecosystem: "devcontainers"
