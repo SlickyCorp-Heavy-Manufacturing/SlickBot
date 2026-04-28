@@ -3,10 +3,8 @@ updates:
   - package-ecosystem: npm
     directory: /
     groups:
-      production:
-        dependency-type: "production"
-      development:
-        dependency-type: "development"
+      npm:
+        patterns: ["*"]
     schedule:
       interval: daily
   - package-ecosystem: github-actions
