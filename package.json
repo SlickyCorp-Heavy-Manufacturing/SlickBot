@@ -25,7 +25,7 @@
   "dependencies": {
     "@discordjs/opus": "0.10.0",
     "@discordjs/voice": "^0.19.2",
-    "@ghostery/adblocker-playwright": "^2.14.2",
+    "@ghostery/adblocker-playwright": "^2.14.3",
     "@google-cloud/text-to-speech": "6.4.0",
     "@snazzah/davey": "^0.1.11",
     "bgutils-js": "^3.2.0",
