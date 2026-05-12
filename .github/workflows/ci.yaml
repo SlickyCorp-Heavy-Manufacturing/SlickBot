@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     name: Docker Build
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     strategy:
       matrix:
