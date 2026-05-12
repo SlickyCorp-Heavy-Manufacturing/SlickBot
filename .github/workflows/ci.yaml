@@ -75,6 +75,8 @@ jobs:
     needs:
       - build
       - test
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Check Jobs Succeeded
