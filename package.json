@@ -30,7 +30,7 @@
     "@snazzah/davey": "^0.1.12",
     "bgutils-js": "^3.2.0",
     "cheerio": "1.2.0",
-    "cookie": "^1.1.1",
+    "cookie": "^2.0.0",
     "croner": "^10.0.1",
     "cross-fetch": "^4.1.0",
     "discord-ytdl-core": "5.0.4",
