@@ -529,6 +529,38 @@ def build_background_table():
     # 0x0A bin wall: solid colour-3
     tiles[0x0a] = tile_from_rows(['33333333'] * 8)
 
+    # --- getaway (side-scroller) tiles --------------------------------
+    # palette: 0 = black, 1 = sky blue, 2 = ground brown, 3 = white
+    # 0x0B desert ground: colour-2 fill with colour-3 pebbles
+    tiles[0x0b] = tile_from_rows(['22222222',
+                                  '22223222',
+                                  '22222222',
+                                  '23222232',
+                                  '22222222',
+                                  '22222232',
+                                  '32222222',
+                                  '22222223'])
+    # 0x0C horizon strip: colour-3 line over ground
+    tiles[0x0c] = tile_from_rows(['33333333',
+                                  '33333333',
+                                  '22222222',
+                                  '22322222',
+                                  '22222222',
+                                  '22222232',
+                                  '22222222',
+                                  '23222222'])
+    # 0x0D road dashes (lane markers) in the ground
+    tiles[0x0d] = tile_from_rows(['22222222',
+                                  '22222222',
+                                  '22222222',
+                                  '33333322',
+                                  '22222222',
+                                  '22222222',
+                                  '22222222',
+                                  '22222222'])
+    # 0x0E sky: solid colour-1 (blue)
+    tiles[0x0e] = tile_from_rows(['11111111'] * 8)
+
     # --- font at ASCII positions ---------------------------------------
     for ch, rows in FONT.items():
         tiles[ord(ch)] = tile_from_rows(rows)
@@ -705,6 +737,29 @@ def build_sprite_table():
         '................',
     ], cmap)
     place(0x24, con)
+
+    # Boulder hazard (getaway): a lumpy rock. colours 1 = rock, 3 = shine.
+    rmap = {'.': 0, '1': 1, '3': 3}
+    boulder = Grid()
+    boulder.rows(0, [
+        '................',
+        '................',
+        '.....11111......',
+        '....1113111.....',
+        '...111311111....',
+        '..11111111111...',
+        '.1111111111111..',
+        '.1111111111111..',
+        '.1111111111311..',
+        '.1111111111111..',
+        '..11111111111...',
+        '..11111111111...',
+        '...1111111111...',
+        '................',
+        '................',
+        '................',
+    ], rmap)
+    place(0x28, boulder)
 
     # Falling-piece block (8x8 sprite): solid colour-2, drawn in 8x8 mode
     # during the packing stage; the sprite palette gives it its colour.

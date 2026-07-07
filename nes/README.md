@@ -41,6 +41,20 @@ packed are reported on the victory screen.
 | **START** | Begin game / continue from a screen |
 
 Reach the checkered border at the top to cross into Canada and advance a level.
+Clear all three crossings and you hit the final stage.
+
+## Stage 3 — THE GETAWAY (side-scroller)
+
+Border control is on you. Floor the **Warthog** north in a side-scrolling
+chase: the desert streams by, hazards — patrol cars, border rigs, moose and
+boulders — charge in from the right, and you **steer up and down** to weave
+through them. Your Halo shield still soaks one hit before you start losing
+lives. Survive to fill the **DIST** meter and you're home free.
+
+* **D-Pad Up/Down** — steer the Warthog across the road
+* Survive until the distance bar fills to win
+
+The chase gets faster and the hazards thicker the further you get.
 Get hit with your shield up and it absorbs the blow (you're knocked back to the
 start and a pip drops); the shield **fully recharges** if you stay clean for a
 few seconds — pure Master Chief. Get hit with the shield down and you lose a

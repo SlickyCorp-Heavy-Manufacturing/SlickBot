@@ -50,6 +50,7 @@ ST_LEVEL  = 3
 ST_OVER   = 4
 ST_WIN    = 5
 ST_PACK   = 6
+ST_GETAWAY = 7
 
 NUM_LANES  = 8
 CARS_PER   = 3
@@ -69,6 +70,13 @@ PWH        = PW * PH
 BIN_COL    = 12         ; nametable column of the bin interior
 BIN_ROW    = 7          ; nametable row of the bin interior
 GRAV       = 30         ; frames per gravity step
+
+; getaway (side-scroller) stage
+N_OBST     = 6          ; simultaneous hazards
+WART_X     = 40         ; warthog fixed screen x
+GY_MIN     = 140        ; warthog vertical range on the road
+GY_MAX     = 188
+GT_TARGET  = 16        ; win when dist_hi reaches this (dist_hi>>1 = bar cells)
 
 PLAYER_X0  = 120
 PLAYER_Y0  = 208
@@ -138,6 +146,14 @@ cellc:      .res 1     ; scratch: cell column
 cellr:      .res 1     ; scratch: cell row
 bitn:       .res 1     ; scratch: bit index 0..15
 wr:         .res 1     ; scratch: line-clear write row
+; --- getaway stage state ---
+gy:         .res 1     ; warthog y
+dist_lo:    .res 1
+dist_hi:    .res 1
+scroll_spd: .res 1
+spawn_tmr:  .res 1
+spawn_per:  .res 1
+obloop:     .res 1
 mus_step:   .res 1
 mus_tick:   .res 1
 mus_on:     .res 1
@@ -156,6 +172,10 @@ hudline:    .res 32
 field:      .res PWH        ; packing bin: 0 empty, 1 crate
 rowbuf:     .res PW         ; scratch row for bin redraws
 cratebuf:   .res 3          ; 3-digit crate count
+ob_active:  .res N_OBST     ; getaway hazards
+ob_x:       .res N_OBST
+ob_y:       .res N_OBST
+ob_type:    .res N_OBST
 
 ; ===========================================================================
 .segment "CODE"
@@ -391,6 +411,7 @@ state_tab:
     .word do_over
     .word do_win
     .word do_pack
+    .word do_getaway
 .endproc
 
 ; ===========================================================================
@@ -703,9 +724,10 @@ loop:
     jsr enter_level
     rts
 @winall:
-    lda #ST_WIN
+    ; crossed the border -- now floor it away from border control
+    lda #ST_GETAWAY
     sta state
-    jsr enter_win
+    jsr enter_getaway
     rts
 .endproc
 
@@ -827,6 +849,9 @@ loop:
 
 .proc enter_over
     jsr ppu_off
+    lda #%10100000
+    sta ppuctrl_val
+    jsr load_pal_game
     jsr clear_nametable
     lda #<txt_over
     sta ptr
@@ -840,6 +865,9 @@ loop:
 
 .proc enter_win
     jsr ppu_off
+    lda #%10100000
+    sta ppuctrl_val
+    jsr load_pal_game
     jsr clear_nametable
     lda #<txt_win
     sta ptr
@@ -1592,6 +1620,416 @@ loop:
     rts
 .endproc
 
+; ===========================================================================
+;  GETAWAY STAGE  --  a side-scroller.  After crossing the border you floor
+;  the Warthog north; hazards charge in from the right, steer up/down to dodge
+;  and survive the distance.  The Halo shield still soaks one hit.
+; ===========================================================================
+.proc enter_getaway
+    jsr ppu_off
+    lda #%10100000          ; 8x16 sprite mode
+    sta ppuctrl_val
+    jsr load_pal_getaway
+    jsr clear_nametable
+    jsr draw_getaway_scene
+    lda #170
+    sta gy
+    lda #0
+    sta dist_lo
+    sta dist_hi
+    sta iframes
+    sta regentmr
+    lda #SH_MAX
+    sta shield
+    lda #2
+    sta scroll_spd
+    lda #40
+    sta spawn_per
+    lda #24
+    sta spawn_tmr
+    ldx #0
+    lda #0
+:   sta ob_active, x
+    inx
+    cpx #N_OBST
+    bne :-
+    lda #1
+    sta mus_on
+    jsr ppu_on
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc do_getaway
+    jsr getaway_input
+    jsr move_obstacles
+    jsr spawn_tick
+    jsr getaway_collision
+    lda state
+    cmp #ST_GETAWAY
+    beq @cont
+    rts
+@cont:
+    jsr shield_regen
+    lda dist_lo
+    clc
+    adc scroll_spd
+    sta dist_lo
+    bcc @nocarry
+    inc dist_hi
+@nocarry:
+    jsr getaway_ramp
+    lda dist_hi
+    cmp #GT_TARGET
+    bcc @noWin
+    lda #ST_WIN
+    sta state
+    jsr enter_win
+    rts
+@noWin:
+    jsr build_getaway_hud
+    jsr draw_getaway
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc getaway_input
+    lda pad1
+    and #BTN_UP
+    beq @nu
+    lda gy
+    cmp #GY_MIN+2
+    bcc @nu
+    dec gy
+    dec gy
+@nu:
+    lda pad1
+    and #BTN_DOWN
+    beq @nd
+    lda gy
+    cmp #GY_MAX-1
+    bcs @nd
+    inc gy
+    inc gy
+@nd:
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc move_obstacles
+    ldx #0
+@l:
+    lda ob_active, x
+    beq @next
+    lda ob_x, x
+    sec
+    sbc scroll_spd
+    bcc @kill
+    cmp #4
+    bcc @kill
+    sta ob_x, x
+    jmp @next
+@kill:
+    lda #0
+    sta ob_active, x
+@next:
+    inx
+    cpx #N_OBST
+    bne @l
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc spawn_tick
+    dec spawn_tmr
+    bne @ret
+    lda spawn_per
+    sta spawn_tmr
+    jsr spawn_obstacle
+@ret:
+    rts
+.endproc
+
+.proc spawn_obstacle
+    ldx #0
+@find:
+    lda ob_active, x
+    beq @found
+    inx
+    cpx #N_OBST
+    bne @find
+    rts                     ; no free slot
+@found:
+    lda #1
+    sta ob_active, x
+    lda #248
+    sta ob_x, x
+    jsr update_rng
+    lda rng
+    and #3
+    asl a
+    asl a
+    asl a
+    asl a                   ; lane * 16
+    clc
+    adc #GY_MIN
+    sta ob_y, x
+    lda rng+1
+    and #3
+    sta ob_type, x
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc getaway_collision
+    lda iframes
+    beq @go
+    rts
+@go:
+    ldx #0
+@l:
+    lda ob_active, x
+    beq @next
+    lda ob_x, x
+    sec
+    sbc #WART_X
+    bpl @dxp
+    eor #$ff
+    clc
+    adc #1
+@dxp:
+    cmp #14
+    bcs @next
+    lda gy
+    sec
+    sbc ob_y, x
+    bpl @dyp
+    eor #$ff
+    clc
+    adc #1
+@dyp:
+    cmp #14
+    bcs @next
+    jsr getaway_crash
+    rts
+@next:
+    inx
+    cpx #N_OBST
+    bne @l
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc getaway_crash
+    lda #0
+    sta regentmr
+    lda shield
+    beq @lose
+    dec shield
+    lda #IFRAMES
+    sta iframes
+    rts
+@lose:
+    dec lives
+    lda lives
+    beq @over
+    lda #SH_MAX
+    sta shield
+    lda #IFRAMES
+    sta iframes
+    rts
+@over:
+    jsr enter_over
+    lda #ST_OVER
+    sta state
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  Scale difficulty with distance travelled.
+; --------------------------------------------------------------------------
+.proc getaway_ramp
+    lda dist_hi
+    lsr a
+    lsr a
+    lsr a
+    clc
+    adc #2
+    sta scroll_spd          ; 2..4
+    lda dist_hi
+    asl a
+    sta tmp
+    lda #40
+    sec
+    sbc tmp
+    cmp #16
+    bcs @store
+    lda #16
+@store:
+    sta spawn_per           ; 16..40
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc build_getaway_hud
+    ldx #0
+    lda #' '
+@clr:
+    sta hudline, x
+    inx
+    cpx #32
+    bne @clr
+    lda #'L'
+    sta hudline+0
+    lda #'V'
+    sta hudline+1
+    lda #':'
+    sta hudline+2
+    lda lives
+    clc
+    adc #'0'
+    sta hudline+3
+    lda #'S'
+    sta hudline+5
+    lda #'H'
+    sta hudline+6
+    lda #':'
+    sta hudline+7
+    ldx #0
+@pl:
+    cpx shield
+    bcs @pe
+    lda #$07
+    jmp @pp
+@pe:
+    lda #' '
+@pp:
+    sta hudline+8, x
+    inx
+    cpx #3
+    bne @pl
+    lda #'D'
+    sta hudline+12
+    lda #'I'
+    sta hudline+13
+    lda #'S'
+    sta hudline+14
+    lda #'T'
+    sta hudline+15
+    lda #':'
+    sta hudline+16
+    lda dist_hi
+    lsr a
+    sta tmp                 ; filled = dist_hi/2 (0..8)
+    ldx #0
+@bl:
+    cpx tmp
+    bcs @be
+    lda #$07
+    jmp @bp
+@be:
+    lda #'-'
+@bp:
+    sta hudline+17, x
+    inx
+    cpx #8
+    bne @bl
+    lda #<hudline
+    sta ptr
+    lda #>hudline
+    sta ptr+1
+    lda #32
+    sta tmp2
+    lda #$20
+    sta tmp3
+    lda #$20
+    sta tmp4
+    jsr vbuf_add
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc draw_getaway
+    lda #0
+    sta oam_idx
+    ; warthog (blink while invulnerable)
+    lda iframes
+    beq @dw
+    lda frame
+    and #4
+    bne @dw
+    jmp @obs
+@dw:
+    lda #WART_X
+    sta tmp
+    lda gy
+    sta tmp2
+    lda #$20
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+@obs:
+    lda #0
+    sta obloop
+@ol:
+    ldx obloop
+    lda ob_active, x
+    beq @onext
+    lda ob_x, x
+    sta tmp
+    lda ob_y, x
+    sta tmp2
+    ldy ob_type, x
+    lda obtile, y
+    sta tmp3
+    lda obpal, y
+    sta tmp4
+    jsr draw_meta16
+@onext:
+    inc obloop
+    lda obloop
+    cmp #N_OBST
+    bne @ol
+    jsr hide_rest_oam
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc draw_getaway_scene
+    bit PPUSTATUS
+    lda #$20
+    sta PPUADDR
+    lda #$00
+    sta PPUADDR
+    ldx #0
+@row:
+    lda gw_row_tile, x
+    ldy #32
+@col:
+    sta PPUDATA
+    dey
+    bne @col
+    inx
+    cpx #30
+    bne @row
+    ldy #64
+    lda #0
+@attr:
+    sta PPUDATA
+    dey
+    bne @attr
+    rts
+.endproc
+
+.proc load_pal_getaway
+    lda #<palette_getaway
+    sta ptr
+    lda #>palette_getaway
+    sta ptr+1
+    jmp load_palette
+.endproc
+
 ; --------------------------------------------------------------------------
 ;  Write a nul-terminated string.  ptr -> string, A:X preloaded via PUTS.
 ;  On entry PPUADDR must already be latched by the PUTS macro.
@@ -2116,6 +2554,33 @@ palette_pack:
     .byte $0f,$0f,$30,$16
     .byte $0f,$0f,$2a,$30
     .byte $0f,$17,$16,$30
+
+palette_getaway:
+    ; background: 0 black (HUD/text bg), 1 sky-blue, 2 ground-brown, 3 white
+    .byte $0f,$21,$17,$30
+    .byte $0f,$21,$17,$30
+    .byte $0f,$21,$17,$30
+    .byte $0f,$21,$17,$30
+    ; sprite palettes (same as the run)
+    .byte $0f,$27,$12,$16
+    .byte $0f,$0f,$30,$16
+    .byte $0f,$0f,$2a,$30
+    .byte $0f,$17,$16,$30
+
+; getaway hazard metasprite base + palette, indexed by ob_type
+obtile:
+    .byte $10, $14, $1c, $28   ; patrol car, rig, moose, boulder
+obpal:
+    .byte 1, 2, 3, 3
+
+; getaway scene: nametable fill tile per row (30 rows)
+gw_row_tile:
+    .byte $00,$00                            ; rows 0-1 black HUD bar
+    .byte $0e,$0e,$0e,$0e,$0e,$0e            ; rows 2-7  sky
+    .byte $0e,$0e,$0e,$0e,$0e,$0e,$0e,$0e    ; rows 8-15 sky
+    .byte $0c                                ; row 16 horizon
+    .byte $0b,$0d,$0b,$0b,$0d,$0b            ; rows 17-22 ground + lane dashes
+    .byte $0b,$0d,$0b,$0b,$0b,$0b,$0b        ; rows 23-29 ground
 
 ; nametable fill tile per tile-row (30 rows)
 row_tile:
