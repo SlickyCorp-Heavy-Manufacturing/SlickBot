@@ -94,6 +94,20 @@ TEMPO      = 14
 HITBOX     = 12
 NT         = $2000
 
+; sound-effect ids (pulse2 tonal slot)
+SFX_HOP    = 0
+SFX_PLACE  = 1
+SFX_SHOOT  = 2
+SFX_CROSS  = 3
+SFX_START  = 4
+SFX_SHIELD = 5
+SFX_ERROR  = 6
+SFX_BOSSHIT = 7
+; sound-effect ids (noise burst slot)
+SFXN_HIT   = 0
+SFXN_BOOM  = 1
+SFXN_DEATH = 2
+
 ; Draw a nul-terminated string at a nametable address (rendering must be off).
 .macro PUTS straddr, ntaddr
     lda #<(straddr)
@@ -187,6 +201,19 @@ mus_step:   .res 1
 mus_tick:   .res 1
 mus_on:     .res 1
 noise_vol:  .res 1
+; --- sound effects (pulse2 tonal slot + noise burst slot) ---
+sfxp_dur:   .res 1
+sfxp_perlo: .res 1
+sfxp_perhi: .res 1
+sfxp_step:  .res 1
+sfxp_vol:   .res 1
+sfxp_dec:   .res 1
+sfxn_dur:   .res 1
+sfxn_per:   .res 1
+sfxn_step:  .res 1
+sfxn_vol:   .res 1
+sfxn_dec:   .res 1
+sfxtmp:     .res 1
 
 .segment "OAMBUF"
 oam:        .res 256
@@ -667,6 +694,8 @@ state_tab:
     sta pack_over
     lda #ST_PACK
     sta state
+    lda #SFX_START
+    jsr sfx_p
     jsr enter_pack
     rts
 .endproc
@@ -817,6 +846,8 @@ loop:
     inc pframe
     lda move_delay
     sta move_timer
+    lda #SFX_HOP
+    jsr sfx_p
     rts
 .endproc
 
@@ -899,6 +930,8 @@ loop:
     sta py
     lda #1
     sta hud_dirty
+    lda #SFX_SHIELD
+    jsr sfx_p
     rts
 @lose:
     dec lives
@@ -910,11 +943,15 @@ loop:
     sta state
     lda #DEAD_TIME
     sta statetmr
+    lda #SFXN_DEATH
+    jsr sfx_n
     rts
 .endproc
 
 ; --------------------------------------------------------------------------
 .proc player_win
+    lda #SFX_CROSS
+    jsr sfx_p
     lda level
     cmp #MAX_LEVEL
     bcs @winall
@@ -1173,6 +1210,8 @@ loop:
     lda pad1_new
     and #BTN_B
     beq @nb
+    lda #SFX_HOP
+    jsr sfx_p
     jsr spawn_item
 @nb:
     ; place
@@ -1195,11 +1234,15 @@ loop:
     sta tmp4
     lda ncons
     jsr queue_num2
+    lda #SFX_PLACE
+    jsr sfx_p
     jsr spawn_item
     jmp @na
 @nofit:
     lda #16
     sta pflash
+    lda #SFX_ERROR
+    jsr sfx_p
 @na:
     ; movement
     lda pad1_new
@@ -2058,6 +2101,8 @@ cell_tile:
     dec shield
     lda #IFRAMES
     sta iframes
+    lda #SFX_SHIELD
+    jsr sfx_p
     rts
 @lose:
     dec lives
@@ -2067,8 +2112,12 @@ cell_tile:
     sta shield
     lda #IFRAMES
     sta iframes
+    lda #SFXN_DEATH
+    jsr sfx_n
     rts
 @over:
+    lda #SFXN_DEATH
+    jsr sfx_n
     jsr enter_over
     lda #ST_OVER
     sta state
@@ -2181,6 +2230,8 @@ cell_tile:
     lda boss_hp
     bne @alive
     ; chopper downed -> escape to Canada
+    lda #SFXN_BOOM
+    jsr sfx_n
     lda #ST_WIN
     sta state
     jsr enter_win
@@ -2217,6 +2268,8 @@ cell_tile:
     sta bull_y, x
     lda #FIRE_CD
     sta fire_cd
+    lda #SFX_SHOOT
+    jsr sfx_p
 @ret:
     rts
 .endproc
@@ -2322,6 +2375,8 @@ cell_tile:
     lda boss_hp
     beq @next
     dec boss_hp
+    lda #SFX_BOSSHIT
+    jsr sfx_p
 @next:
     inx
     cpx #N_BULL
@@ -3051,6 +3106,7 @@ done:
 ;  Music engine (frame driven)
 ; ===========================================================================
 .proc music_tick
+    jsr sfx_update
     lda mus_on
     bne :+
     rts
@@ -3110,6 +3166,8 @@ done:
 .endproc
 
 .proc set_pulse2
+    ldx sfxp_dur            ; an SFX owns pulse2 -- leave it alone
+    bne @ret
     cmp #NOTE_HOLD
     beq @ret
     cmp #NOTE_REST
@@ -3152,8 +3210,11 @@ done:
 .endproc
 
 .proc set_perc
+    ldx sfxn_dur            ; an SFX owns the noise channel
+    bne @skip
     cmp #0
     bne @go
+@skip:
     rts
 @go:
     cmp #1
@@ -3178,6 +3239,8 @@ done:
 .endproc
 
 .proc noise_decay
+    lda sfxn_dur            ; SFX owns the noise channel
+    bne @done
     lda noise_vol
     beq @done
     dec noise_vol
@@ -3189,11 +3252,140 @@ done:
 .endproc
 
 ; ===========================================================================
+;  Sound effects: a tonal slot on pulse2 and a burst slot on the noise
+;  channel.  Both play over the music, which resumes when they finish.
+; ===========================================================================
+.proc sfx_update
+    ; ---- pulse2 tonal slot ----
+    lda sfxp_dur
+    beq @noise
+    lda #%10110000          ; duty2, const vol
+    ora sfxp_vol
+    sta $4004
+    lda sfxp_perlo
+    sta $4006
+    lda sfxp_perhi
+    ora #$08
+    sta $4007
+    ; period += signed step
+    ldy #0
+    lda sfxp_step
+    bpl :+
+    ldy #$ff
+:   clc
+    adc sfxp_perlo
+    sta sfxp_perlo
+    tya
+    adc sfxp_perhi
+    sta sfxp_perhi
+    ; volume decay
+    lda sfxp_vol
+    sec
+    sbc sfxp_dec
+    bcs :+
+    lda #0
+:   sta sfxp_vol
+    dec sfxp_dur
+    bne @noise
+    lda #%00110000          ; done: silence pulse2
+    sta $4004
+@noise:
+    ; ---- noise burst slot ----
+    lda sfxn_dur
+    beq @done
+    lda #%00110000
+    ora sfxn_vol
+    sta $400c
+    lda sfxn_per
+    sta $400e
+    lda #$08
+    sta $400f
+    lda sfxn_per
+    clc
+    adc sfxn_step
+    and #$0f
+    sta sfxn_per
+    lda sfxn_vol
+    sec
+    sbc sfxn_dec
+    bcs :+
+    lda #0
+:   sta sfxn_vol
+    dec sfxn_dur
+    bne @done
+    lda #%00110000          ; done: silence noise
+    sta $400c
+@done:
+    rts
+.endproc
+
+; trigger a pulse2 SFX; A = id
+.proc sfx_p
+    sta sfxtmp
+    asl a
+    clc
+    adc sfxtmp
+    asl a                   ; id * 6
+    tax
+    lda sfxp_tab+0, x
+    sta sfxp_perlo
+    lda sfxp_tab+1, x
+    sta sfxp_perhi
+    lda sfxp_tab+2, x
+    sta sfxp_step
+    lda sfxp_tab+3, x
+    sta sfxp_vol
+    lda sfxp_tab+4, x
+    sta sfxp_dec
+    lda sfxp_tab+5, x
+    sta sfxp_dur
+    rts
+.endproc
+
+; trigger a noise SFX; A = id
+.proc sfx_n
+    sta sfxtmp
+    asl a
+    asl a
+    clc
+    adc sfxtmp              ; id * 5
+    tax
+    lda sfxn_tab+0, x
+    sta sfxn_per
+    lda sfxn_tab+1, x
+    sta sfxn_step
+    lda sfxn_tab+2, x
+    sta sfxn_vol
+    lda sfxn_tab+3, x
+    sta sfxn_dec
+    lda sfxn_tab+4, x
+    sta sfxn_dur
+    rts
+.endproc
+
+; ===========================================================================
 ;  Data
 ; ===========================================================================
 .segment "RODATA"
 
 .include "music.inc"
+
+; pulse2 SFX: perlo, perhi, step(signed), vol, dec, dur
+sfxp_tab:
+    .byte $fe,$00,  0, 6,2, 4    ; HOP    -- short high blip
+    .byte $20,$01,  8, 9,1,12    ; PLACE  -- descending thunk
+    .byte $90,$00, 14, 8,1, 8    ; SHOOT  -- laser zap
+    .byte $60,$01,$f4, 9,0,14    ; CROSS  -- rising chime
+    .byte $20,$01,$f8, 9,1,10    ; START  -- rising blip
+    .byte $a0,$00,  6, 8,1, 8    ; SHIELD -- warble
+    .byte $00,$02,  0, 8,1,10    ; ERROR  -- low buzz
+    .byte $c0,$00,  4, 7,2, 5    ; BOSSHIT-- mid tick
+
+; noise SFX: per, step, vol, dec, dur
+sfxn_tab:
+    .byte  6,0,10,2, 8           ; HIT   -- quick burst
+    .byte  3,1,15,1,24           ; BOOM  -- big explosion
+    .byte  8,1,12,1,16           ; DEATH -- crash burst
 
 palette:
     ; background palettes (all the same: black, asphalt, white, yellow)

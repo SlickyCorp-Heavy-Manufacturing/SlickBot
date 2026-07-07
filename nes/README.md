@@ -208,6 +208,16 @@ nes/
     └── gen_music.py    # builds the note tables + the (original) jazz loop
 ```
 
+## Sound
+
+On top of the music there's a full set of **sound effects** — console drops
+and errors in the packing stage, hops and border-crossing chimes in the run,
+shield warbles, the Warthog's gun, chopper hits and a big explosion when the
+boss goes down. They play on a lightweight two-slot mixer (a tonal slot on
+pulse 2, a burst slot on the noise channel) that briefly borrows those
+channels from the music and hands them straight back, so the melody and bass
+never stop.
+
 ## A note on the music
 
 The soundtrack is an **original composition** — a lounge-jazz loop
