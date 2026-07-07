@@ -74,9 +74,10 @@ shield still soaks one hit before you start losing lives. Survive to fill the
 * **D-Pad Up/Down** — steer the Warthog across the road
 * Survive until the **DIST** bar fills — then the boss arrives
 
-The chase gets faster and the hazards thicker the further you get. Parallax
-clouds drift in the sky and dust streaks race past on the road to sell the
-speed.
+You're racing down a lane-marked asphalt **road**; a **treeline drifts by in
+the background** while dust streaks race past on the road, so the layered
+parallax sells the speed. The chase gets faster and the hazards thicker the
+further you get.
 
 ### Boss — THE CHOPPER
 

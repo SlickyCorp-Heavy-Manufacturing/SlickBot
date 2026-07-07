@@ -1834,7 +1834,7 @@ cell_tile:
     lda #0
     sta boss_on
     sta fire_cd
-    ; scatter parallax clouds across the sky
+    ; scatter background treeline across the horizon
     ldx #0
 @cl:
     txa
@@ -1848,11 +1848,10 @@ cell_tile:
     sta cloud_x, x
     txa
     asl a
-    asl a
-    asl a                   ; i*8
+    asl a                   ; i*4
     clc
-    adc #24
-    sta cloud_y, x
+    adc #102
+    sta cloud_y, x          ; on the grass treeline band
     inx
     cpx #N_CLOUD
     bne @cl
@@ -1979,12 +1978,13 @@ cell_tile:
     rts
 .endproc
 
+; y for a background treeline tree (on the grass band near the horizon)
 .proc rand_sky_y
     jsr update_rng
     lda rng
-    and #$3f
+    and #$0f
     clc
-    adc #20
+    adc #100
     rts
 .endproc
 
@@ -2707,6 +2707,7 @@ cell_tile:
 .endproc
 
 ; --------------------------------------------------------------------------
+; background parallax treeline (drifts slowly along the horizon)
 .proc draw_clouds
     lda #0
     sta obloop
@@ -2716,9 +2717,9 @@ cell_tile:
     sta tmp
     lda cloud_y, x
     sta tmp2
-    lda #$3c
+    lda #$40                ; pine tree metasprite
     sta tmp3
-    lda #2
+    lda #0                  ; tan/green tree palette
     sta tmp4
     jsr draw_meta16
     inc obloop
@@ -2766,12 +2767,19 @@ cell_tile:
     inx
     cpx #30
     bne @row
-    ldy #64
-    lda #0
-@attr:
+    ; attribute table: each gw_attr byte fills a row of 8 (P0 sky, P2 grass,
+    ; P1 road)
+    ldx #0
+@arow:
+    lda gw_attr, x
+    ldy #8
+@acol:
     sta PPUDATA
     dey
-    bne @attr
+    bne @acol
+    inx
+    cpx #8
+    bne @arow
     rts
 .endproc
 
@@ -3483,11 +3491,12 @@ palette_pack:
     .byte $0f,$17,$16,$30
 
 palette_getaway:
-    ; background: 0 black (HUD/text bg), 1 sky-blue, 2 ground-brown, 3 white
-    .byte $0f,$21,$17,$30
-    .byte $0f,$21,$17,$30
-    .byte $0f,$21,$17,$30
-    .byte $0f,$21,$17,$30
+    ; per-region background palettes (assigned by the attribute table):
+    ; P0 sky/HUD, P1 road, P2 grass/treeline, P3 spare
+    .byte $0f,$21,$30,$30   ; P0: black, sky-blue, white, white
+    .byte $0f,$00,$30,$28   ; P1: black, asphalt grey, white line, yellow
+    .byte $0f,$1a,$2a,$30   ; P2: black, green, lt-green, white
+    .byte $0f,$00,$30,$28   ; P3: = road
     ; sprite palettes: 0 tan/green (tree,deer -- tan stands out on brown),
     ; 1 red/yellow (fish,dish), 2 warthog green, 3 spare brown/red
     .byte $0f,$27,$2a,$30
@@ -3503,12 +3512,16 @@ obpal:
 
 ; getaway scene: nametable fill tile per row (30 rows)
 gw_row_tile:
-    .byte $00,$00                            ; rows 0-1 black HUD bar
-    .byte $0e,$0e,$0e,$0e,$0e,$0e            ; rows 2-7  sky
-    .byte $0e,$0e,$0e,$0e,$0e,$0e,$0e,$0e    ; rows 8-15 sky
-    .byte $0c                                ; row 16 horizon
-    .byte $0b,$0d,$0b,$0b,$0d,$0b            ; rows 17-22 ground + lane dashes
-    .byte $0b,$0d,$0b,$0b,$0b,$0b,$0b        ; rows 23-29 ground
+    .byte $00,$00                            ; rows 0-1  black HUD bar (P0)
+    .byte $0e,$0e,$0e,$0e,$0e,$0e,$0e,$0e,$0e,$0e  ; rows 2-11 sky (P0)
+    .byte $0f,$0f,$0f,$0f                    ; rows 12-15 grass treeline (P2)
+    .byte $0c                                ; row 16 road top edge (P1)
+    .byte $0b,$0d,$0b,$0b,$0d,$0b            ; rows 17-22 road + lane dashes
+    .byte $0b,$0d,$0b,$0b,$0d,$0b,$0b        ; rows 23-29 road
+
+; getaway attribute rows (each byte covers 4 tile rows): sky, grass, road
+gw_attr:
+    .byte $00,$00,$00,$aa,$55,$55,$55,$55
 
 ; nametable fill tile per tile-row (30 rows)
 row_tile:

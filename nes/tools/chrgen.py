@@ -530,36 +530,47 @@ def build_background_table():
     tiles[0x0a] = tile_from_rows(['33333333'] * 8)
 
     # --- getaway (side-scroller) tiles --------------------------------
-    # palette: 0 = black, 1 = sky blue, 2 = ground brown, 3 = white
-    # 0x0B desert ground: colour-2 fill with colour-3 pebbles
-    tiles[0x0b] = tile_from_rows(['22222222',
-                                  '22223222',
+    # These tiles are drawn under per-region palettes set via the attribute
+    # table: sky region P0 (1=sky blue), grass region P2 (1=green, 2=lt green),
+    # road region P1 (1=asphalt grey, 2=white line, 3=yellow centre).
+    # 0x0B road asphalt: grey (1) with faint darker (0) flecks
+    tiles[0x0b] = tile_from_rows(['11111111',
+                                  '11111011',
+                                  '11111111',
+                                  '10111111',
+                                  '11111111',
+                                  '11111101',
+                                  '11111111',
+                                  '01111111'])
+    # 0x0C road top edge: white shoulder line over asphalt
+    tiles[0x0c] = tile_from_rows(['22222222',
                                   '22222222',
-                                  '23222232',
-                                  '22222222',
-                                  '22222232',
-                                  '32222222',
-                                  '22222223'])
-    # 0x0C horizon strip: colour-3 line over ground
-    tiles[0x0c] = tile_from_rows(['33333333',
-                                  '33333333',
-                                  '22222222',
-                                  '22322222',
-                                  '22222222',
-                                  '22222232',
-                                  '22222222',
-                                  '23222222'])
-    # 0x0D road dashes (lane markers) in the ground
-    tiles[0x0d] = tile_from_rows(['22222222',
-                                  '22222222',
-                                  '22222222',
-                                  '33333322',
-                                  '22222222',
-                                  '22222222',
-                                  '22222222',
-                                  '22222222'])
+                                  '11111111',
+                                  '11111111',
+                                  '11111111',
+                                  '11111111',
+                                  '11111111',
+                                  '11111111'])
+    # 0x0D road lane dash: white dashes across the asphalt
+    tiles[0x0d] = tile_from_rows(['11111111',
+                                  '11111111',
+                                  '11111111',
+                                  '22222211',
+                                  '22222211',
+                                  '11111111',
+                                  '11111111',
+                                  '11111111'])
     # 0x0E sky: solid colour-1 (blue)
     tiles[0x0e] = tile_from_rows(['11111111'] * 8)
+    # 0x0F grass strip (treeline band): green (1) with lt-green (2) tufts
+    tiles[0x0f] = tile_from_rows(['11111111',
+                                  '11211111',
+                                  '11111121',
+                                  '11111111',
+                                  '12111211',
+                                  '11111111',
+                                  '21111112',
+                                  '11111111'])
 
     # --- Sega console art (placement stage) ---------------------------
     # Part-based 8x8 tiles so consoles can form complex polyominoes.
