@@ -90,6 +90,13 @@ final showdown. It sweeps up and down and rains bombs on the road.
 The HUD switches to a **HELO** health bar. Empty it to blow the chopper out of
 the sky and escape into Canada for good. Bombs still cost you shield then
 lives — get hit with no lives left and it's game over.
+
+## The finale — WELCOME TO CANADA
+
+Down the chopper and you get a victory drive-in: your (now bigger) Warthog
+rolls in and parks next to a **beaver** while **maple leaves** tumble down and
+a triumphant stadium-organ **fanfare** plays. Your crates-packed total is on
+the banner. Press START to head back to the title.
 Get hit with your shield up and it absorbs the blow (you're knocked back to the
 start and a pip drops); the shield **fully recharges** if you stay clean for a
 few seconds — pure Master Chief. Get hit with the shield down and you lose a

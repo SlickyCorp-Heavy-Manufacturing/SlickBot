@@ -152,6 +152,7 @@ carloop:    .res 1
 ppuctrl_val: .res 1    ; current PPUCTRL (8x16 for run, 8x8 for packing)
 attract_page: .res 1   ; title attract-mode page (0..3)
 attract_tmr:  .res 1   ; frames on the current attract page
+win_wx:       .res 1   ; warthog x during the victory drive-in
 weight:     .res 1     ; load carried into the run
 loot_val:   .res 1     ; unused holdover (kept for alignment)
 move_timer: .res 1     ; frames until next move allowed (waddle)
@@ -1087,6 +1088,14 @@ loop:
 .endproc
 
 .proc do_win
+    ; drive the warthog in from the left, then park
+    lda win_wx
+    cmp #88
+    bcs @parked
+    inc win_wx
+    inc win_wx
+@parked:
+    jsr draw_win_scene
     lda pad1_new
     and #BTN_START
     beq @ret
@@ -1094,6 +1103,80 @@ loop:
     lda #ST_TITLE
     sta state
 @ret:
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  Victory drive-in: warthog rolls in past a beaver while maple leaves fall.
+; --------------------------------------------------------------------------
+.proc draw_win_scene
+    lda #0
+    sta oam_idx
+    ; warthog (two halves) at y 176
+    lda win_wx
+    sta tmp
+    lda #176
+    sta tmp2
+    lda #$50
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+    lda win_wx
+    clc
+    adc #16
+    sta tmp
+    lda #176
+    sta tmp2
+    lda #$54
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+    ; beaver bobbing at x=44
+    lda #44
+    sta tmp
+    lda frame
+    lsr a
+    lsr a
+    lsr a
+    and #3
+    clc
+    adc #176
+    sta tmp2
+    lda #$58
+    sta tmp3
+    lda #3
+    sta tmp4
+    jsr draw_meta16
+    ; two maple leaves tumbling down
+    lda #176
+    sta tmp
+    lda frame
+    and #$3f
+    clc
+    adc #36
+    sta tmp2
+    lda #$5c
+    sta tmp3
+    lda #1
+    sta tmp4
+    jsr draw_meta16
+    lda #208
+    sta tmp
+    lda frame
+    clc
+    adc #32
+    and #$3f
+    clc
+    adc #48
+    sta tmp2
+    lda #$5c
+    sta tmp3
+    lda #1
+    sta tmp4
+    jsr draw_meta16
+    jsr hide_rest_oam
     rts
 .endproc
 
@@ -1126,10 +1209,10 @@ loop:
     lda #>txt_win
     sta ptr+1
     jsr draw_script
-    ; crates delivered at row 16, col 19 (3 digits)
-    lda #>(NT + 16*32 + 19)
+    ; crates delivered at row 9, col 23 (3 digits)
+    lda #>(NT + 9*32 + 23)
     sta PPUADDR
-    lda #<(NT + 16*32 + 19)
+    lda #<(NT + 9*32 + 23)
     sta PPUADDR
     jsr packed_digits
     lda cratebuf+0
@@ -1138,6 +1221,8 @@ loop:
     sta PPUDATA
     lda cratebuf+2
     sta PPUDATA
+    lda #0
+    sta win_wx              ; warthog starts off the left edge
     jsr hide_all_oam
     lda #SONG_WIN
     jsr music_play
@@ -2097,13 +2182,13 @@ cell_tile:
     beq @next
     lda ob_x, x
     sec
-    sbc #WART_X
+    sbc #(WART_X+14)        ; centre of the wider warthog
     bpl @dxp
     eor #$ff
     clc
     adc #1
 @dxp:
-    cmp #14
+    cmp #16
     bcs @next
     lda gy
     sec
@@ -2429,13 +2514,13 @@ cell_tile:
     beq @next
     lda bomb_x, x
     sec
-    sbc #WART_X
+    sbc #(WART_X+14)        ; centre of the wider warthog
     bpl @dxp
     eor #$ff
     clc
     adc #1
 @dxp:
-    cmp #12
+    cmp #14
     bcs @next
     lda gy
     sec
@@ -2567,11 +2652,20 @@ cell_tile:
     bne @dw
     jmp @phase
 @dw:
-    lda #WART_X
+    lda #WART_X             ; left half
     sta tmp
     lda gy
     sta tmp2
-    lda #$20
+    lda #$50
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+    lda #WART_X+16          ; right half
+    sta tmp
+    lda gy
+    sta tmp2
+    lda #$54
     sta tmp3
     lda #2
     sta tmp4
@@ -3643,11 +3737,11 @@ txt_over:
     .byte 0
 
 txt_win:
-    TEXT 9,  7, "WELCOME TO CANADA"
-    TEXT 12, 8, "YOU SMUGGLED IT"
-    TEXT 14, 6, "GENESIS DELIVERED EH"
-    TEXT 16, 4, "CRATES PACKED"
-    TEXT 20, 10, "PRESS START"
+    TEXT 3,  7, "WELCOME TO CANADA"
+    TEXT 5,  11, "YOU MADE IT"
+    TEXT 7,  6, "GENESIS DELIVERED EH"
+    TEXT 9,  9, "CRATES PACKED"
+    TEXT 26, 10, "PRESS START"
     .byte 0
 
 ; packing-stage strings (nul terminated for puts)

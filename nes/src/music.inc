@@ -111,13 +111,17 @@ s4_perc:
     .byte $02, $01, $02, $01, $02, $01, $02, $01
     .byte $02, $01, $02, $01, $02, $01, $02, $01
 s5_mel:
-    .byte $24, $28, $2B, $30, $2F, $2B, $30, $FF
+    .byte $1F, $1F, $1F, $24, $28, $FF, $24, $28
+    .byte $2B, $FF, $2B, $30, $FF, $30, $2B, $FF
 s5_harm:
-    .byte $FF, $24, $FF, $28, $FF, $26, $FF, $2B
+    .byte $FF, $18, $FF, $1C, $FF, $1F, $FF, $24
+    .byte $FF, $28, $FF, $24, $FF, $1F, $FF, $24
 s5_bass:
-    .byte $0C, $FE, $07, $FE, $0C, $FE, $0C, $FE
+    .byte $0C, $FE, $0C, $FE, $07, $FE, $0C, $FE
+    .byte $0C, $FE, $10, $FE, $07, $FE, $0C, $FE
 s5_perc:
-    .byte $01, $01, $02, $01, $01, $01, $02, $02
+    .byte $01, $02, $01, $02, $01, $02, $02, $02
+    .byte $01, $02, $01, $02, $02, $02, $02, $02
 s6_mel:
     .byte $21, $1F, $1D, $1C, $1A, $FF, $15, $FF
 s6_harm:
@@ -134,5 +138,5 @@ songtab:
     .byte <s2_mel,>s2_mel, <s2_harm,>s2_harm, <s2_bass,>s2_bass, <s2_perc,>s2_perc, 16, 12
     .byte <s3_mel,>s3_mel, <s3_harm,>s3_harm, <s3_bass,>s3_bass, <s3_perc,>s3_perc, 16, 8
     .byte <s4_mel,>s4_mel, <s4_harm,>s4_harm, <s4_bass,>s4_bass, <s4_perc,>s4_perc, 16, 7
-    .byte <s5_mel,>s5_mel, <s5_harm,>s5_harm, <s5_bass,>s5_bass, <s5_perc,>s5_perc, 8, 12
+    .byte <s5_mel,>s5_mel, <s5_harm,>s5_harm, <s5_bass,>s5_bass, <s5_perc,>s5_perc, 16, 11
     .byte <s6_mel,>s6_mel, <s6_harm,>s6_harm, <s6_bass,>s6_bass, <s6_perc,>s6_perc, 8, 16
