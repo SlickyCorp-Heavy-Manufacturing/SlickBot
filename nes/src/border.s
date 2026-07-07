@@ -103,6 +103,7 @@ SFX_START  = 4
 SFX_SHIELD = 5
 SFX_ERROR  = 6
 SFX_BOSSHIT = 7
+SFX_HONK   = 8
 ; sound-effect ids (noise burst slot)
 SFXN_HIT   = 0
 SFXN_BOOM  = 1
@@ -1088,12 +1089,17 @@ loop:
 .endproc
 
 .proc do_win
-    ; drive the warthog in from the left, then park
+    ; drive the warthog in from the left, then park (honk once on arrival)
     lda win_wx
     cmp #88
     bcs @parked
     inc win_wx
     inc win_wx
+    lda win_wx
+    cmp #88
+    bcc @parked
+    lda #SFX_HONK
+    jsr sfx_p
 @parked:
     jsr draw_win_scene
     lda pad1_new
@@ -1133,23 +1139,49 @@ loop:
     lda #2
     sta tmp4
     jsr draw_meta16
-    ; beaver bobbing at x=44
+    ; beaver waving at x=44 (alternate frame every 16 frames)
     lda #44
+    sta tmp
+    lda #178
+    sta tmp2
+    lda frame
+    and #$10
+    beq @bwave1
+    lda #$60
+    jmp @bwave2
+@bwave1:
+    lda #$58
+@bwave2:
+    sta tmp3
+    lda #3
+    sta tmp4
+    jsr draw_meta16
+    ; Canadian flag at x=20, bobbing gently
+    lda #20
     sta tmp
     lda frame
     lsr a
     lsr a
     lsr a
-    and #3
+    and #1
     clc
-    adc #176
+    adc #174
     sta tmp2
-    lda #$58
+    lda #$64
     sta tmp3
     lda #3
     sta tmp4
     jsr draw_meta16
-    ; two maple leaves tumbling down
+    ; two maple leaves tumbling down (vertical-flip toggles the tumble)
+    lda frame
+    and #$10
+    beq @lf1
+    lda #$81                ; palette 1 + vertical flip
+    jmp @lf2
+@lf1:
+    lda #$01
+@lf2:
+    sta tmp4
     lda #176
     sta tmp
     lda frame
@@ -1159,9 +1191,18 @@ loop:
     sta tmp2
     lda #$5c
     sta tmp3
-    lda #1
-    sta tmp4
     jsr draw_meta16
+    lda frame
+    clc
+    adc #32
+    and #$10
+    beq @lf3
+    lda #$81
+    jmp @lf4
+@lf3:
+    lda #$01
+@lf4:
+    sta tmp4
     lda #208
     sta tmp
     lda frame
@@ -1173,8 +1214,6 @@ loop:
     sta tmp2
     lda #$5c
     sta tmp3
-    lda #1
-    sta tmp4
     jsr draw_meta16
     jsr hide_rest_oam
     rts
@@ -3553,6 +3592,7 @@ sfxp_tab:
     .byte $a0,$00,  6, 8,1, 8    ; SHIELD -- warble
     .byte $00,$02,  0, 8,1,10    ; ERROR  -- low buzz
     .byte $c0,$00,  4, 7,2, 5    ; BOSSHIT-- mid tick
+    .byte $60,$01,  0,10,0,18    ; HONK   -- steady car horn
 
 ; noise SFX: per, step, vol, dec, dur
 sfxn_tab:
