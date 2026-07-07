@@ -3488,17 +3488,18 @@ palette_getaway:
     .byte $0f,$21,$17,$30
     .byte $0f,$21,$17,$30
     .byte $0f,$21,$17,$30
-    ; sprite palettes (same as the run)
-    .byte $0f,$27,$12,$16
-    .byte $0f,$0f,$30,$16
+    ; sprite palettes: 0 tan/green (tree,deer -- tan stands out on brown),
+    ; 1 red/yellow (fish,dish), 2 warthog green, 3 spare brown/red
+    .byte $0f,$27,$2a,$30
+    .byte $0f,$16,$28,$30
     .byte $0f,$0f,$2a,$30
     .byte $0f,$17,$16,$30
 
 ; getaway hazard metasprite base + palette, indexed by ob_type
 obtile:
-    .byte $10, $14, $1c, $28   ; patrol car, rig, moose, boulder
+    .byte $40, $44, $48, $4c   ; tree, fish, deer, hot dish
 obpal:
-    .byte 1, 2, 3, 3
+    .byte 0, 1, 0, 1
 
 ; getaway scene: nametable fill tile per row (30 rows)
 gw_row_tile:
