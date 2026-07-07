@@ -1739,21 +1739,34 @@ loop:
 .endproc
 
 ; ---- console piece data --------------------------------------------------
-; type 0 = Game Gear (2x1), 1 = Genesis (2x2), 2 = Gen+CD+32X tower (2x3)
+; type 0 = Game Gear (2x1, 2 cells)
+; type 1 = Genesis + 2 controllers on wires (6x2 footprint, 8 cells)
+;          C W G G W C
+;          . . G G . .
+; type 2 = Genesis + Sega CD (to the side) + 32X (5x3 footprint, 12 cells)
+;          3 3 . . .
+;          G G D D D
+;          G G D D D
 item_off:
-    .byte 0, 2, 6
+    .byte 0, 2, 10
 item_ncells:
-    .byte 2, 4, 6
+    .byte 2, 8, 12
 item_w:
-    .byte 2, 2, 2
+    .byte 2, 6, 5
 item_h:
     .byte 1, 2, 3
 cell_dc:
-    .byte 0,1,  0,1,0,1,  0,1,0,1,0,1
+    .byte 0,1
+    .byte 0,1,2,3,4,5, 2,3
+    .byte 0,1, 0,1,0,1, 2,3,4,2,3,4
 cell_dr:
-    .byte 0,0,  0,0,1,1,  0,0,1,1,2,2
+    .byte 0,0
+    .byte 0,0,0,0,0,0, 1,1
+    .byte 0,0, 1,1,2,2, 1,1,1,2,2,2
 cell_tile:
-    .byte $10,$11,  $12,$13,$14,$15,  $16,$17,$18,$19,$1a,$1b
+    .byte $10,$11
+    .byte $13,$14,$12,$12,$14,$13, $12,$12
+    .byte $15,$15, $12,$12,$12,$12, $16,$16,$16,$16,$16,$16
 
 ; ===========================================================================
 ;  GETAWAY STAGE  --  a side-scroller.  After crossing the border you floor

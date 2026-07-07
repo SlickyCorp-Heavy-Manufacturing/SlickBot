@@ -28,13 +28,17 @@ placement puzzle against a **countdown timer**. Consoles arrive one at a time;
 slide each around the grid and drop it into any empty space. Pack in as many as
 you can before time runs out.
 
-Three console shapes, each a different size:
+Three console pieces, each an awkward shape to seat:
 
-| Console | Size |
-| ------- | :--: |
-| Game Gear | 2x1 |
-| Genesis | 2x2 |
-| Genesis + Sega CD + 32X tower | 2x3 |
+| Console | Footprint |
+| ------- | :-------: |
+| Game Gear | 2x1 (small filler) |
+| Genesis + 2 controllers on wires | 6x2, controllers jut off both sides |
+| Genesis + Sega CD + 32X | 5x3 L-shape, Sega CD hangs off to the side |
+
+The big irregular pieces are the challenge: finding a spot for the wide
+controllers rig or the L-shaped tower takes real planning before the clock
+runs out.
 
 The fuller your haul, the more loot on the victory screen - but also the
 **slower you waddle** on the run. Efficient packing = more gear in the time you
