@@ -69,7 +69,9 @@ PH         = 12         ; play field height (cells)
 PWH        = PW * PH
 BIN_COL    = 12         ; nametable column of the bin interior
 BIN_ROW    = 7          ; nametable row of the bin interior
-GRAV       = 30         ; frames per gravity step
+PACK_SECS  = 30         ; placement-stage countdown seconds
+NEXT_PX    = 184        ; NEXT-preview pixel origin
+NEXT_PY    = 72
 
 ; getaway (side-scroller) stage
 N_OBST     = 6          ; simultaneous hazards
@@ -155,6 +157,15 @@ cellc:      .res 1     ; scratch: cell column
 cellr:      .res 1     ; scratch: cell row
 bitn:       .res 1     ; scratch: bit index 0..15
 wr:         .res 1     ; scratch: line-clear write row
+; --- placement (Resident-Evil-style) packing state ---
+cur_type:   .res 1     ; console being placed (0=game gear,1=genesis,2=tower)
+next_type:  .res 1
+cur_col:    .res 1     ; cursor grid position
+cur_row:    .res 1
+pack_secs:  .res 1     ; countdown seconds
+subtick:    .res 1     ; frames within the current second
+ncons:      .res 1     ; consoles packed
+pflash:     .res 1     ; "no fit" flash timer
 ; --- getaway stage state ---
 gy:         .res 1     ; warthog y
 dist_lo:    .res 1
@@ -1083,20 +1094,19 @@ loop:
 .endproc
 
 ; ===========================================================================
-;  PACKING STAGE  --  a falling-block puzzle: Tetris the Sega gear into the
-;  storage bin.  Pieces fall, you slide/rotate/hard-drop them, full rows seal
-;  and clear.  Every crate you pack becomes loot -- but a fuller haul makes
-;  you waddle slower on the border run.  START seals the bag and runs.
+;  PACKING STAGE  --  Resident-Evil-style timed placement.  A countdown runs
+;  while you slide Sega consoles (Game Gear, Genesis, Genesis+CD+32X tower)
+;  around the colon grid and drop them to cram in as much gear as possible.
+;  Fuller haul = bigger loot but a slower waddle on the run.
 ; ===========================================================================
 .proc enter_pack
     jsr ppu_off
-    lda #%10001000          ; NMI on, 8x8 sprites, sprite pattern table 1
+    lda #%10000000          ; NMI on, 8x8 sprites, bg + sprite pattern table 0
     sta ppuctrl_val
     jsr load_pal_pack
     jsr clear_nametable
     jsr draw_bin_frame
     jsr draw_pack_labels
-    ; clear the field
     ldx #0
     lda #0
 :   sta field, x
@@ -1104,14 +1114,28 @@ loop:
     cpx #PWH
     bne :-
     lda #0
-    sta pack_over
     sta packed
-    jsr rand7
-    sta next_piece
-    jsr spawn_piece
-    lda #GRAV
-    sta grav_timer
-    jsr draw_crates
+    sta ncons
+    sta pflash
+    lda #PACK_SECS
+    sta pack_secs
+    lda #59
+    sta subtick
+    jsr rand3
+    sta next_type
+    jsr spawn_item
+    lda #>(NT + 21*32 + 10)
+    sta tmp3
+    lda #<(NT + 21*32 + 10)
+    sta tmp4
+    lda pack_secs
+    jsr draw_num2
+    lda #>(NT + 21*32 + 20)
+    sta tmp3
+    lda #<(NT + 21*32 + 20)
+    sta tmp4
+    lda ncons
+    jsr draw_num2
     jsr hide_all_oam
     lda #1
     sta mus_on
@@ -1121,109 +1145,123 @@ loop:
 
 ; --------------------------------------------------------------------------
 .proc do_pack
-    lda pack_over
-    beq @play
-    jsr commit_loadout
-    rts
-@play:
+    ; countdown
+    dec subtick
+    bpl @notick
+    lda #59
+    sta subtick
+    lda pack_secs
+    bne @havetime
+    jmp @timeup
+@havetime:
+    dec pack_secs
+    lda #>(NT + 21*32 + 10)
+    sta tmp3
+    lda #<(NT + 21*32 + 10)
+    sta tmp4
+    lda pack_secs
+    jsr queue_num2
+@notick:
+    ; finish early
     lda pad1_new
     and #BTN_START
     beq @nstart
     jsr commit_loadout
     rts
 @nstart:
+    ; skip current console
+    lda pad1_new
+    and #BTN_B
+    beq @nb
+    jsr spawn_item
+@nb:
+    ; place
+    lda pad1_new
+    and #BTN_A
+    beq @na
+    jsr fits_here
+    bne @nofit
+    jsr place_here
+    ldy cur_type
+    lda packed
+    clc
+    adc item_ncells, y
+    sta packed
+    inc ncons
+    jsr redraw_bin
+    lda #>(NT + 21*32 + 20)
+    sta tmp3
+    lda #<(NT + 21*32 + 20)
+    sta tmp4
+    lda ncons
+    jsr queue_num2
+    jsr spawn_item
+    jmp @na
+@nofit:
+    lda #16
+    sta pflash
+@na:
+    ; movement
+    lda pad1_new
+    and #BTN_UP
+    beq @nu
+    lda cur_row
+    beq @nu
+    dec cur_row
+@nu:
+    lda pad1_new
+    and #BTN_DOWN
+    beq @nd
+    ldy cur_type
+    lda #PH
+    sec
+    sbc item_h, y
+    sta tmp
+    lda cur_row
+    cmp tmp
+    bcs @nd
+    inc cur_row
+@nd:
     lda pad1_new
     and #BTN_LEFT
     beq @nl
-    dec cur_x
-    jsr can_place
+    lda cur_col
     beq @nl
-    inc cur_x
+    dec cur_col
 @nl:
     lda pad1_new
     and #BTN_RIGHT
     beq @nr
-    inc cur_x
-    jsr can_place
-    beq @nr
-    dec cur_x
-@nr:
-    lda pad1_new
-    and #BTN_A
-    beq @na
-    jsr try_rotate
-@na:
-    lda pad1_new
-    and #BTN_UP
-    beq @nu
-    jsr hard_drop
-    jmp @render
-@nu:
-    ; gravity: soft-drop faster while Down is held
-    lda pad1
-    and #BTN_DOWN
-    beq @g1
-    lda #4
-    jmp @g2
-@g1:
-    lda #GRAV
-@g2:
-    sta tmp                 ; step period
-    dec grav_timer
-    bpl @render
-    lda tmp
-    sta grav_timer
-    inc cur_y
-    jsr can_place
-    beq @render
-    dec cur_y
-    jsr lock_piece
-@render:
-    lda pack_over
-    bne @done
-    jsr draw_active_and_next
-@done:
-    rts
-.endproc
-
-; --------------------------------------------------------------------------
-;  load piece_lo/hi[cur_piece*4 + cur_rot] into pmask_lo/hi
-; --------------------------------------------------------------------------
-.proc get_mask
-    lda cur_piece
-    asl a
-    asl a
-    clc
-    adc cur_rot
-    tax
-    lda piece_lo, x
-    sta pmask_lo
-    lda piece_hi, x
-    sta pmask_hi
-    rts
-.endproc
-
-; test bit `bitn` (0..15) of pmask; returns A=0 (clear) or nonzero (set)
-.proc mask_bit_set
-    lda bitn
-    cmp #8
-    bcc @lo
+    ldy cur_type
+    lda #PW
     sec
-    sbc #8
-    tax
-    lda pmask_hi
-    jmp @sh
-@lo:
-    tax
-    lda pmask_lo
-@sh:
-    cpx #0
-    beq @test
-:   lsr a
-    dex
-    bne :-
-@test:
-    and #1
+    sbc item_w, y
+    sta tmp
+    lda cur_col
+    cmp tmp
+    bcs @nr
+    inc cur_col
+@nr:
+    lda pflash
+    beq @render
+    dec pflash
+@render:
+    jsr draw_pack_render
+    rts
+@timeup:
+    jsr commit_loadout
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc spawn_item
+    lda next_type
+    sta cur_type
+    jsr rand3
+    sta next_type
+    lda #0
+    sta cur_col
+    sta cur_row
     rts
 .endproc
 
@@ -1239,247 +1277,207 @@ loop:
     rts
 .endproc
 
-; --------------------------------------------------------------------------
-;  Can the current piece (cur_piece/rot/x/y) occupy the field?
-;  Returns A=0 if yes, A=1 (nonzero) if blocked.
-; --------------------------------------------------------------------------
-.proc can_place
-    jsr get_mask
+; can the current console sit at cur_col/cur_row?  A=0 yes, A=1 no
+.proc fits_here
+    ldy cur_type
+    lda item_off, y
+    sta pmask_lo
+    lda item_ncells, y
+    sta pmask_hi
     lda #0
     sta bitn
-@loop:
-    jsr mask_bit_set
-    beq @next
-    lda bitn
-    lsr a
-    lsr a
-    clc
-    adc cur_y
-    sta cellr
-    lda bitn
-    and #3
-    clc
-    adc cur_x
-    sta cellc
-    lda cellc
-    cmp #PW
-    bcs @blocked            ; column out of range (also catches wrap)
-    lda cellr
-    cmp #PH
-    bcs @blocked            ; row past the bottom
-    jsr field_index
-    lda field, y
-    bne @blocked
-@next:
-    inc bitn
-    lda bitn
-    cmp #16
-    bne @loop
-    lda #0
-    rts
-@blocked:
-    lda #1
-    rts
-.endproc
-
-; --------------------------------------------------------------------------
-.proc try_rotate
-    lda cur_rot
-    sta tmp                 ; save old rotation
-    clc
-    adc #1
-    and #3
-    sta cur_rot
-    jsr can_place
-    beq @ok
-    dec cur_x               ; kick left
-    jsr can_place
-    beq @ok
-    inc cur_x
-    inc cur_x               ; kick right
-    jsr can_place
-    beq @ok
-    dec cur_x
-    lda tmp                 ; revert
-    sta cur_rot
-@ok:
-    rts
-.endproc
-
-; --------------------------------------------------------------------------
-.proc hard_drop
-:   inc cur_y
-    jsr can_place
-    beq :-
-    dec cur_y
-    jsr lock_piece
-    rts
-.endproc
-
-; --------------------------------------------------------------------------
-;  Lock the current piece into the field, tally crates, clear full rows,
-;  repaint the bin, then spawn the next piece.
-; --------------------------------------------------------------------------
-.proc lock_piece
-    jsr get_mask
-    lda #0
-    sta bitn
-@loop:
-    jsr mask_bit_set
-    beq @next
-    lda bitn
-    lsr a
-    lsr a
-    clc
-    adc cur_y
-    sta cellr
-    lda bitn
-    and #3
-    clc
-    adc cur_x
-    sta cellc
-    jsr field_index
-    lda #1
-    sta field, y
-    lda packed
-    cmp #240
-    bcs @next
-    inc packed
-@next:
-    inc bitn
-    lda bitn
-    cmp #16
-    bne @loop
-    jsr line_clear
-    jsr redraw_bin
-    jsr queue_crates
-    jsr spawn_piece
-    rts
-.endproc
-
-; --------------------------------------------------------------------------
-.proc spawn_piece
-    lda next_piece
-    sta cur_piece
-    jsr rand7
-    sta next_piece
-    lda #0
-    sta cur_rot
-    sta cur_y
-    lda #2
-    sta cur_x
-    jsr can_place
-    beq @ok
-    lda #1
-    sta pack_over
-@ok:
-    rts
-.endproc
-
-; --------------------------------------------------------------------------
-;  Remove full rows by compacting the field downward.
-; --------------------------------------------------------------------------
-.proc line_clear
-    lda #(PH-1)
-    sta wr
-    lda #(PH-1)
-    sta cellr               ; rr = source row
-@rowloop:
-    jsr row_full
-    bne @next               ; full -> drop it (skip, don't advance wr)
-    lda cellr
-    cmp wr
-    beq @afterwr
-    jsr copy_row            ; move kept row down to wr
-@afterwr:
-    dec wr
-@next:
-    dec cellr
-    bpl @rowloop
-    ; clear rows 0..wr
-    lda wr
-    bmi @done
-    clc
-    adc #1
-    asl a
-    asl a
-    asl a                   ; (wr+1)*PW
-    tax
-    lda #0
-@clr:
-    dex
-    sta field, x
-    cpx #0
-    bne @clr
-@done:
-    rts
-.endproc
-
-; is row `cellr` completely filled?  A=1 full, A=0 not
-.proc row_full
-    lda cellr
-    asl a
-    asl a
-    asl a
-    tay                     ; base index
-    ldx #PW
 @l:
+    lda pmask_lo
+    clc
+    adc bitn
+    tax
+    lda cell_dc, x
+    clc
+    adc cur_col
+    sta cellc
+    cmp #PW
+    bcs @no
+    lda cell_dr, x
+    clc
+    adc cur_row
+    sta cellr
+    cmp #PH
+    bcs @no
+    jsr field_index
     lda field, y
-    beq @no
-    iny
-    dex
+    bne @no
+    inc bitn
+    lda bitn
+    cmp pmask_hi
     bne @l
-    lda #1
+    lda #0
     rts
 @no:
-    lda #0
+    lda #1
     rts
 .endproc
 
-; copy field row cellr -> row wr (PW bytes)
-.proc copy_row
-    lda cellr
-    asl a
-    asl a
-    asl a
-    sta tmp                 ; src base
-    lda wr
-    asl a
-    asl a
-    asl a
-    sta tmp2                ; dst base
-    ldx #0
+.proc place_here
+    ldy cur_type
+    lda item_off, y
+    sta pmask_lo
+    lda item_ncells, y
+    sta pmask_hi
+    lda #0
+    sta bitn
 @l:
-    txa
+    lda pmask_lo
     clc
-    adc tmp
-    tay
-    lda field, y
-    pha
-    txa
+    adc bitn
+    tax
+    lda cell_dc, x
     clc
-    adc tmp2
-    tay
-    pla
+    adc cur_col
+    sta cellc
+    lda cell_dr, x
+    clc
+    adc cur_row
+    sta cellr
+    jsr field_index
+    lda cell_tile, x
     sta field, y
-    inx
-    cpx #PW
+    inc bitn
+    lda bitn
+    cmp pmask_hi
     bne @l
     rts
 .endproc
 
 ; --------------------------------------------------------------------------
-;  Repaint the whole bin interior to the nametable (queued for vblank).
+.proc draw_pack_render
+    lda #0
+    sta oam_idx
+    jsr draw_float
+    jsr draw_next2
+    jsr hide_rest_oam
+    rts
+.endproc
+
+.proc draw_float
+    lda pflash
+    beq @draw
+    lda frame
+    and #2
+    bne @draw
+    rts                     ; blink while flashing "no fit"
+@draw:
+    ldy cur_type
+    lda item_off, y
+    sta pmask_lo
+    lda item_ncells, y
+    sta pmask_hi
+    lda #0
+    sta bitn
+@l:
+    lda pmask_lo
+    clc
+    adc bitn
+    tax
+    lda cell_dc, x
+    clc
+    adc cur_col
+    clc
+    adc #BIN_COL
+    asl a
+    asl a
+    asl a
+    sta tmp
+    lda cell_dr, x
+    clc
+    adc cur_row
+    clc
+    adc #BIN_ROW
+    asl a
+    asl a
+    asl a
+    sta tmp2
+    lda cell_tile, x
+    sta tmp3
+    lda #0
+    sta tmp4
+    jsr draw_spr8
+    inc bitn
+    lda bitn
+    cmp pmask_hi
+    bne @l
+    rts
+.endproc
+
+.proc draw_next2
+    ldy next_type
+    lda item_off, y
+    sta pmask_lo
+    lda item_ncells, y
+    sta pmask_hi
+    lda #0
+    sta bitn
+@l:
+    lda pmask_lo
+    clc
+    adc bitn
+    tax
+    lda cell_dc, x
+    asl a
+    asl a
+    asl a
+    clc
+    adc #NEXT_PX
+    sta tmp
+    lda cell_dr, x
+    asl a
+    asl a
+    asl a
+    clc
+    adc #NEXT_PY
+    sta tmp2
+    lda cell_tile, x
+    sta tmp3
+    lda #0
+    sta tmp4
+    jsr draw_spr8
+    inc bitn
+    lda bitn
+    cmp pmask_hi
+    bne @l
+    rts
+.endproc
+
+; one 8x8 sprite: tmp=x, tmp2=y, tmp3=tile, tmp4=pal
+.proc draw_spr8
+    ldx oam_idx
+    lda tmp2
+    sta oam, x
+    inx
+    lda tmp3
+    sta oam, x
+    inx
+    lda tmp4
+    sta oam, x
+    inx
+    lda tmp
+    sta oam, x
+    inx
+    stx oam_idx
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  Repaint the bin interior from the field (queued for vblank).
 ; --------------------------------------------------------------------------
 .proc redraw_bin
     lda #0
-    sta cellr               ; row r
+    sta cellr
 @rowl:
     lda cellr
     asl a
     asl a
     asl a
-    sta tmp                 ; base = r*PW
+    sta tmp
     ldy #0
 @celll:
     tya
@@ -1487,21 +1485,17 @@ loop:
     adc tmp
     tax
     lda field, x
-    beq @empty
-    lda #$08                ; crate
-    jmp @put
-@empty:
+    bne @put
     lda #$09
 @put:
     sta rowbuf, y
     iny
     cpy #PW
     bne @celll
-    ; nametable address of (BIN_ROW + r, BIN_COL)
     lda cellr
     clc
     adc #BIN_ROW
-    sta tmp                 ; row tile index
+    sta tmp
     and #7
     asl a
     asl a
@@ -1510,14 +1504,14 @@ loop:
     asl a
     clc
     adc #BIN_COL
-    sta tmp4                ; low byte
+    sta tmp4
     lda tmp
     lsr a
     lsr a
     lsr a
     clc
     adc #$20
-    sta tmp3                ; high byte
+    sta tmp3
     lda #<rowbuf
     sta ptr
     lda #>rowbuf
@@ -1532,8 +1526,6 @@ loop:
     rts
 .endproc
 
-; --------------------------------------------------------------------------
-;  Draw the walls + empty interior (rendering off).
 ; --------------------------------------------------------------------------
 .proc draw_bin_frame
     bit PPUSTATUS
@@ -1598,15 +1590,16 @@ loop:
 .proc draw_pack_labels
     PUTS str_packhdr, NT + 2*32 + 8
     PUTS str_packsub, NT + 4*32 + 6
+    PUTS str_time,    NT + 21*32 + 5
+    PUTS str_segas,   NT + 21*32 + 14
     PUTS str_next,    NT + 8*32 + 23
-    PUTS str_crates,  NT + 24*32 + 4
-    PUTS str_ctrl1,   NT + 26*32 + 2
-    PUTS str_ctrl2,   NT + 27*32 + 2
+    PUTS str_ctrl1,   NT + 25*32 + 2
+    PUTS str_ctrl2,   NT + 26*32 + 2
     rts
 .endproc
 
 ; --------------------------------------------------------------------------
-;  3-digit decimal of `packed` into cratebuf.
+;  3-digit decimal of `packed` into cratebuf (used by the win screen).
 ; --------------------------------------------------------------------------
 .proc packed_digits
     lda packed
@@ -1636,153 +1629,45 @@ loop:
     rts
 .endproc
 
-; draw crate count directly (rendering off)
-.proc draw_crates
-    jsr packed_digits
-    lda #>(NT + 24*32 + 11)
+; write A as 2 decimal digits at PPU addr in tmp3:tmp4 (rendering off)
+.proc draw_num2
+    jsr split_tens
+    lda tmp3
     sta PPUADDR
-    lda #<(NT + 24*32 + 11)
+    lda tmp4
     sta PPUADDR
-    lda cratebuf+0
+    lda tmp
+    clc
+    adc #'0'
     sta PPUDATA
-    lda cratebuf+1
-    sta PPUDATA
-    lda cratebuf+2
+    lda tmp2
+    clc
+    adc #'0'
     sta PPUDATA
     rts
 .endproc
 
-; queue crate count for vblank
-.proc queue_crates
-    jsr packed_digits
+; queue A as 2 decimal digits at PPU addr tmp3:tmp4 (vblank)
+.proc queue_num2
+    jsr split_tens
+    lda tmp
+    clc
+    adc #'0'
+    sta cratebuf+0
+    lda tmp2
+    clc
+    adc #'0'
+    sta cratebuf+1
     lda #<cratebuf
     sta ptr
     lda #>cratebuf
     sta ptr+1
-    lda #3
+    lda #2
     sta tmp2
-    lda #>(NT + 24*32 + 11)
-    sta tmp3
-    lda #<(NT + 24*32 + 11)
-    sta tmp4
     jsr vbuf_add
     rts
 .endproc
 
-; --------------------------------------------------------------------------
-.proc draw_active_and_next
-    lda #0
-    sta oam_idx
-    jsr draw_active
-    jsr draw_next
-    jsr hide_rest_oam
-    rts
-.endproc
-
-.proc draw_active
-    jsr get_mask
-    ldx cur_piece
-    lda piece_pal, x
-    sta tmp4
-    lda #0
-    sta bitn
-@loop:
-    jsr mask_bit_set
-    beq @next
-    lda bitn
-    lsr a
-    lsr a
-    clc
-    adc cur_y
-    clc
-    adc #BIN_ROW
-    asl a
-    asl a
-    asl a
-    sta tmp2                ; pixel y
-    lda bitn
-    and #3
-    clc
-    adc cur_x
-    clc
-    adc #BIN_COL
-    asl a
-    asl a
-    asl a
-    sta tmp                 ; pixel x
-    jsr draw_block
-@next:
-    inc bitn
-    lda bitn
-    cmp #16
-    bne @loop
-    rts
-.endproc
-
-.proc draw_next
-    lda next_piece
-    asl a
-    asl a
-    tax
-    lda piece_lo, x
-    sta pmask_lo
-    lda piece_hi, x
-    sta pmask_hi
-    ldx next_piece
-    lda piece_pal, x
-    sta tmp4
-    lda #0
-    sta bitn
-@loop:
-    jsr mask_bit_set
-    beq @next
-    lda bitn
-    lsr a
-    lsr a
-    asl a
-    asl a
-    asl a
-    clc
-    adc #72                 ; preview y origin
-    sta tmp2
-    lda bitn
-    and #3
-    asl a
-    asl a
-    asl a
-    clc
-    adc #184                ; preview x origin
-    sta tmp
-    jsr draw_block
-@next:
-    inc bitn
-    lda bitn
-    cmp #16
-    bne @loop
-    rts
-.endproc
-
-; append one 8x8 block sprite:  tmp = x, tmp2 = y, tmp4 = palette
-.proc draw_block
-    ldx oam_idx
-    lda tmp2
-    sta oam, x
-    inx
-    lda #$38
-    sta oam, x
-    inx
-    lda tmp4
-    sta oam, x
-    inx
-    lda tmp
-    sta oam, x
-    inx
-    stx oam_idx
-    rts
-.endproc
-
-; --------------------------------------------------------------------------
-;  Seal the bag: derive waddle weight from the haul, then start the run.
 ; --------------------------------------------------------------------------
 .proc commit_loadout
     lda packed
@@ -1790,8 +1675,8 @@ loop:
     lsr a
     lsr a
     lsr a
-    lsr a                   ; packed / 16
-    asl a                   ; * 2
+    lsr a
+    asl a
     sta move_delay
     jsr setup_level
     lda #ST_PLAY
@@ -1799,17 +1684,33 @@ loop:
     rts
 .endproc
 
-; --------------------------------------------------------------------------
-.proc rand7
+.proc rand3
     jsr update_rng
     lda rng
-    and #7
-    cmp #7
+    and #3
+    cmp #3
     bne @ok
-    lda #6
+    lda #0
 @ok:
     rts
 .endproc
+
+; ---- console piece data --------------------------------------------------
+; type 0 = Game Gear (2x1), 1 = Genesis (2x2), 2 = Gen+CD+32X tower (2x3)
+item_off:
+    .byte 0, 2, 6
+item_ncells:
+    .byte 2, 4, 6
+item_w:
+    .byte 2, 2, 2
+item_h:
+    .byte 1, 2, 3
+cell_dc:
+    .byte 0,1,  0,1,0,1,  0,1,0,1,0,1
+cell_dr:
+    .byte 0,0,  0,0,1,1,  0,0,1,1,2,2
+cell_tile:
+    .byte $10,$11,  $12,$13,$14,$15,  $16,$17,$18,$19,$1a,$1b
 
 ; ===========================================================================
 ;  GETAWAY STAGE  --  a side-scroller.  After crossing the border you floor
@@ -3312,8 +3213,8 @@ palette_pack:
     .byte $0f,$07,$16,$30
     .byte $0f,$07,$16,$30
     .byte $0f,$07,$16,$30
-    ; sprite palettes (same as the run; colour the falling pieces)
-    .byte $0f,$27,$12,$16
+    ; sprite palette 0 matches the console art (grey body, red trim, white)
+    .byte $0f,$07,$16,$30
     .byte $0f,$0f,$30,$16
     .byte $0f,$0f,$2a,$30
     .byte $0f,$17,$16,$30
@@ -3432,8 +3333,8 @@ attract_txt:
 txt_ap1:
     TEXT 3,  12, "STAGE ONE"
     TEXT 5,  10, "THE PACKING"
-    TEXT 20, 5, "TETRIS THE SEGA GEAR"
-    TEXT 22, 7, "INTO YOUR COLON"
+    TEXT 20, 4, "CRAM IN THE SEGA GEAR"
+    TEXT 22, 5, "BEFORE TIME RUNS OUT"
     TEXT 25, 9, "PRESS START"
     .byte 0
 
@@ -3474,11 +3375,12 @@ txt_win:
 
 ; packing-stage strings (nul terminated for puts)
 str_packhdr:  .byte "PACK YOUR COLON", 0
-str_packsub:  .byte "STUFF THE SEGA GEAR IN", 0
+str_packsub:  .byte "CRAM IN THE SEGA GEAR", 0
 str_next:     .byte "NEXT", 0
-str_crates:   .byte "CRATES", 0
-str_ctrl1:    .byte "DPAD MOVE   A SPIN", 0
-str_ctrl2:    .byte "UP DROP   START RUN", 0
+str_time:     .byte "TIME:", 0
+str_segas:    .byte "SEGAS:", 0
+str_ctrl1:    .byte "DPAD MOVE   A DROP", 0
+str_ctrl2:    .byte "B SKIP   START DONE", 0
 
 .include "pieces.inc"
 

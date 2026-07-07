@@ -561,6 +561,82 @@ def build_background_table():
     # 0x0E sky: solid colour-1 (blue)
     tiles[0x0e] = tile_from_rows(['11111111'] * 8)
 
+    # --- Sega console art (placement stage) ---------------------------
+    # 16-wide, N*8-tall pictures sliced into 8x8 tiles (band by band, L then
+    # R).  colours: 1 = body, 2 = trim, 3 = screen/label.  pack palette makes
+    # them grey bodies with red trim and white detail.
+    def place_grid16(base, rows, mapping):
+        bands = len(rows) // 8
+        for band in range(bands):
+            for half in range(2):
+                sub = []
+                for r in range(8):
+                    seg = rows[band * 8 + r][half * 8:half * 8 + 8]
+                    sub.append(''.join(str(mapping.get(ch, 0)) for ch in seg))
+                tiles[base + band * 2 + half] = tile_from_rows(sub)
+
+    cm = {'.': 0, '1': 1, '2': 2, '3': 3}
+
+    # 0x10-0x11  GAME GEAR (2x1) -- a wide handheld
+    place_grid16(0x10, [
+        '2222222222222222',
+        '2113333333333112',
+        '2113333333333112',
+        '2113333333333112',
+        '2111111111111112',
+        '2131111111111312',
+        '2113111111113112',
+        '2222222222222222',
+    ], cm)
+
+    # 0x12-0x15  GENESIS (2x2) -- a console with cart slot + badge
+    place_grid16(0x12, [
+        '0222222222222220',
+        '2111111111111112',
+        '2133333333333312',
+        '2111111111111112',
+        '2111333333311112',
+        '2111111111111112',
+        '2131111111111312',
+        '2111111111111112',
+        '2111111111111112',
+        '2113333333111112',
+        '2111111111111112',
+        '2111111111111112',
+        '2131111111113112',
+        '2111111111111112',
+        '2111111111111112',
+        '0222222222222220',
+    ], cm)
+
+    # 0x16-0x1B  GENESIS + SEGA CD + 32X tower (2x3)
+    place_grid16(0x16, [
+        '0222222222222220',   # 32X on top
+        '2133333333333312',
+        '2111111111111112',
+        '2113111111113112',
+        '2111111111111112',
+        '2133333333333312',
+        '2111111111111112',
+        '0222222222222220',
+        '0222222222222220',   # Genesis
+        '2111111111111112',
+        '2111333333311112',
+        '2111111111111112',
+        '2131111111111312',
+        '2111111111111112',
+        '2111111111111112',
+        '0222222222222220',
+        '0222222222222220',   # Sega CD base
+        '2133333333333312',
+        '2113333333333112',
+        '2133333333333312',
+        '2111111111111112',
+        '2131111111111312',
+        '2111111111111112',
+        '0222222222222220',
+    ], cm)
+
     # --- font at ASCII positions ---------------------------------------
     for ch, rows in FONT.items():
         tiles[ord(ch)] = tile_from_rows(rows)

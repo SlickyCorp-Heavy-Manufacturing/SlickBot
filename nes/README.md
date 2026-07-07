@@ -20,25 +20,33 @@ through a preview card for each of the three stages — with animated sprites
 (the console tower, traffic, the fleeing Warthog and the chopper) — before
 looping back to the title. Press **START** on any screen to begin.
 
-## Stage 1 — THE PACKING (a falling-block puzzle)
+## Stage 1 - THE PACKING (timed placement puzzle)
 
 Before the border run you have to physically **cram the Sega gear into a
-storage bin the size of a colon** — a falling-block (Tetris-style) puzzle.
-Sega-component pieces drop from the top; slide and rotate them to pack them in
-tight. A completely filled row **seals and clears**, making room for more.
+storage grid the size of a colon** - a Resident-Evil-attache-case-style
+placement puzzle against a **countdown timer**. Consoles arrive one at a time;
+slide each around the grid and drop it into any empty space. Pack in as many as
+you can before time runs out.
 
-Every crate you pack becomes loot on the victory screen — but the fuller your
-haul, the **slower you waddle** on the run. So the hard decision is: keep
-stuffing for a bigger payout, or seal the bag early to stay nimble in traffic.
+Three console shapes, each a different size:
 
-* **D-Pad Left/Right** — slide the piece
-* **D-Pad Down** — soft drop (fall faster)
-* **A** — rotate
-* **Up** — hard drop (slam it down and lock)
-* **START** — seal the bag and begin the run
+| Console | Size |
+| ------- | :--: |
+| Game Gear | 2x1 |
+| Genesis | 2x2 |
+| Genesis + Sega CD + 32X tower | 2x3 |
 
-The stage ends when you press START or the bin tops out. Your total crates
-packed are reported on the victory screen.
+The fuller your haul, the more loot on the victory screen - but also the
+**slower you waddle** on the run. Efficient packing = more gear in the time you
+have.
+
+* **D-Pad** - move the current console around the grid
+* **A** - drop it into place (only where it fits)
+* **B** - skip the current console (pull the next one)
+* **START** - finish early and begin the run
+
+The stage ends when the **TIME** meter hits zero or you press START. The
+**SEGAS** counter tracks how many consoles you have packed.
 
 ## Controls (the run)
 
