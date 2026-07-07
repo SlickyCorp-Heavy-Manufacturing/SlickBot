@@ -76,7 +76,14 @@ N_OBST     = 6          ; simultaneous hazards
 WART_X     = 40         ; warthog fixed screen x
 GY_MIN     = 140        ; warthog vertical range on the road
 GY_MAX     = 188
-GT_TARGET  = 16        ; win when dist_hi reaches this (dist_hi>>1 = bar cells)
+GT_TARGET  = 16        ; distance before the boss chopper arrives
+N_CLOUD    = 3          ; background parallax clouds
+N_STREAK   = 4          ; foreground parallax speed streaks
+N_BOMB     = 3          ; chopper bombs in flight
+N_BULL     = 2          ; player bullets in flight
+BOSS_HP    = 8          ; hits to down the chopper (also HP-bar cells)
+FIRE_CD    = 10         ; frames between player shots
+BOSS_X0    = 200        ; chopper hover x
 
 PLAYER_X0  = 120
 PLAYER_Y0  = 208
@@ -154,6 +161,15 @@ scroll_spd: .res 1
 spawn_tmr:  .res 1
 spawn_per:  .res 1
 obloop:     .res 1
+; --- getaway boss + parallax ---
+boss_on:    .res 1     ; 0 = dodging traffic, 1 = chopper fight
+boss_hp:    .res 1
+boss_x:     .res 1
+boss_y:     .res 1
+boss_dir:   .res 1     ; vertical sweep direction
+boss_atk:   .res 1     ; bomb-drop timer
+boss_ent:   .res 1     ; entrance countdown
+fire_cd:    .res 1     ; player shot cooldown
 mus_step:   .res 1
 mus_tick:   .res 1
 mus_on:     .res 1
@@ -176,6 +192,16 @@ ob_active:  .res N_OBST     ; getaway hazards
 ob_x:       .res N_OBST
 ob_y:       .res N_OBST
 ob_type:    .res N_OBST
+cloud_x:    .res N_CLOUD    ; background parallax
+cloud_y:    .res N_CLOUD
+streak_x:   .res N_STREAK   ; foreground parallax
+streak_y:   .res N_STREAK
+bomb_a:     .res N_BOMB     ; chopper bombs
+bomb_x:     .res N_BOMB
+bomb_y:     .res N_BOMB
+bull_a:     .res N_BULL     ; player bullets
+bull_x:     .res N_BULL
+bull_y:     .res N_BULL
 
 ; ===========================================================================
 .segment "CODE"
@@ -1653,6 +1679,67 @@ loop:
     inx
     cpx #N_OBST
     bne :-
+    ; clear projectile pools + boss
+    ldx #0
+    lda #0
+:   sta bomb_a, x
+    inx
+    cpx #N_BOMB
+    bne :-
+    ldx #0
+    lda #0
+:   sta bull_a, x
+    inx
+    cpx #N_BULL
+    bne :-
+    lda #0
+    sta boss_on
+    sta fire_cd
+    ; scatter parallax clouds across the sky
+    ldx #0
+@cl:
+    txa
+    asl a
+    asl a
+    asl a
+    asl a
+    asl a                   ; i*32
+    clc
+    adc #40
+    sta cloud_x, x
+    txa
+    asl a
+    asl a
+    asl a                   ; i*8
+    clc
+    adc #24
+    sta cloud_y, x
+    inx
+    cpx #N_CLOUD
+    bne @cl
+    ; scatter foreground speed streaks along the road
+    ldx #0
+@sk:
+    txa
+    asl a
+    asl a
+    asl a
+    asl a
+    asl a
+    asl a                   ; i*64
+    sta streak_x, x
+    txa
+    and #1
+    asl a
+    asl a
+    asl a
+    asl a                   ; (i&1)*16
+    clc
+    adc #150
+    sta streak_y, x
+    inx
+    cpx #N_STREAK
+    bne @sk
     lda #1
     sta mus_on
     jsr ppu_on
@@ -1662,14 +1749,18 @@ loop:
 ; --------------------------------------------------------------------------
 .proc do_getaway
     jsr getaway_input
+    jsr move_parallax
+    lda boss_on
+    bne @boss
+    ; ---- phase 1: dodge traffic until the chopper catches up ----
     jsr move_obstacles
     jsr spawn_tick
     jsr getaway_collision
     lda state
     cmp #ST_GETAWAY
-    beq @cont
+    beq @c1
     rts
-@cont:
+@c1:
     jsr shield_regen
     lda dist_lo
     clc
@@ -1681,14 +1772,87 @@ loop:
     jsr getaway_ramp
     lda dist_hi
     cmp #GT_TARGET
-    bcc @noWin
-    lda #ST_WIN
-    sta state
-    jsr enter_win
+    bcc @render
+    jsr init_boss           ; the chopper arrives
+    jmp @render
+@boss:
+    ; ---- phase 2: the chopper fight ----
+    jsr boss_logic
+    lda state
+    cmp #ST_GETAWAY
+    beq @c2
     rts
-@noWin:
+@c2:
+    jsr shield_regen
+@render:
     jsr build_getaway_hud
     jsr draw_getaway
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  Parallax: clouds drift slowly (far), streaks race by (near).
+; --------------------------------------------------------------------------
+.proc move_parallax
+    ; clouds move 1px every other frame
+    lda frame
+    and #1
+    bne @streaks
+    ldx #0
+@cl:
+    lda cloud_x, x
+    sec
+    sbc #1
+    cmp #4
+    bcs @clkeep
+    lda #248
+    sta cloud_x, x
+    jsr rand_sky_y
+    sta cloud_y, x
+    jmp @clnext
+@clkeep:
+    sta cloud_x, x
+@clnext:
+    inx
+    cpx #N_CLOUD
+    bne @cl
+@streaks:
+    ldx #0
+@sk:
+    lda streak_x, x
+    sec
+    sbc #6                  ; fast foreground
+    cmp #6
+    bcs @skkeep
+    lda #248
+    sta streak_x, x
+    jsr rand_road_y
+    sta streak_y, x
+    jmp @sknext
+@skkeep:
+    sta streak_x, x
+@sknext:
+    inx
+    cpx #N_STREAK
+    bne @sk
+    rts
+.endproc
+
+.proc rand_sky_y
+    jsr update_rng
+    lda rng
+    and #$3f
+    clc
+    adc #20
+    rts
+.endproc
+
+.proc rand_road_y
+    jsr update_rng
+    lda rng+1
+    and #$1f
+    clc
+    adc #150
     rts
 .endproc
 
@@ -1871,6 +2035,275 @@ loop:
 .endproc
 
 ; --------------------------------------------------------------------------
+;  Boss: the border-patrol chopper.  Shoot it down (A) while dodging bombs.
+; --------------------------------------------------------------------------
+.proc init_boss
+    lda #1
+    sta boss_on
+    lda #BOSS_HP
+    sta boss_hp
+    lda #255
+    sta boss_x
+    lda #96
+    sta boss_y
+    lda #1
+    sta boss_dir
+    lda #45
+    sta boss_atk
+    lda #56
+    sta boss_ent
+    ldx #0
+    lda #0
+:   sta ob_active, x
+    inx
+    cpx #N_OBST
+    bne :-
+    rts
+.endproc
+
+.proc boss_logic
+    lda boss_ent
+    beq @fight
+    ; entrance: slide in to the hover point
+    dec boss_ent
+    lda boss_x
+    cmp #BOSS_X0
+    bcc @flydone
+    sec
+    sbc #1
+    sta boss_x
+@flydone:
+    jsr do_fire
+    jsr move_bullets
+    jsr bullet_boss_collision
+    rts
+@fight:
+    ; vertical sweep between y=64 and y=148
+    lda boss_dir
+    beq @down
+    dec boss_y
+    lda boss_y
+    cmp #64
+    bne @mv
+    lda #0
+    sta boss_dir
+    jmp @mv
+@down:
+    inc boss_y
+    lda boss_y
+    cmp #148
+    bne @mv
+    lda #1
+    sta boss_dir
+@mv:
+    dec boss_atk
+    bne @noatk
+    lda #40
+    sta boss_atk
+    jsr drop_bomb
+@noatk:
+    jsr do_fire
+    jsr move_bombs
+    jsr move_bullets
+    jsr bomb_player_collision
+    lda state
+    cmp #ST_GETAWAY
+    beq @stillhere
+    rts
+@stillhere:
+    jsr bullet_boss_collision
+    lda boss_hp
+    bne @alive
+    ; chopper downed -> escape to Canada
+    lda #ST_WIN
+    sta state
+    jsr enter_win
+    rts
+@alive:
+    rts
+.endproc
+
+.proc do_fire
+    lda fire_cd
+    beq @canfire
+    dec fire_cd
+    rts
+@canfire:
+    lda pad1_new
+    and #BTN_A
+    beq @ret
+    ldx #0
+@f:
+    lda bull_a, x
+    beq @spawn
+    inx
+    cpx #N_BULL
+    bne @f
+    rts
+@spawn:
+    lda #1
+    sta bull_a, x
+    lda #WART_X+14
+    sta bull_x, x
+    lda gy
+    clc
+    adc #4
+    sta bull_y, x
+    lda #FIRE_CD
+    sta fire_cd
+@ret:
+    rts
+.endproc
+
+.proc drop_bomb
+    ldx #0
+@f:
+    lda bomb_a, x
+    beq @spawn
+    inx
+    cpx #N_BOMB
+    bne @f
+    rts
+@spawn:
+    lda #1
+    sta bomb_a, x
+    lda boss_x
+    sta bomb_x, x
+    lda boss_y
+    clc
+    adc #10
+    sta bomb_y, x
+    rts
+.endproc
+
+.proc move_bullets
+    ldx #0
+@l:
+    lda bull_a, x
+    beq @next
+    lda bull_x, x
+    clc
+    adc #6
+    cmp #244
+    bcs @kill
+    sta bull_x, x
+    jmp @next
+@kill:
+    lda #0
+    sta bull_a, x
+@next:
+    inx
+    cpx #N_BULL
+    bne @l
+    rts
+.endproc
+
+.proc move_bombs
+    ldx #0
+@l:
+    lda bomb_a, x
+    beq @next
+    lda bomb_x, x
+    sec
+    sbc #3
+    cmp #4
+    bcc @kill
+    sta bomb_x, x
+    lda bomb_y, x
+    clc
+    adc #2
+    cmp #202
+    bcs @kill
+    sta bomb_y, x
+    jmp @next
+@kill:
+    lda #0
+    sta bomb_a, x
+@next:
+    inx
+    cpx #N_BOMB
+    bne @l
+    rts
+.endproc
+
+.proc bullet_boss_collision
+    ldx #0
+@l:
+    lda bull_a, x
+    beq @next
+    lda bull_x, x
+    sec
+    sbc boss_x
+    bpl @dxp
+    eor #$ff
+    clc
+    adc #1
+@dxp:
+    cmp #24
+    bcs @next
+    lda bull_y, x
+    sec
+    sbc boss_y
+    bpl @dyp
+    eor #$ff
+    clc
+    adc #1
+@dyp:
+    cmp #12
+    bcs @next
+    lda #0
+    sta bull_a, x
+    lda boss_hp
+    beq @next
+    dec boss_hp
+@next:
+    inx
+    cpx #N_BULL
+    bne @l
+    rts
+.endproc
+
+.proc bomb_player_collision
+    lda iframes
+    beq @go
+    rts
+@go:
+    ldx #0
+@l:
+    lda bomb_a, x
+    beq @next
+    lda bomb_x, x
+    sec
+    sbc #WART_X
+    bpl @dxp
+    eor #$ff
+    clc
+    adc #1
+@dxp:
+    cmp #12
+    bcs @next
+    lda gy
+    sec
+    sbc bomb_y, x
+    bpl @dyp
+    eor #$ff
+    clc
+    adc #1
+@dyp:
+    cmp #12
+    bcs @next
+    lda #0
+    sta bomb_a, x
+    jsr getaway_crash
+    rts
+@next:
+    inx
+    cpx #N_BOMB
+    bne @l
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
 .proc build_getaway_hud
     ldx #0
     lda #' '
@@ -1908,6 +2341,9 @@ loop:
     inx
     cpx #3
     bne @pl
+    lda boss_on
+    bne @boss
+    ; distance meter
     lda #'D'
     sta hudline+12
     lda #'I'
@@ -1921,6 +2357,22 @@ loop:
     lda dist_hi
     lsr a
     sta tmp                 ; filled = dist_hi/2 (0..8)
+    jmp @bar
+@boss:
+    ; chopper HP meter
+    lda #'H'
+    sta hudline+12
+    lda #'E'
+    sta hudline+13
+    lda #'L'
+    sta hudline+14
+    lda #'O'
+    sta hudline+15
+    lda #':'
+    sta hudline+16
+    lda boss_hp
+    sta tmp                 ; filled = boss_hp (0..8)
+@bar:
     ldx #0
 @bl:
     cpx tmp
@@ -1958,7 +2410,7 @@ loop:
     lda frame
     and #4
     bne @dw
-    jmp @obs
+    jmp @phase
 @dw:
     lda #WART_X
     sta tmp
@@ -1969,7 +2421,22 @@ loop:
     lda #2
     sta tmp4
     jsr draw_meta16
-@obs:
+@phase:
+    lda boss_on
+    beq @traffic
+    jsr draw_boss
+    jmp @para
+@traffic:
+    jsr draw_hazards
+@para:
+    jsr draw_streaks
+    jsr draw_clouds
+    jsr hide_rest_oam
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc draw_hazards
     lda #0
     sta obloop
 @ol:
@@ -1991,7 +2458,138 @@ loop:
     lda obloop
     cmp #N_OBST
     bne @ol
-    jsr hide_rest_oam
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc draw_boss
+    ; chopper: two 16x16 halves
+    lda boss_x
+    sta tmp
+    lda boss_y
+    sta tmp2
+    lda #$2c
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+    lda boss_x
+    clc
+    adc #16
+    sta tmp
+    lda boss_y
+    sta tmp2
+    lda #$30
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+    ; bombs
+    lda #0
+    sta obloop
+@bl:
+    ldx obloop
+    lda bomb_a, x
+    beq @bn
+    lda bomb_x, x
+    sta tmp
+    lda bomb_y, x
+    sta tmp2
+    lda #$36
+    sta tmp3
+    lda #3
+    sta tmp4
+    jsr draw_spr8x16
+@bn:
+    inc obloop
+    lda obloop
+    cmp #N_BOMB
+    bne @bl
+    ; bullets
+    lda #0
+    sta obloop
+@ul:
+    ldx obloop
+    lda bull_a, x
+    beq @un
+    lda bull_x, x
+    sta tmp
+    lda bull_y, x
+    sta tmp2
+    lda #$34
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_spr8x16
+@un:
+    inc obloop
+    lda obloop
+    cmp #N_BULL
+    bne @ul
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc draw_streaks
+    lda #0
+    sta obloop
+@l:
+    ldx obloop
+    lda streak_x, x
+    sta tmp
+    lda streak_y, x
+    sta tmp2
+    lda #$3a
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_spr8x16
+    inc obloop
+    lda obloop
+    cmp #N_STREAK
+    bne @l
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+.proc draw_clouds
+    lda #0
+    sta obloop
+@l:
+    ldx obloop
+    lda cloud_x, x
+    sta tmp
+    lda cloud_y, x
+    sta tmp2
+    lda #$3c
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+    inc obloop
+    lda obloop
+    cmp #N_CLOUD
+    bne @l
+    rts
+.endproc
+
+; append one 8x16 sprite:  tmp = x, tmp2 = y, tmp3 = tile base, tmp4 = pal
+.proc draw_spr8x16
+    ldx oam_idx
+    lda tmp2
+    sta oam, x
+    inx
+    lda tmp3
+    ora #$01
+    sta oam, x
+    inx
+    lda tmp4
+    sta oam, x
+    inx
+    lda tmp
+    sta oam, x
+    inx
+    stx oam_idx
     rts
 .endproc
 

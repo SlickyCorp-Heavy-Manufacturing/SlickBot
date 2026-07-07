@@ -52,9 +52,23 @@ through them. Your Halo shield still soaks one hit before you start losing
 lives. Survive to fill the **DIST** meter and you're home free.
 
 * **D-Pad Up/Down** — steer the Warthog across the road
-* Survive until the distance bar fills to win
+* Survive until the **DIST** bar fills — then the boss arrives
 
-The chase gets faster and the hazards thicker the further you get.
+The chase gets faster and the hazards thicker the further you get. Parallax
+clouds drift in the sky and dust streaks race past on the road to sell the
+speed.
+
+### Boss — THE CHOPPER
+
+Fill the distance meter and a **border-patrol helicopter** drops in for the
+final showdown. It sweeps up and down and rains bombs on the road.
+
+* **A** — fire the Warthog's gun (bullets shoot forward at your current height)
+* **D-Pad Up/Down** — line your shots up with the chopper *and* dodge its bombs
+
+The HUD switches to a **HELO** health bar. Empty it to blow the chopper out of
+the sky and escape into Canada for good. Bombs still cost you shield then
+lives — get hit with no lives left and it's game over.
 Get hit with your shield up and it absorbs the blow (you're knocked back to the
 start and a pip drops); the shield **fully recharges** if you stay clean for a
 few seconds — pure Master Chief. Get hit with the shield down and you lose a

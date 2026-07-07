@@ -772,6 +772,92 @@ def build_sprite_table():
                                   '23333332',
                                   '22222222'])
 
+    # ---- getaway parallax + boss sprites -----------------------------
+    # Border-patrol chopper (32x16), facing left.  r=rotor 1, b=body 2,
+    # c=cockpit 3.  Built as two 16x16 metasprites (left 0x2C, right 0x30).
+    cmap = {'.': 0, 'r': 1, 'b': 2, 'c': 3}
+    full = [
+        '..rrrrrrrrrrrrrrrrrrrrrrrrrr....',
+        '..............bb................',
+        '.........ccccc.b................',
+        '........ccccccbbbb..............',
+        '.......bccccccbbbbbbb...........',
+        '.......bbbbbbbbbbbbbbbbbbbb.rr..',
+        '.......bbbbbbbbbbbbbbbbbbbb.rr..',
+        '........bbbbbbbbbbbbbb.....rr...',
+        '.........bb......bb.............',
+        '........bbbb....bbbb............',
+        '.......bbbbbb..bbbbbb...........',
+        '................................',
+        '................................',
+        '................................',
+        '................................',
+        '................................',
+    ]
+    gl = Grid()
+    gr = Grid()
+    for y, row in enumerate(full):
+        for x, ch in enumerate(row):
+            v = cmap.get(ch, 0)
+            if x < 16:
+                gl.px(x, y, v)
+            else:
+                gr.px(x - 16, y, v)
+    for i, t in enumerate(meta16(gl)):
+        tiles[0x2c + i] = t
+    for i, t in enumerate(meta16(gr)):
+        tiles[0x30 + i] = t
+
+    # Player bullet (8x16 sprite: top tile 0x34, blank bottom 0x35)
+    tiles[0x34] = tile_from_rows(['........',
+                                  '........',
+                                  '...33...',
+                                  '..3333..',
+                                  '..3333..',
+                                  '...33...',
+                                  '........',
+                                  '........'])
+    # Chopper bomb (top tile 0x36, blank bottom 0x37)
+    tiles[0x36] = tile_from_rows(['..3333..',
+                                  '.322223.',
+                                  '32222223',
+                                  '32222223',
+                                  '32222223',
+                                  '.322223.',
+                                  '..3333..',
+                                  '...33...'])
+    # Speed streak (foreground parallax; top tile 0x3A, blank bottom 0x3B)
+    tiles[0x3a] = tile_from_rows(['........',
+                                  '........',
+                                  '........',
+                                  '33333333',
+                                  '33333333',
+                                  '........',
+                                  '........',
+                                  '........'])
+    # Cloud (background parallax, 16x16 metasprite at 0x3C), colour 3
+    cl = Grid()
+    cl.rows(0, [
+        '................',
+        '................',
+        '......333.......',
+        '....3333333.....',
+        '...333333333....',
+        '..33333333333...',
+        '.3333333333333..',
+        '..33333333333...',
+        '................',
+        '................',
+        '................',
+        '................',
+        '................',
+        '................',
+        '................',
+        '................',
+    ], {'.': 0, '3': 3})
+    for i, t in enumerate(meta16(cl)):
+        tiles[0x3c + i] = t
+
     return tiles
 
 
