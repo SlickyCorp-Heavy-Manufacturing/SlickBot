@@ -13,6 +13,13 @@ cosy lounge-jazz loop.
 * **Mapper:** NROM-128 (mapper 0), 16 KB PRG + 8 KB CHR
 * **Output:** `border.nes` — runs on real hardware and every major emulator
 
+## Title & attract mode
+
+Leave the title alone and it runs an **attract-mode** demo loop, cycling
+through a preview card for each of the three stages — with animated sprites
+(the console tower, traffic, the fleeing Warthog and the chopper) — before
+looping back to the title. Press **START** on any screen to begin.
+
 ## Stage 1 — THE PACKING (a falling-block puzzle)
 
 Before the border run you have to physically **cram the Sega gear into a

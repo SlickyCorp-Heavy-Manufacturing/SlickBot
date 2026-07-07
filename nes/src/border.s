@@ -134,6 +134,8 @@ tmp4:       .res 1
 carlane:    .res 1
 carloop:    .res 1
 ppuctrl_val: .res 1    ; current PPUCTRL (8x16 for run, 8x8 for packing)
+attract_page: .res 1   ; title attract-mode page (0..3)
+attract_tmr:  .res 1   ; frames on the current attract page
 weight:     .res 1     ; load carried into the run
 loot_val:   .res 1     ; unused holdover (kept for alignment)
 move_timer: .res 1     ; frames until next move allowed (waddle)
@@ -444,39 +446,202 @@ state_tab:
 ;  TITLE
 ; ===========================================================================
 .proc enter_title
+    lda #%10100000
+    sta ppuctrl_val
+    lda #0
+    sta attract_page
+    sta attract_tmr
+    jsr draw_attract_page
+    lda #1
+    sta mus_on
+    rts
+.endproc
+
+; draw the background text for the current attract page
+.proc draw_attract_page
     jsr ppu_off
     jsr clear_nametable
-    lda #<txt_title
+    lda attract_page
+    asl a
+    tax
+    lda attract_txt, x
     sta ptr
-    lda #>txt_title
+    lda attract_txt+1, x
     sta ptr+1
     jsr draw_script
     jsr hide_all_oam
-    lda #1
-    sta mus_on
     jsr ppu_on
     rts
 .endproc
 
 .proc do_title
+    lda pad1_new
+    and #BTN_START
+    beq @noStart
+    jsr new_game
+    rts
+@noStart:
+    ; auto-cycle attract pages
+    inc attract_tmr
+    lda attract_tmr
+    cmp #200
+    bcc @anim
+    lda #0
+    sta attract_tmr
+    inc attract_page
+    lda attract_page
+    cmp #4
+    bcc @pg
+    lda #0
+    sta attract_page
+@pg:
+    jsr draw_attract_page
+@anim:
+    jsr draw_attract_sprites
+    rts
+.endproc
+
+; ---- attract-mode per-page sprite animation ------------------------------
+.proc draw_attract_sprites
     lda #0
     sta oam_idx
+    lda attract_page
+    cmp #1
+    beq @p1
+    cmp #2
+    beq @p2
+    cmp #3
+    beq @p3
+    jsr anim_console
+    jmp @done
+@p1:
+    jsr anim_pack
+    jmp @done
+@p2:
+    jsr anim_cross
+    jmp @done
+@p3:
+    jsr anim_getaway
+@done:
+    jsr hide_rest_oam
+    rts
+.endproc
+
+; title: the contraband console tower, gently bobbing
+.proc anim_console
     lda #116
     sta tmp
-    lda #112
+    jsr bob4
+    clc
+    adc #108
+    sta tmp2
+    lda #$24
+    sta tmp3
+    lda #3
+    sta tmp4
+    jmp draw_meta16
+.endproc
+
+; stage 1: console plus a boulder "piece" dropping in
+.proc anim_pack
+    lda #100
+    sta tmp
+    jsr bob4
+    clc
+    adc #100
     sta tmp2
     lda #$24
     sta tmp3
     lda #3
     sta tmp4
     jsr draw_meta16
-    jsr hide_rest_oam
+    lda #148
+    sta tmp
+    lda frame
+    and #$3f
+    clc
+    adc #96
+    sta tmp2
+    lda #$28
+    sta tmp3
+    lda #3
+    sta tmp4
+    jmp draw_meta16
+.endproc
 
-    lda pad1_new
-    and #BTN_START
-    beq :+
-    jsr new_game
-:   rts
+; stage 2: a car driving across, the smuggler waiting below
+.proc anim_cross
+    lda frame
+    asl a
+    sta tmp
+    lda #116
+    sta tmp2
+    lda #$10
+    sta tmp3
+    lda #1
+    sta tmp4
+    jsr draw_meta16
+    lda #120
+    sta tmp
+    lda #148
+    sta tmp2
+    lda #$02
+    sta tmp3
+    lda #0
+    sta tmp4
+    jmp draw_meta16
+.endproc
+
+; stage 3: warthog fleeing, chopper looming
+.proc anim_getaway
+    lda frame
+    lsr a
+    lsr a
+    lsr a
+    and #7
+    clc
+    adc #36
+    sta tmp
+    lda #150
+    sta tmp2
+    lda #$20
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+    ; chopper (two halves), bobbing
+    jsr bob4
+    clc
+    adc #96
+    sta tmp2
+    lda #172
+    sta tmp
+    lda #$2c
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+    jsr bob4
+    clc
+    adc #96
+    sta tmp2
+    lda #188
+    sta tmp
+    lda #$30
+    sta tmp3
+    lda #2
+    sta tmp4
+    jmp draw_meta16
+.endproc
+
+; A = (frame>>3) & 3  -- a small bob offset
+.proc bob4
+    lda frame
+    lsr a
+    lsr a
+    lsr a
+    and #3
+    rts
 .endproc
 
 ; ===========================================================================
@@ -3258,6 +3423,34 @@ txt_title:
     TEXT 18, 10, "PRESS START"
     TEXT 22, 7, "MOVE WITH THE DPAD"
     TEXT 24, 7, "SHIELD = HALO TECH"
+    .byte 0
+
+; attract-mode stage previews
+attract_txt:
+    .word txt_title, txt_ap1, txt_ap2, txt_ap3
+
+txt_ap1:
+    TEXT 3,  12, "STAGE ONE"
+    TEXT 5,  10, "THE PACKING"
+    TEXT 20, 5, "TETRIS THE SEGA GEAR"
+    TEXT 22, 7, "INTO YOUR COLON"
+    TEXT 25, 9, "PRESS START"
+    .byte 0
+
+txt_ap2:
+    TEXT 3,  12, "STAGE TWO"
+    TEXT 5,  9,  "THE CROSSING"
+    TEXT 20, 5, "FROGGER THE BORDER"
+    TEXT 22, 6, "DODGE THE TRAFFIC"
+    TEXT 25, 9, "PRESS START"
+    .byte 0
+
+txt_ap3:
+    TEXT 3,  12, "STAGE THREE"
+    TEXT 5,  10, "THE GETAWAY"
+    TEXT 20, 4, "OUTRUN BORDER PATROL"
+    TEXT 22, 6, "DOWN THE CHOPPER"
+    TEXT 25, 9, "PRESS START"
     .byte 0
 
 txt_level:
