@@ -49,6 +49,7 @@ ST_DEAD   = 2
 ST_LEVEL  = 3
 ST_OVER   = 4
 ST_WIN    = 5
+ST_PACK   = 6
 
 NUM_LANES  = 8
 CARS_PER   = 3
@@ -60,6 +61,7 @@ REGEN_DLY  = 150
 DEAD_TIME  = 90
 LEVEL_TIME = 110
 MAX_LEVEL  = 3
+CAP        = 4          ; inventory slots (colon capacity)
 
 PLAYER_X0  = 120
 PLAYER_Y0  = 208
@@ -67,6 +69,19 @@ GOAL_Y     = 16
 TEMPO      = 14
 HITBOX     = 12
 NT         = $2000
+
+; Draw a nul-terminated string at a nametable address (rendering must be off).
+.macro PUTS straddr, ntaddr
+    lda #<(straddr)
+    sta ptr
+    lda #>(straddr)
+    sta ptr+1
+    lda #>(ntaddr)
+    sta PPUADDR
+    lda #<(ntaddr)
+    sta PPUADDR
+    jsr puts
+.endmacro
 
 ; ---- zero page ------------------------------------------------------------
 .segment "ZEROPAGE"
@@ -96,6 +111,14 @@ tmp3:       .res 1
 tmp4:       .res 1
 carlane:    .res 1
 carloop:    .res 1
+sel:        .res 1     ; packing cursor (0-2)
+used:       .res 1     ; inventory slots used
+weight:     .res 1     ; slots carried into the run
+loot_val:   .res 1     ; loot value in units of $10 (0-65)
+move_timer: .res 1     ; frames until next move allowed (waddle)
+move_delay: .res 1     ; waddle cooldown derived from weight
+pflash:     .res 1     ; "won't fit" flash timer
+inv:        .res 3     ; count of each item packed
 mus_step:   .res 1
 mus_tick:   .res 1
 mus_on:     .res 1
@@ -342,6 +365,7 @@ state_tab:
     .word do_level
     .word do_over
     .word do_win
+    .word do_pack
 .endproc
 
 ; ===========================================================================
@@ -389,9 +413,19 @@ state_tab:
     sta lives
     lda #1
     sta level
-    jsr setup_level
-    lda #ST_PLAY
+    ; empty inventory -- the player packs it in the first stage
+    lda #0
+    sta inv+0
+    sta inv+1
+    sta inv+2
+    sta used
+    sta weight
+    sta loot_val
+    sta sel
+    sta pflash
+    lda #ST_PACK
     sta state
+    jsr enter_pack
     rts
 .endproc
 
@@ -412,6 +446,7 @@ state_tab:
     sta iframes
     sta regentmr
     sta pframe
+    sta move_timer
     lda #1
     sta hud_dirty
     sta mus_on
@@ -478,6 +513,12 @@ loop:
 
 ; --------------------------------------------------------------------------
 .proc play_input
+    ; waddle: heavy loadouts can only move every move_delay frames
+    lda move_timer
+    beq @ready
+    dec move_timer
+    rts
+@ready:
     lda pad1_new
     and #BTN_UP
     beq @nu
@@ -485,7 +526,7 @@ loop:
     sec
     sbc #16
     sta py
-    inc pframe
+    jsr did_move
 @nu:
     lda pad1_new
     and #BTN_DOWN
@@ -496,7 +537,7 @@ loop:
     clc
     adc #16
     sta py
-    inc pframe
+    jsr did_move
 @nd:
     lda pad1_new
     and #BTN_LEFT
@@ -507,7 +548,7 @@ loop:
     sec
     sbc #16
     sta px
-    inc pframe
+    jsr did_move
 @nl:
     lda pad1_new
     and #BTN_RIGHT
@@ -518,8 +559,19 @@ loop:
     clc
     adc #16
     sta px
-    inc pframe
+    jsr did_move
 @nr:
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  Register a completed move: advance the walk frame and start the waddle
+;  cooldown so the next move is delayed by move_delay frames.
+; --------------------------------------------------------------------------
+.proc did_move
+    inc pframe
+    lda move_delay
+    sta move_timer
     rts
 .endproc
 
@@ -772,8 +824,317 @@ loop:
     lda #>txt_win
     sta ptr+1
     jsr draw_script
+    ; loot delivered value at row 16, col 19: "$" then digits
+    lda #>(NT + 16*32 + 19)
+    sta PPUADDR
+    lda #<(NT + 16*32 + 19)
+    sta PPUADDR
+    lda #'$'
+    sta PPUDATA
+    lda loot_val
+    jsr split_tens          ; tmp = /10, tmp2 = %10
+    lda tmp
+    clc
+    adc #'0'
+    sta PPUDATA
+    lda tmp2
+    clc
+    adc #'0'
+    sta PPUDATA
+    lda #'0'
+    sta PPUDATA
     jsr hide_all_oam
     jsr ppu_on
+    rts
+.endproc
+
+; ===========================================================================
+;  PACKING STAGE  --  the first stage: cram loot into your colon.
+; ===========================================================================
+.proc enter_pack
+    jsr render_pack
+    lda #1
+    sta mus_on
+    rts
+.endproc
+
+.proc do_pack
+    lda pflash
+    beq @noflash
+    dec pflash
+@noflash:
+    lda pad1_new
+    bne @act
+    rts
+@act:
+    lda pad1_new
+    and #BTN_UP
+    beq @nu
+    lda sel
+    beq @nu
+    dec sel
+@nu:
+    lda pad1_new
+    and #BTN_DOWN
+    beq @nd
+    lda sel
+    cmp #2
+    bcs @nd
+    inc sel
+@nd:
+    lda pad1_new
+    and #BTN_A
+    beq @na
+    jsr pack_add
+@na:
+    lda pad1_new
+    and #BTN_B
+    beq @nb
+    jsr pack_remove
+@nb:
+    lda pad1_new
+    and #BTN_START
+    beq @ns
+    lda used
+    beq @cantstart          ; must carry something
+    lda used
+    sta weight
+    asl a
+    asl a
+    sta move_delay          ; waddle cooldown = weight * 4
+    jsr setup_level
+    lda #ST_PLAY
+    sta state
+    rts
+@cantstart:
+    lda #30
+    sta pflash
+@ns:
+    lda state
+    cmp #ST_PACK
+    bne @done
+    jsr render_pack
+@done:
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  Add the selected item if it fits; otherwise flash "WON'T FIT".
+; --------------------------------------------------------------------------
+.proc pack_add
+    ldx sel
+    lda used
+    clc
+    adc item_cost, x
+    cmp #CAP+1
+    bcs @nofit              ; used + cost > CAP
+    sta used
+    inc inv, x
+    lda loot_val
+    clc
+    adc item_val, x
+    sta loot_val
+    rts
+@nofit:
+    lda #30
+    sta pflash
+    rts
+.endproc
+
+.proc pack_remove
+    ldx sel
+    lda inv, x
+    beq @none
+    dec inv, x
+    lda used
+    sec
+    sbc item_cost, x
+    sta used
+    lda loot_val
+    sec
+    sbc item_val, x
+    sta loot_val
+@none:
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  Draw the whole packing screen (rendering off).
+; --------------------------------------------------------------------------
+.proc render_pack
+    jsr ppu_off
+    jsr clear_nametable
+
+    ; static labels
+    PUTS str_packhdr, NT + 2*32 + 8
+    PUTS str_packsub, NT + 4*32 + 5
+    PUTS str_slots,   NT + 18*32 + 8
+    PUTS str_lootval, NT + 20*32 + 6
+    PUTS str_ctrl,    NT + 24*32 + 4
+    PUTS str_hint,    NT + 26*32 + 3
+
+    ; three item rows (rows 8, 11, 14)
+    lda #0
+    sta tmp3            ; item index reused via tmp3? use dedicated var
+    jsr draw_item0
+    jsr draw_item1
+    jsr draw_item2
+
+    ; slots gauge value at row18 col15:  used '/' CAP
+    lda #>(NT + 18*32 + 15)
+    sta PPUADDR
+    lda #<(NT + 18*32 + 15)
+    sta PPUADDR
+    lda used
+    clc
+    adc #'0'
+    sta PPUDATA
+    lda #'/'
+    sta PPUDATA
+    lda #CAP + '0'
+    sta PPUDATA
+
+    ; loot value at row20 col19: "$" xy0
+    lda #>(NT + 20*32 + 19)
+    sta PPUADDR
+    lda #<(NT + 20*32 + 19)
+    sta PPUADDR
+    lda #'$'
+    sta PPUDATA
+    lda loot_val
+    jsr split_tens
+    lda tmp
+    clc
+    adc #'0'
+    sta PPUDATA
+    lda tmp2
+    clc
+    adc #'0'
+    sta PPUDATA
+    lda #'0'
+    sta PPUDATA
+
+    ; "won't fit" flash
+    lda pflash
+    beq @noflash
+    PUTS str_nofit, NT + 22*32 + 11
+@noflash:
+    jsr hide_all_oam
+    jsr ppu_on
+    rts
+.endproc
+
+; item row drawers (unrolled for clarity)
+.proc draw_item0
+    lda sel
+    cmp #0
+    beq :+
+    lda #' '
+    jmp :++
+:   lda #'>'
+:   ldx #>(NT + 8*32 + 5)
+    ldy #<(NT + 8*32 + 5)
+    stx PPUADDR
+    sty PPUADDR
+    sta PPUDATA
+    PUTS str_genesis, NT + 8*32 + 7
+    lda #>(NT + 8*32 + 16)
+    sta PPUADDR
+    lda #<(NT + 8*32 + 16)
+    sta PPUADDR
+    lda #'X'
+    sta PPUDATA
+    lda inv+0
+    clc
+    adc #'0'
+    sta PPUDATA
+    PUTS str_cv_gen, NT + 8*32 + 20
+    rts
+.endproc
+
+.proc draw_item1
+    lda sel
+    cmp #1
+    beq :+
+    lda #' '
+    jmp :++
+:   lda #'>'
+:   ldx #>(NT + 11*32 + 5)
+    ldy #<(NT + 11*32 + 5)
+    stx PPUADDR
+    sty PPUADDR
+    sta PPUDATA
+    PUTS str_segacd, NT + 11*32 + 7
+    lda #>(NT + 11*32 + 16)
+    sta PPUADDR
+    lda #<(NT + 11*32 + 16)
+    sta PPUADDR
+    lda #'X'
+    sta PPUDATA
+    lda inv+1
+    clc
+    adc #'0'
+    sta PPUDATA
+    PUTS str_cv_cd, NT + 11*32 + 20
+    rts
+.endproc
+
+.proc draw_item2
+    lda sel
+    cmp #2
+    beq :+
+    lda #' '
+    jmp :++
+:   lda #'>'
+:   ldx #>(NT + 14*32 + 5)
+    ldy #<(NT + 14*32 + 5)
+    stx PPUADDR
+    sty PPUADDR
+    sta PPUDATA
+    PUTS str_32x, NT + 14*32 + 7
+    lda #>(NT + 14*32 + 16)
+    sta PPUADDR
+    lda #<(NT + 14*32 + 16)
+    sta PPUADDR
+    lda #'X'
+    sta PPUDATA
+    lda inv+2
+    clc
+    adc #'0'
+    sta PPUDATA
+    PUTS str_cv_32x, NT + 14*32 + 20
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  Write a nul-terminated string.  ptr -> string, A:X preloaded via PUTS.
+;  On entry PPUADDR must already be latched by the PUTS macro.
+; --------------------------------------------------------------------------
+.proc puts
+    ldy #0
+:   lda (ptr), y
+    beq @done
+    sta PPUDATA
+    iny
+    bne :-
+@done:
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  A / 10 -> tmp, A mod 10 -> tmp2
+; --------------------------------------------------------------------------
+.proc split_tens
+    ldx #0
+:   cmp #10
+    bcc @done
+    sec
+    sbc #10
+    inx
+    jmp :-
+@done:
+    stx tmp
+    sta tmp2
     rts
 .endproc
 
@@ -1336,8 +1697,28 @@ txt_win:
     TEXT 9,  7, "WELCOME TO CANADA"
     TEXT 12, 8, "YOU SMUGGLED IT"
     TEXT 14, 6, "GENESIS DELIVERED EH"
-    TEXT 18, 10, "PRESS START"
+    TEXT 16, 4, "LOOT DELIVERED"
+    TEXT 20, 10, "PRESS START"
     .byte 0
+
+; packing-stage strings (nul terminated for puts)
+str_packhdr:  .byte "PACK YOUR COLON", 0
+str_packsub:  .byte "ARRANGE THE CONTRABAND", 0
+str_slots:    .byte "SLOTS", 0
+str_lootval:  .byte "LOOT VALUE", 0
+str_ctrl:     .byte "A ADD  B DROP  START RUN", 0
+str_hint:     .byte "MORE LOOT = SLOWER WADDLE", 0
+str_nofit:    .byte "WONT FIT", 0
+str_genesis:  .byte "GENESIS", 0
+str_segacd:   .byte "SEGA CD", 0
+str_32x:      .byte "32X", 0
+str_cv_gen:   .byte "3SL  $500", 0
+str_cv_cd:    .byte "2SL  $300", 0
+str_cv_32x:   .byte "1SL  $150", 0
+
+; item cost (slots) and value (units of $10), indexed by cursor
+item_cost:    .byte 3, 2, 1
+item_val:     .byte 50, 30, 15
 
 ; ===========================================================================
 .segment "CHARS"

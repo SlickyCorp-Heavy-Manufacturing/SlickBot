@@ -13,7 +13,29 @@ cosy lounge-jazz loop.
 * **Mapper:** NROM-128 (mapper 0), 16 KB PRG + 8 KB CHR
 * **Output:** `border.nes` — runs on real hardware and every major emulator
 
-## Controls
+## Stage 1 — THE PACKING (choose your loadout)
+
+Before the border run you get a loadout screen: **cram loot into an inventory
+the size of a human colon.** You have **4 slots**. The catch — taking
+everything costs 6 slots, so you *must* leave something behind. And every slot
+you fill makes your smuggler **waddle slower** during the run, so heavier =
+richer but far more dangerous.
+
+| Item | Slots | Value |
+| ---- | :---: | ----: |
+| Genesis | 3 | $500 |
+| Sega CD | 2 | $300 |
+| 32X | 1 | $150 |
+
+* **D-Pad Up/Down** — move the cursor
+* **A** — add the highlighted item (if it fits)
+* **B** — drop one
+* **START** — begin the run with your loadout
+
+Your total loot value is paid out on the victory screen. This is the "hard
+inventory decision" stage: max value vs. survivable waddle speed.
+
+## Controls (the run)
 
 | Button | Action |
 | ------ | ------ |
