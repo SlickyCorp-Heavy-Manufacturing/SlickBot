@@ -201,6 +201,13 @@ mus_step:   .res 1
 mus_tick:   .res 1
 mus_on:     .res 1
 noise_vol:  .res 1
+song_mel_p:  .res 2     ; pointers into the current song's voice arrays
+song_harm_p: .res 2
+song_bass_p: .res 2
+song_perc_p: .res 2
+song_len:    .res 1
+song_tempo:  .res 1
+mtmp:        .res 1
 ; --- sound effects (pulse2 tonal slot + noise burst slot) ---
 sfxp_dur:   .res 1
 sfxp_perlo: .res 1
@@ -492,6 +499,8 @@ state_tab:
     jsr draw_attract_page
     lda #1
     sta mus_on
+    lda #SONG_TITLE
+    jsr music_play
     rts
 .endproc
 
@@ -724,6 +733,8 @@ state_tab:
     lda #1
     sta hud_dirty
     sta mus_on
+    lda #SONG_CROSS
+    jsr music_play
     jsr ppu_on
     rts
 .endproc
@@ -1098,6 +1109,8 @@ loop:
     sta ptr+1
     jsr draw_script
     jsr hide_all_oam
+    lda #SONG_OVER
+    jsr music_play
     jsr ppu_on
     rts
 .endproc
@@ -1126,6 +1139,8 @@ loop:
     lda cratebuf+2
     sta PPUDATA
     jsr hide_all_oam
+    lda #SONG_WIN
+    jsr music_play
     jsr ppu_on
     rts
 .endproc
@@ -1176,6 +1191,8 @@ loop:
     jsr hide_all_oam
     lda #1
     sta mus_on
+    lda #SONG_PACK
+    jsr music_play
     jsr ppu_on
     rts
 .endproc
@@ -1864,6 +1881,8 @@ cell_tile:
     bne @sk
     lda #1
     sta mus_on
+    lda #SONG_GETAWAY
+    jsr music_play
     jsr ppu_on
     rts
 .endproc
@@ -2166,6 +2185,8 @@ cell_tile:
 ;  Boss: the border-patrol chopper.  Shoot it down (A) while dodging bombs.
 ; --------------------------------------------------------------------------
 .proc init_boss
+    lda #SONG_BOSS
+    jsr music_play
     lda #1
     sta boss_on
     lda #BOSS_HP
@@ -3126,13 +3147,13 @@ done:
 :   jsr noise_decay
     inc mus_tick
     lda mus_tick
-    cmp #TEMPO
+    cmp song_tempo
     bcc done
     lda #0
     sta mus_tick
     inc mus_step
     lda mus_step
-    cmp #SONG_LEN
+    cmp song_len
     bcc :+
     lda #0
     sta mus_step
@@ -3141,18 +3162,55 @@ done:
     rts
 .endproc
 
+; switch the active song; A = song id (SONG_*)
+.proc music_play
+    sta mtmp
+    asl a
+    asl a
+    asl a                   ; id * 8
+    clc
+    adc mtmp
+    adc mtmp                ; + id*2 = id*10
+    tax
+    lda songtab+0, x
+    sta song_mel_p
+    lda songtab+1, x
+    sta song_mel_p+1
+    lda songtab+2, x
+    sta song_harm_p
+    lda songtab+3, x
+    sta song_harm_p+1
+    lda songtab+4, x
+    sta song_bass_p
+    lda songtab+5, x
+    sta song_bass_p+1
+    lda songtab+6, x
+    sta song_perc_p
+    lda songtab+7, x
+    sta song_perc_p+1
+    lda songtab+8, x
+    sta song_len
+    lda songtab+9, x
+    sta song_tempo
+    lda #0
+    sta mus_step
+    sta mus_tick
+    sta $4008               ; drop any held triangle note
+    rts
+.endproc
+
 .proc play_row
-    ldx mus_step
-    lda song_mel, x
+    ldy mus_step
+    lda (song_mel_p), y
     jsr set_pulse1
-    ldx mus_step
-    lda song_harm, x
+    ldy mus_step
+    lda (song_harm_p), y
     jsr set_pulse2
-    ldx mus_step
-    lda song_bass, x
+    ldy mus_step
+    lda (song_bass_p), y
     jsr set_tri
-    ldx mus_step
-    lda song_perc, x
+    ldy mus_step
+    lda (song_perc_p), y
     jsr set_perc
     rts
 .endproc

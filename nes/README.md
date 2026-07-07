@@ -224,7 +224,20 @@ never stop.
 
 ## A note on the music
 
-The soundtrack is an **original composition** — a lounge-jazz loop
-(ii–V–I–vi in C: Dm7 → G7 → Cmaj7 → Am7) with a walking triangle bass, comped
-pulse harmony and brushed noise drums, written to evoke a cosy-sitcom-jazz
-mood. It is not a transcription of any existing theme.
+Every stage has its **own original track**, switched in as you enter it:
+
+| Stage | Mood |
+| ----- | ---- |
+| Title / attract | cosy lounge jazz (ii–V–I–vi in C) |
+| The Packing | tense minor-key timer groove |
+| The Crossing | bright, bouncy, hopping |
+| The Getaway | fast driving chase |
+| The Chopper (boss) | intense and urgent |
+| Victory | triumphant fanfare |
+| Game Over | a short somber descent |
+
+All are **original compositions** written for this game — invented melodies
+over common, non-copyrightable chord progressions. None is a transcription of
+any existing theme. They play on a four-channel engine (two pulses, triangle
+bass, noise drums); the SFX mixer briefly borrows pulse 2 and the noise
+channel and hands them back so the tune never stops.
