@@ -684,6 +684,25 @@ def build_sprite_table():
         for i, t in enumerate(meta16(grid)):
             tiles[base + i] = t
 
+    def scale2x(base, grid):
+        # double a 16x16 grid to 32x32 and store as 4 metasprites
+        # (TL=base+0, TR=base+4, BL=base+8, BR=base+12)
+        big = [[0] * 32 for _ in range(32)]
+        for y in range(16):
+            for x in range(16):
+                v = grid.g[y][x]
+                big[2 * y][2 * x] = v
+                big[2 * y][2 * x + 1] = v
+                big[2 * y + 1][2 * x] = v
+                big[2 * y + 1][2 * x + 1] = v
+        for qi, (ry, rx) in enumerate([(0, 0), (0, 16), (16, 0), (16, 16)]):
+            sub = Grid()
+            for y in range(16):
+                for x in range(16):
+                    sub.px(x, y, big[ry + y][rx + x])
+            for i, t in enumerate(meta16(sub)):
+                tiles[base + qi * 4 + i] = t
+
     pmap = {'.': 0, '1': 1, '2': 2, '3': 3}
     # Player frame A: hunched smuggler, back view, huge contraband bulge.
     # colours: 1 = skin, 2 = shirt/pants, 3 = console bulge.  palette 0.
@@ -1006,6 +1025,7 @@ def build_sprite_table():
         '................',
     ], {'.': 0, '3': 3})
     place(0x5c, maple)
+    scale2x(0xa0, maple)          # 32x32 maple leaf for the win screen
 
     # 0x60 BEAVER waving a hockey stick (pal3: 1 brown, 3 white stick/teeth)
     beav2 = Grid()
@@ -1028,6 +1048,7 @@ def build_sprite_table():
         '................',
     ], wmap)
     place(0x60, beav2)
+    scale2x(0x80, beav2)          # 32x32 beaver for the win screen
 
     # 0x68 oncoming car (getaway hazard, faster).  facing left.
     onc = Grid()
@@ -1114,6 +1135,7 @@ def build_sprite_table():
         '..1.............',
     ], wmap)
     place(0x64, flag)
+    scale2x(0x90, flag)           # 32x32 flag for the win screen
 
     # Falling-piece block (8x8 sprite): solid colour-2, drawn in 8x8 mode
     # during the packing stage; the sprite palette gives it its colour.

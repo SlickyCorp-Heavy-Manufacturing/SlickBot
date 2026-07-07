@@ -15,10 +15,11 @@ cosy lounge-jazz loop.
 
 ## Title & attract mode
 
-Leave the title alone and it runs an **attract-mode** demo loop, cycling
-through a preview card for each of the three stages — with animated sprites
-(the console tower, traffic, the fleeing Warthog and the chopper) — before
-looping back to the title. Press **START** on any screen to begin.
+The title screen is a **live demo of the getaway stage playing underneath the
+title**: the road streams by with its parallax treeline, traffic and hazards
+fly in from the right, and a **self-driving Warthog auto-dodges** them all —
+while a black banner across the top reads **BORDER RUN / PRESS START** and shows
+the session **high score**. Press **START** to begin.
 
 ## Stage 1 - THE PACKING (timed placement puzzle)
 
@@ -97,9 +98,9 @@ lives — get hit with no lives left and it's game over.
 ## The finale — WELCOME TO CANADA
 
 Down the chopper and you get a victory drive-in: your (now bigger) Warthog
-rolls in, **honks** as it parks, a **beaver waves a hockey stick** beside a
-**Canadian flag**, **maple leaves tumble** down, **fireworks** burst overhead,
-and a triumphant stadium-organ **fanfare** plays. Your crates packed, final
+rolls in, **honks** as it parks, a **big beaver waves a hockey stick** beside a
+**big Canadian flag**, **maple leaves tumble** down, **fireworks** burst
+overhead, and a triumphant stadium-organ **fanfare** plays. Your crates packed, final
 **score** and **high score** are on the banner.
 
 ## Scoring

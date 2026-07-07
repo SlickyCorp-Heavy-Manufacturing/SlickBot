@@ -151,8 +151,6 @@ tmp4:       .res 1
 carlane:    .res 1
 carloop:    .res 1
 ppuctrl_val: .res 1    ; current PPUCTRL (8x16 for run, 8x8 for packing)
-attract_page: .res 1   ; title attract-mode page (0..3)
-attract_tmr:  .res 1   ; frames on the current attract page
 win_wx:       .res 1   ; warthog x during the victory drive-in
 weight:     .res 1     ; load carried into the run
 loot_val:   .res 1     ; unused holdover (kept for alignment)
@@ -500,214 +498,124 @@ state_tab:
 ; ===========================================================================
 ;  TITLE
 ; ===========================================================================
+; The title screen is a live demo of the getaway stage: the road streams by,
+; traffic and hazards fly in, and a self-driving Warthog auto-dodges them, all
+; behind a black title banner overlaid across the top of the screen.
 .proc enter_title
-    lda #%10100000
+    jsr ppu_off
+    lda #%10100000          ; 8x16 sprite mode
     sta ppuctrl_val
-    lda #0
-    sta attract_page
-    sta attract_tmr
-    jsr draw_attract_page
+    jsr load_pal_getaway
+    jsr clear_nametable
+    jsr draw_getaway_scene
+    jsr draw_title_banner
+    jsr reset_getaway_state
     lda #1
     sta mus_on
     lda #SONG_TITLE
     jsr music_play
+    jsr ppu_on
     rts
 .endproc
 
-; draw the background text for the current attract page
-.proc draw_attract_page
-    jsr ppu_off
-    jsr clear_nametable
-    lda attract_page
-    asl a
-    tax
-    lda attract_txt, x
+; overlay a black title banner (rows 0-5) with the game running underneath
+.proc draw_title_banner
+    bit PPUSTATUS
+    lda #$20
+    sta PPUADDR
+    lda #$00
+    sta PPUADDR
+    ldx #0
+    lda #$00                ; blank/black tile
+@l:
+    sta PPUDATA
+    inx
+    cpx #192                ; rows 0-5 (6 * 32)
+    bne @l
+    lda #<txt_overlay
     sta ptr
-    lda attract_txt+1, x
+    lda #>txt_overlay
     sta ptr+1
     jsr draw_script
-    ; high score on the title page only
-    lda attract_page
-    bne @noscore
     jsr hiscore_digits
-    lda #>(NT + 27*32 + 13)
+    lda #>(NT + 5*32 + 16)
     sta PPUADDR
-    lda #<(NT + 27*32 + 13)
+    lda #<(NT + 5*32 + 16)
     sta PPUADDR
     jsr put_scorebuf
-@noscore:
-    jsr hide_all_oam
-    jsr ppu_on
     rts
 .endproc
 
 .proc do_title
     lda pad1_new
     and #BTN_START
-    beq @noStart
+    beq @demo
     jsr new_game
     rts
-@noStart:
-    ; auto-cycle attract pages
-    inc attract_tmr
-    lda attract_tmr
-    cmp #200
-    bcc @anim
-    lda #0
-    sta attract_tmr
-    inc attract_page
-    lda attract_page
-    cmp #4
-    bcc @pg
-    lda #0
-    sta attract_page
-@pg:
-    jsr draw_attract_page
-@anim:
-    jsr draw_attract_sprites
+@demo:
+    jsr title_auto_move     ; self-driving Warthog dodges the traffic
+    jsr move_parallax
+    jsr move_obstacles
+    jsr spawn_tick
+    jsr draw_getaway        ; warthog + hazards + parallax (banner is background)
     rts
 .endproc
 
-; ---- attract-mode per-page sprite animation ------------------------------
-.proc draw_attract_sprites
-    lda #0
-    sta oam_idx
-    lda attract_page
-    cmp #1
-    beq @p1
-    cmp #2
-    beq @p2
-    cmp #3
-    beq @p3
-    jsr anim_console
-    jmp @done
-@p1:
-    jsr anim_pack
-    jmp @done
-@p2:
-    jsr anim_cross
-    jmp @done
-@p3:
-    jsr anim_getaway
-@done:
-    jsr hide_rest_oam
+; ---- attract-demo auto-pilot: steer the Warthog clear of incoming hazards --
+.proc title_auto_move
+    ldx #0
+@l:
+    lda ob_active, x
+    beq @next
+    lda ob_x, x
+    sec
+    sbc #WART_X
+    bcc @next               ; hazard already behind us
+    cmp #64
+    bcs @next               ; hazard too far ahead to matter yet
+    ; hazard is in our horizontal danger zone -- compare heights
+    lda ob_y, x
+    cmp gy
+    bcc @above              ; hazard above the Warthog
+    ; hazard at or below us: dodge up if it's close
+    sec
+    sbc gy
+    cmp #24
+    bcs @next               ; far below -> safe
+    lda gy
+    cmp #GY_MIN+2
+    bcc @next
+    dec gy
+    dec gy
     rts
-.endproc
-
-; title: the contraband console tower, gently bobbing
-.proc anim_console
-    lda #116
-    sta tmp
-    jsr bob4
-    clc
-    adc #108
-    sta tmp2
-    lda #$24
-    sta tmp3
-    lda #3
-    sta tmp4
-    jmp draw_meta16
-.endproc
-
-; stage 1: console plus a boulder "piece" dropping in
-.proc anim_pack
-    lda #100
-    sta tmp
-    jsr bob4
-    clc
-    adc #100
-    sta tmp2
-    lda #$24
-    sta tmp3
-    lda #3
-    sta tmp4
-    jsr draw_meta16
-    lda #148
-    sta tmp
-    lda frame
-    and #$3f
-    clc
-    adc #96
-    sta tmp2
-    lda #$28
-    sta tmp3
-    lda #3
-    sta tmp4
-    jmp draw_meta16
-.endproc
-
-; stage 2: a car driving across, the smuggler waiting below
-.proc anim_cross
-    lda frame
-    asl a
-    sta tmp
-    lda #116
-    sta tmp2
-    lda #$10
-    sta tmp3
-    lda #1
-    sta tmp4
-    jsr draw_meta16
-    lda #120
-    sta tmp
-    lda #148
-    sta tmp2
-    lda #$02
-    sta tmp3
-    lda #0
-    sta tmp4
-    jmp draw_meta16
-.endproc
-
-; stage 3: warthog fleeing, chopper looming
-.proc anim_getaway
-    lda frame
-    lsr a
-    lsr a
-    lsr a
-    and #7
-    clc
-    adc #36
-    sta tmp
-    lda #150
-    sta tmp2
-    lda #$20
-    sta tmp3
-    lda #2
-    sta tmp4
-    jsr draw_meta16
-    ; chopper (two halves), bobbing
-    jsr bob4
-    clc
-    adc #96
-    sta tmp2
-    lda #172
-    sta tmp
-    lda #$2c
-    sta tmp3
-    lda #2
-    sta tmp4
-    jsr draw_meta16
-    jsr bob4
-    clc
-    adc #96
-    sta tmp2
-    lda #188
-    sta tmp
-    lda #$30
-    sta tmp3
-    lda #2
-    sta tmp4
-    jmp draw_meta16
-.endproc
-
-; A = (frame>>3) & 3  -- a small bob offset
-.proc bob4
-    lda frame
-    lsr a
-    lsr a
-    lsr a
-    and #3
+@above:
+    lda gy
+    sec
+    sbc ob_y, x
+    cmp #24
+    bcs @next               ; far above -> safe
+    lda gy
+    cmp #GY_MAX-1
+    bcs @next
+    inc gy
+    inc gy
+    rts
+@next:
+    inx
+    cpx #N_OBST
+    bne @l
+    ; no threat -- ease back toward the middle of the road
+    lda gy
+    cmp #166
+    bcs @up
+    cmp #162
+    bcc @down
+    rts
+@up:
+    dec gy
+    rts
+@down:
+    inc gy
     rts
 .endproc
 
@@ -1161,25 +1069,8 @@ loop:
     lda #2
     sta tmp4
     jsr draw_meta16
-    ; beaver waving at x=44 (alternate frame every 16 frames)
+    ; beaver waving a hockey stick (32x32), bobbing gently
     lda #44
-    sta tmp
-    lda #178
-    sta tmp2
-    lda frame
-    and #$10
-    beq @bwave1
-    lda #$60
-    jmp @bwave2
-@bwave1:
-    lda #$58
-@bwave2:
-    sta tmp3
-    lda #3
-    sta tmp4
-    jsr draw_meta16
-    ; Canadian flag at x=20, bobbing gently
-    lda #20
     sta tmp
     lda frame
     lsr a
@@ -1187,13 +1078,28 @@ loop:
     lsr a
     and #1
     clc
-    adc #174
+    adc #160
     sta tmp2
-    lda #$64
+    lda #$80
     sta tmp3
     lda #3
     sta tmp4
-    jsr draw_meta16
+    jsr draw_meta32
+    ; Canadian flag (32x32) at x=8, bobbing gently
+    lda #8
+    sta tmp
+    lda frame
+    lsr a
+    lsr a
+    and #1
+    clc
+    adc #136
+    sta tmp2
+    lda #$90
+    sta tmp3
+    lda #3
+    sta tmp4
+    jsr draw_meta32
     ; two maple leaves tumbling down (vertical-flip toggles the tumble)
     lda frame
     and #$10
@@ -2017,6 +1923,20 @@ cell_tile:
     jsr load_pal_getaway
     jsr clear_nametable
     jsr draw_getaway_scene
+    jsr reset_getaway_state
+    lda #1
+    sta mus_on
+    lda #SONG_GETAWAY
+    jsr music_play
+    jsr ppu_on
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
+;  Reset all getaway-world state (player, hazards, parallax, boss pools).
+;  Shared by the real getaway stage and the title-screen demo overlay.
+; --------------------------------------------------------------------------
+.proc reset_getaway_state
     lda #170
     sta gy
     lda #0
@@ -2098,11 +2018,6 @@ cell_tile:
     inx
     cpx #N_STREAK
     bne @sk
-    lda #1
-    sta mus_on
-    lda #SONG_GETAWAY
-    jsr music_play
-    jsr ppu_on
     rts
 .endproc
 
@@ -3333,6 +3248,46 @@ loop:
 .endproc
 
 ; --------------------------------------------------------------------------
+;  Emit a 32x32 sprite (four 16x16 metasprites) into shadow OAM.
+;   tmp = x, tmp2 = y, tmp3 = base tile, tmp4 = palette
+; --------------------------------------------------------------------------
+.proc draw_meta32
+    jsr draw_meta16         ; TL
+    lda tmp
+    clc
+    adc #16
+    sta tmp
+    lda tmp3
+    clc
+    adc #4
+    sta tmp3
+    jsr draw_meta16         ; TR
+    lda tmp
+    sec
+    sbc #16
+    sta tmp
+    lda tmp2
+    clc
+    adc #16
+    sta tmp2
+    lda tmp3
+    clc
+    adc #4
+    sta tmp3
+    jsr draw_meta16         ; BL
+    lda tmp
+    clc
+    adc #16
+    sta tmp
+    lda tmp3
+    clc
+    adc #4
+    sta tmp3
+    jsr draw_meta16         ; BR
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
 .proc hide_rest_oam
     ldx oam_idx
     lda #$ff
@@ -4004,43 +3959,11 @@ tmpl_shield: .byte "SHIELD:"
     .byte s
 .endmacro
 
-txt_title:
-    TEXT 3, 11, "BORDER RUN"
-    TEXT 6,  4, "SMUGGLE A GENESIS NORTH"
-    TEXT 8,  9, "GENESIS+CD+32X"
-    TEXT 10, 10, "THE HARD WAY"
-    TEXT 18, 10, "PRESS START"
-    TEXT 22, 7, "MOVE WITH THE DPAD"
-    TEXT 24, 7, "SHIELD = HALO TECH"
-    TEXT 27, 9, "HI"
-    .byte 0
-
-; attract-mode stage previews
-attract_txt:
-    .word txt_title, txt_ap1, txt_ap2, txt_ap3
-
-txt_ap1:
-    TEXT 3,  12, "STAGE ONE"
-    TEXT 5,  10, "THE PACKING"
-    TEXT 20, 4, "CRAM IN THE SEGA GEAR"
-    TEXT 22, 5, "BEFORE TIME RUNS OUT"
-    TEXT 25, 9, "PRESS START"
-    .byte 0
-
-txt_ap2:
-    TEXT 3,  12, "STAGE TWO"
-    TEXT 5,  9,  "THE CROSSING"
-    TEXT 20, 5, "FROGGER THE BORDER"
-    TEXT 22, 6, "DODGE THE TRAFFIC"
-    TEXT 25, 9, "PRESS START"
-    .byte 0
-
-txt_ap3:
-    TEXT 3,  12, "STAGE THREE"
-    TEXT 5,  10, "THE GETAWAY"
-    TEXT 20, 4, "OUTRUN BORDER PATROL"
-    TEXT 22, 6, "DOWN THE CHOPPER"
-    TEXT 25, 9, "PRESS START"
+; title banner overlaid on the live getaway demo (black rows 0-5)
+txt_overlay:
+    TEXT 1, 11, "BORDER RUN"
+    TEXT 3, 10, "PRESS START"
+    TEXT 5, 11, "HI"
     .byte 0
 
 txt_level:
