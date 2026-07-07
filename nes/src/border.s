@@ -198,7 +198,13 @@ boss_y:     .res 1
 boss_dir:   .res 1     ; vertical sweep direction
 boss_atk:   .res 1     ; bomb-drop timer
 boss_ent:   .res 1     ; entrance countdown
+boss_pat:   .res 1     ; boss attack pattern (0=sweep, 1=dive)
+boss_pat_t: .res 1     ; frames until pattern switch
 fire_cd:    .res 1     ; player shot cooldown
+score_lo:   .res 1     ; running score (16-bit)
+score_hi:   .res 1
+hisc_lo:    .res 1     ; session high score
+hisc_hi:    .res 1
 mus_step:   .res 1
 mus_tick:   .res 1
 mus_on:     .res 1
@@ -241,6 +247,8 @@ ob_active:  .res N_OBST     ; getaway hazards
 ob_x:       .res N_OBST
 ob_y:       .res N_OBST
 ob_type:    .res N_OBST
+ob_spd:     .res N_OBST     ; per-hazard leftward speed
+scorebuf:   .res 5          ; 5-digit decimal score
 cloud_x:    .res N_CLOUD    ; background parallax
 cloud_y:    .res N_CLOUD
 streak_x:   .res N_STREAK   ; foreground parallax
@@ -518,6 +526,16 @@ state_tab:
     lda attract_txt+1, x
     sta ptr+1
     jsr draw_script
+    ; high score on the title page only
+    lda attract_page
+    bne @noscore
+    jsr hiscore_digits
+    lda #>(NT + 27*32 + 13)
+    sta PPUADDR
+    lda #<(NT + 27*32 + 13)
+    sta PPUADDR
+    jsr put_scorebuf
+@noscore:
     jsr hide_all_oam
     jsr ppu_on
     rts
@@ -703,6 +721,8 @@ state_tab:
     sta weight
     sta packed
     sta pack_over
+    sta score_lo
+    sta score_hi
     lda #ST_PACK
     sta state
     lda #SFX_START
@@ -965,6 +985,8 @@ loop:
 .proc player_win
     lda #SFX_CROSS
     jsr sfx_p
+    lda #50                 ; points for crossing
+    jsr add_score
     lda level
     cmp #MAX_LEVEL
     bcs @winall
@@ -1215,7 +1237,52 @@ loop:
     lda #$5c
     sta tmp3
     jsr draw_meta16
+    ; fireworks bursting in the sky
+    lda #40
+    sta tmp
+    lda #28
+    sta tmp2
+    lda #0
+    sta tmp4
+    lda frame
+    and #$08
+    jsr fw_tile
+    jsr draw_meta16
+    lda #128
+    sta tmp
+    lda #20
+    sta tmp2
+    lda #2
+    sta tmp4
+    lda frame
+    and #$10
+    jsr fw_tile
+    jsr draw_meta16
+    lda #200
+    sta tmp
+    lda #34
+    sta tmp2
+    lda #3
+    sta tmp4
+    lda frame
+    clc
+    adc #8
+    and #$08
+    jsr fw_tile
+    jsr draw_meta16
     jsr hide_rest_oam
+    rts
+.endproc
+
+; A = 0 -> small burst tile, nonzero -> big burst tile; result in tmp3
+.proc fw_tile
+    bne @big
+    lda #$6c
+    sta tmp3
+    rts
+@big:
+    lda #$70
+    sta tmp3
     rts
 .endproc
 
@@ -1230,6 +1297,19 @@ loop:
     lda #>txt_over
     sta ptr+1
     jsr draw_script
+    jsr update_hiscore
+    jsr score_digits
+    lda #>(NT + 15*32 + 15)
+    sta PPUADDR
+    lda #<(NT + 15*32 + 15)
+    sta PPUADDR
+    jsr put_scorebuf
+    jsr hiscore_digits
+    lda #>(NT + 17*32 + 13)
+    sta PPUADDR
+    lda #<(NT + 17*32 + 13)
+    sta PPUADDR
+    jsr put_scorebuf
     jsr hide_all_oam
     lda #SONG_OVER
     jsr music_play
@@ -1260,6 +1340,20 @@ loop:
     sta PPUDATA
     lda cratebuf+2
     sta PPUDATA
+    ; score / high score
+    jsr update_hiscore
+    jsr score_digits
+    lda #>(NT + 11*32 + 15)
+    sta PPUADDR
+    lda #<(NT + 11*32 + 15)
+    sta PPUADDR
+    jsr put_scorebuf
+    jsr hiscore_digits
+    lda #>(NT + 13*32 + 13)
+    sta PPUADDR
+    lda #<(NT + 13*32 + 13)
+    sta PPUADDR
+    jsr put_scorebuf
     lda #0
     sta win_wx              ; warthog starts off the left edge
     jsr hide_all_oam
@@ -1856,6 +1950,8 @@ loop:
 .proc commit_loadout
     lda packed
     sta weight
+    jsr add_score           ; loot packed = points
+    lda weight
     lsr a
     lsr a
     lsr a
@@ -2032,6 +2128,8 @@ cell_tile:
     sta dist_lo
     bcc @nocarry
     inc dist_hi
+    lda #10                 ; points per distance tick
+    jsr add_score
 @nocarry:
     jsr getaway_ramp
     lda dist_hi
@@ -2152,7 +2250,7 @@ cell_tile:
     beq @next
     lda ob_x, x
     sec
-    sbc scroll_spd
+    sbc ob_spd, x           ; per-hazard speed (oncoming cars are faster)
     bcc @kill
     cmp #4
     bcc @kill
@@ -2194,6 +2292,27 @@ cell_tile:
     lda #248
     sta ob_x, x
     jsr update_rng
+    ; ~1 in 4 spawns is oncoming traffic: a faster car in an upper lane
+    lda rng
+    and #3
+    bne @normal
+    lda #4
+    sta ob_type, x
+    lda rng+1
+    and #1
+    asl a
+    asl a
+    asl a
+    asl a                   ; 0 or 16
+    clc
+    adc #GY_MIN
+    sta ob_y, x
+    lda scroll_spd
+    clc
+    adc #3
+    sta ob_spd, x
+    rts
+@normal:
     lda rng
     and #3
     asl a
@@ -2206,6 +2325,8 @@ cell_tile:
     lda rng+1
     and #3
     sta ob_type, x
+    lda scroll_spd
+    sta ob_spd, x
     rts
 .endproc
 
@@ -2325,6 +2446,10 @@ cell_tile:
     sta boss_atk
     lda #56
     sta boss_ent
+    lda #0
+    sta boss_pat            ; start in sweep pattern
+    lda #200
+    sta boss_pat_t
     ldx #0
     lda #0
 :   sta ob_active, x
@@ -2351,30 +2476,63 @@ cell_tile:
     jsr bullet_boss_collision
     rts
 @fight:
-    ; vertical sweep between y=64 and y=148
+    ; switch attack pattern periodically
+    dec boss_pat_t
+    bne @nosw
+    lda boss_pat
+    eor #1
+    sta boss_pat
+    beq @sw0
+    lda #120
+    jmp @swset
+@sw0:
+    lda #200
+@swset:
+    sta boss_pat_t
+@nosw:
+    lda boss_pat
+    bne @dive
+    ; --- pattern 0: vertical sweep, single bombs ---
     lda boss_dir
     beq @down
     dec boss_y
     lda boss_y
     cmp #64
-    bne @mv
+    bne @swatk
     lda #0
     sta boss_dir
-    jmp @mv
+    jmp @swatk
 @down:
     inc boss_y
     lda boss_y
     cmp #148
-    bne @mv
+    bne @swatk
     lda #1
     sta boss_dir
-@mv:
+@swatk:
     dec boss_atk
-    bne @noatk
+    bne @after
     lda #40
     sta boss_atk
     jsr drop_bomb
-@noatk:
+    jmp @after
+@dive:
+    ; --- pattern 1: dive at the warthog, bomb faster ---
+    lda boss_y
+    cmp gy
+    beq @dvatk
+    bcs @ddec
+    inc boss_y
+    jmp @dvatk
+@ddec:
+    dec boss_y
+@dvatk:
+    dec boss_atk
+    bne @after
+    lda #22
+    sta boss_atk
+    jsr drop_bomb
+@after:
     jsr do_fire
     jsr move_bombs
     jsr move_bullets
@@ -2388,6 +2546,8 @@ cell_tile:
     lda boss_hp
     bne @alive
     ; chopper downed -> escape to Canada
+    lda #200                ; boss-kill bonus
+    jsr add_score
     lda #SFXN_BOOM
     jsr sfx_n
     lda #ST_WIN
@@ -2533,6 +2693,8 @@ cell_tile:
     lda boss_hp
     beq @next
     dec boss_hp
+    lda #20                 ; points per boss hit
+    jsr add_score
     lda #SFX_BOSSHIT
     jsr sfx_p
 @next:
@@ -2593,20 +2755,18 @@ cell_tile:
     bne @clr
     lda #'L'
     sta hudline+0
-    lda #'V'
-    sta hudline+1
     lda #':'
-    sta hudline+2
+    sta hudline+1
     lda lives
     clc
     adc #'0'
-    sta hudline+3
+    sta hudline+2
     lda #'S'
-    sta hudline+5
+    sta hudline+4
     lda #'H'
-    sta hudline+6
+    sta hudline+5
     lda #':'
-    sta hudline+7
+    sta hudline+6
     ldx #0
 @pl:
     cpx shield
@@ -2616,41 +2776,31 @@ cell_tile:
 @pe:
     lda #' '
 @pp:
-    sta hudline+8, x
+    sta hudline+7, x
     inx
     cpx #3
     bne @pl
     lda boss_on
     bne @boss
-    ; distance meter
+    ; distance meter (4-cell bar)
     lda #'D'
-    sta hudline+12
-    lda #'I'
-    sta hudline+13
-    lda #'S'
-    sta hudline+14
-    lda #'T'
-    sta hudline+15
+    sta hudline+11
     lda #':'
-    sta hudline+16
+    sta hudline+12
     lda dist_hi
     lsr a
-    sta tmp                 ; filled = dist_hi/2 (0..8)
+    lsr a
+    sta tmp                 ; filled = dist_hi/4 (0..4)
     jmp @bar
 @boss:
     ; chopper HP meter
     lda #'H'
-    sta hudline+12
-    lda #'E'
-    sta hudline+13
-    lda #'L'
-    sta hudline+14
-    lda #'O'
-    sta hudline+15
+    sta hudline+11
     lda #':'
-    sta hudline+16
+    sta hudline+12
     lda boss_hp
-    sta tmp                 ; filled = boss_hp (0..8)
+    lsr a
+    sta tmp                 ; filled = boss_hp/2 (0..4)
 @bar:
     ldx #0
 @bl:
@@ -2661,10 +2811,25 @@ cell_tile:
 @be:
     lda #'-'
 @bp:
-    sta hudline+17, x
+    sta hudline+13, x
     inx
-    cpx #8
+    cpx #4
     bne @bl
+    ; score
+    lda #'S'
+    sta hudline+18
+    lda #'C'
+    sta hudline+19
+    lda #':'
+    sta hudline+20
+    jsr score_digits
+    ldx #0
+@sc:
+    lda scorebuf, x
+    sta hudline+21, x
+    inx
+    cpx #5
+    bne @sc
     lda #<hudline
     sta ptr
     lda #>hudline
@@ -2957,6 +3122,111 @@ cell_tile:
 .endproc
 
 ; ===========================================================================
+;  Score
+; ===========================================================================
+; add A (0-255) to the 16-bit score
+.proc add_score
+    clc
+    adc score_lo
+    sta score_lo
+    bcc @done
+    inc score_hi
+@done:
+    rts
+.endproc
+
+; if score > high score, replace it
+.proc update_hiscore
+    lda score_hi
+    cmp hisc_hi
+    bcc @done
+    bne @set
+    lda score_lo
+    cmp hisc_lo
+    bcc @done
+@set:
+    lda score_lo
+    sta hisc_lo
+    lda score_hi
+    sta hisc_hi
+@done:
+    rts
+.endproc
+
+; render the 16-bit score into scorebuf as 5 decimal digits
+.proc score_digits
+    lda score_lo
+    sta tmp
+    lda score_hi
+    sta tmp2
+    ldy #0
+@dloop:
+    ldx #0
+@sub:
+    lda tmp
+    sec
+    sbc div_lo, y
+    sta tmp3
+    lda tmp2
+    sbc div_hi, y
+    bcc @subdone
+    sta tmp2
+    lda tmp3
+    sta tmp
+    inx
+    jmp @sub
+@subdone:
+    txa
+    clc
+    adc #'0'
+    sta scorebuf, y
+    iny
+    cpy #4
+    bne @dloop
+    lda tmp
+    clc
+    adc #'0'
+    sta scorebuf+4
+    rts
+.endproc
+
+div_lo: .byte <10000, <1000, <100, <10
+div_hi: .byte >10000, >1000, >100, >10
+
+; convert the high score into scorebuf (for screen display)
+.proc hiscore_digits
+    lda score_lo
+    pha
+    lda score_hi
+    pha
+    lda hisc_lo
+    sta score_lo
+    lda hisc_hi
+    sta score_hi
+    jsr score_digits
+    pla
+    sta score_hi
+    pla
+    sta score_lo
+    rts
+.endproc
+
+; write scorebuf (5 digits) to PPUDATA (PPUADDR must be latched)
+.proc put_scorebuf
+    lda scorebuf+0
+    sta PPUDATA
+    lda scorebuf+1
+    sta PPUDATA
+    lda scorebuf+2
+    sta PPUDATA
+    lda scorebuf+3
+    sta PPUDATA
+    lda scorebuf+4
+    sta PPUDATA
+    rts
+.endproc
+
+; ===========================================================================
 ;  Rendering helpers
 ; ===========================================================================
 .proc render_play
@@ -3088,38 +3358,31 @@ loop:
     inx
     cpx #32
     bne @clr
-
-    ldx #0
-@l1:
-    lda tmpl_lives, x
-    sta hudline, x
-    inx
-    cpx #6
-    bne @l1
-    ldx #0
-@l2:
-    lda tmpl_level, x
-    sta hudline+10, x
-    inx
-    cpx #6
-    bne @l2
-    ldx #0
-@l3:
-    lda tmpl_shield, x
-    sta hudline+20, x
-    inx
-    cpx #7
-    bne @l3
-
+    ; L:n  LV:n  SH:###  SC:nnnnn
+    lda #'L'
+    sta hudline+0
+    lda #':'
+    sta hudline+1
     lda lives
     clc
     adc #'0'
+    sta hudline+2
+    lda #'L'
+    sta hudline+4
+    lda #'V'
+    sta hudline+5
+    lda #':'
     sta hudline+6
     lda level
     clc
     adc #'0'
-    sta hudline+16
-
+    sta hudline+7
+    lda #'S'
+    sta hudline+9
+    lda #'H'
+    sta hudline+10
+    lda #':'
+    sta hudline+11
     ldx #0
 @pl:
     cpx shield
@@ -3129,10 +3392,24 @@ loop:
 @empty:
     lda #' '
 @put:
-    sta hudline+27, x
+    sta hudline+12, x
     inx
     cpx #3
     bne @pl
+    lda #'S'
+    sta hudline+16
+    lda #'C'
+    sta hudline+17
+    lda #':'
+    sta hudline+18
+    jsr score_digits
+    ldx #0
+@sc:
+    lda scorebuf, x
+    sta hudline+19, x
+    inx
+    cpx #5
+    bne @sc
 
     lda #<hudline
     sta ptr
@@ -3640,9 +3917,9 @@ palette_getaway:
 
 ; getaway hazard metasprite base + palette, indexed by ob_type
 obtile:
-    .byte $40, $44, $48, $4c   ; tree, fish, deer, hot dish
+    .byte $40, $44, $48, $4c, $68   ; tree, fish, deer, hot dish, oncoming car
 obpal:
-    .byte 0, 1, 0, 1
+    .byte 0, 1, 0, 1, 1
 
 ; getaway scene: nametable fill tile per row (30 rows)
 gw_row_tile:
@@ -3735,6 +4012,7 @@ txt_title:
     TEXT 18, 10, "PRESS START"
     TEXT 22, 7, "MOVE WITH THE DPAD"
     TEXT 24, 7, "SHIELD = HALO TECH"
+    TEXT 27, 9, "HI"
     .byte 0
 
 ; attract-mode stage previews
@@ -3771,9 +4049,11 @@ txt_level:
     .byte 0
 
 txt_over:
-    TEXT 10, 6, "BUSTED AT THE BORDER"
-    TEXT 13, 11, "GAME OVER"
-    TEXT 18, 10, "PRESS START"
+    TEXT 8,  6, "BUSTED AT THE BORDER"
+    TEXT 11, 11, "GAME OVER"
+    TEXT 15, 9, "SCORE"
+    TEXT 17, 9, "HI"
+    TEXT 22, 10, "PRESS START"
     .byte 0
 
 txt_win:
@@ -3781,6 +4061,8 @@ txt_win:
     TEXT 5,  11, "YOU MADE IT"
     TEXT 7,  6, "GENESIS DELIVERED EH"
     TEXT 9,  9, "CRATES PACKED"
+    TEXT 11, 9, "SCORE"
+    TEXT 13, 9, "HI"
     TEXT 26, 10, "PRESS START"
     .byte 0
 

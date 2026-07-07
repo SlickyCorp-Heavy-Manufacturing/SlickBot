@@ -76,13 +76,16 @@ shield still soaks one hit before you start losing lives. Survive to fill the
 
 You're racing down a lane-marked asphalt **road**; a **treeline drifts by in
 the background** while dust streaks race past on the road, so the layered
-parallax sells the speed. The chase gets faster and the hazards thicker the
+parallax sells the speed. Watch for **oncoming traffic** — faster cars barrel
+in from the top lanes. The chase gets faster and the hazards thicker the
 further you get.
 
 ### Boss — THE CHOPPER
 
 Fill the distance meter and a **border-patrol helicopter** drops in for the
-final showdown. It sweeps up and down and rains bombs on the road.
+final showdown. It has **two attack patterns** — a steady vertical sweep
+dropping single bombs, and a faster **dive** that tracks your Warthog and
+bombs harder — and it switches between them as the fight goes on.
 
 * **A** — fire the Warthog's gun (bullets shoot forward at your current height)
 * **D-Pad Up/Down** — line your shots up with the chopper *and* dodge its bombs
@@ -94,10 +97,17 @@ lives — get hit with no lives left and it's game over.
 ## The finale — WELCOME TO CANADA
 
 Down the chopper and you get a victory drive-in: your (now bigger) Warthog
-rolls in, **honks** as it parks, and a **beaver waves** beside a **Canadian
-flag** while **maple leaves tumble** down and a triumphant stadium-organ
-**fanfare** plays. Your crates-packed total is on the banner. Press START to
-head back to the title.
+rolls in, **honks** as it parks, a **beaver waves a hockey stick** beside a
+**Canadian flag**, **maple leaves tumble** down, **fireworks** burst overhead,
+and a triumphant stadium-organ **fanfare** plays. Your crates packed, final
+**score** and **high score** are on the banner.
+
+## Scoring
+
+You rack up points all game — packing consoles, crossing the border, covering
+distance, hitting the chopper and downing it. Your **score** shows in the HUD
+during play, and the session **high score** is shown on the title, the victory
+screen and the game-over screen.
 Get hit with your shield up and it absorbs the blow (you're knocked back to the
 start and a pip drops); the shield **fully recharges** if you stay clean for a
 few seconds — pure Master Chief. Get hit with the shield down and you lose a
