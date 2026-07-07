@@ -507,6 +507,28 @@ def build_background_table():
     # 0x07 solid colour-2 block (HUD bar / booth)
     tiles[0x07] = tile_from_rows(['22222222'] * 8)
 
+    # --- packing-stage tiles (use the pack palette) --------------------
+    # 0x08 packed crate: colour-3 border around colour-2 fill
+    tiles[0x08] = tile_from_rows(['33333333',
+                                  '32222223',
+                                  '32222223',
+                                  '32222223',
+                                  '32222223',
+                                  '32222223',
+                                  '32222223',
+                                  '33333333'])
+    # 0x09 empty bin cell: flat colour-1 with faint corner dots
+    tiles[0x09] = tile_from_rows(['01111110',
+                                  '11111111',
+                                  '11111111',
+                                  '11111111',
+                                  '11111111',
+                                  '11111111',
+                                  '11111111',
+                                  '01111110'])
+    # 0x0A bin wall: solid colour-3
+    tiles[0x0a] = tile_from_rows(['33333333'] * 8)
+
     # --- font at ASCII positions ---------------------------------------
     for ch, rows in FONT.items():
         tiles[ord(ch)] = tile_from_rows(rows)
@@ -683,6 +705,17 @@ def build_sprite_table():
         '................',
     ], cmap)
     place(0x24, con)
+
+    # Falling-piece block (8x8 sprite): solid colour-2, drawn in 8x8 mode
+    # during the packing stage; the sprite palette gives it its colour.
+    tiles[0x38] = tile_from_rows(['22222222',
+                                  '23333332',
+                                  '23333332',
+                                  '23333332',
+                                  '23333332',
+                                  '23333332',
+                                  '23333332',
+                                  '22222222'])
 
     return tiles
 

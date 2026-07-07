@@ -13,27 +13,25 @@ cosy lounge-jazz loop.
 * **Mapper:** NROM-128 (mapper 0), 16 KB PRG + 8 KB CHR
 * **Output:** `border.nes` — runs on real hardware and every major emulator
 
-## Stage 1 — THE PACKING (choose your loadout)
+## Stage 1 — THE PACKING (a falling-block puzzle)
 
-Before the border run you get a loadout screen: **cram loot into an inventory
-the size of a human colon.** You have **4 slots**. The catch — taking
-everything costs 6 slots, so you *must* leave something behind. And every slot
-you fill makes your smuggler **waddle slower** during the run, so heavier =
-richer but far more dangerous.
+Before the border run you have to physically **cram the Sega gear into a
+storage bin the size of a colon** — a falling-block (Tetris-style) puzzle.
+Sega-component pieces drop from the top; slide and rotate them to pack them in
+tight. A completely filled row **seals and clears**, making room for more.
 
-| Item | Slots | Value |
-| ---- | :---: | ----: |
-| Genesis | 3 | $500 |
-| Sega CD | 2 | $300 |
-| 32X | 1 | $150 |
+Every crate you pack becomes loot on the victory screen — but the fuller your
+haul, the **slower you waddle** on the run. So the hard decision is: keep
+stuffing for a bigger payout, or seal the bag early to stay nimble in traffic.
 
-* **D-Pad Up/Down** — move the cursor
-* **A** — add the highlighted item (if it fits)
-* **B** — drop one
-* **START** — begin the run with your loadout
+* **D-Pad Left/Right** — slide the piece
+* **D-Pad Down** — soft drop (fall faster)
+* **A** — rotate
+* **Up** — hard drop (slam it down and lock)
+* **START** — seal the bag and begin the run
 
-Your total loot value is paid out on the victory screen. This is the "hard
-inventory decision" stage: max value vs. survivable waddle speed.
+The stage ends when you press START or the bin tops out. Your total crates
+packed are reported on the victory screen.
 
 ## Controls (the run)
 
