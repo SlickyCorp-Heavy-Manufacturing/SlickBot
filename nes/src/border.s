@@ -16,9 +16,9 @@
 
 .segment "HEADER"
     .byte "NES", $1A
-    .byte $01              ; 1 x 16 KB PRG
+    .byte $02              ; 2 x 16 KB PRG  (NROM-256, 32 KB)
     .byte $01              ; 1 x 8  KB CHR
-    .byte $00              ; flags6: mapper 0, horizontal mirroring
+    .byte $02              ; flags6: mapper 0, horizontal mirror, battery WRAM
     .byte $00              ; flags7
     .byte $00, $00, $00, $00, $00, $00, $00, $00
 
@@ -76,6 +76,7 @@ NEXT_PY    = 72
 ; getaway (side-scroller) stage
 N_OBST     = 6          ; simultaneous hazards
 WART_X     = 40         ; warthog fixed screen x
+PASSLINE   = 48         ; x a hazard crosses to count as a dodge
 GY_MIN     = 140        ; warthog vertical range on the road
 GY_MAX     = 188
 GT_TARGET  = 16        ; distance before the boss chopper arrives
@@ -83,6 +84,7 @@ N_CLOUD    = 3          ; background parallax clouds
 N_STREAK   = 4          ; foreground parallax speed streaks
 N_BOMB     = 3          ; chopper bombs in flight
 N_BULL     = 2          ; player bullets in flight
+N_PU       = 2          ; getaway power-ups in flight
 BOSS_HP    = 8          ; hits to down the chopper (also HP-bar cells)
 FIRE_CD    = 10         ; frames between player shots
 BOSS_X0    = 200        ; chopper hover x
@@ -152,6 +154,12 @@ carlane:    .res 1
 carloop:    .res 1
 ppuctrl_val: .res 1    ; current PPUCTRL (8x16 for run, 8x8 for packing)
 win_wx:       .res 1   ; warthog x during the victory drive-in
+difficulty:   .res 1   ; 0 easy, 1 normal, 2 hard
+shake_tmr:    .res 1   ; screen-shake frames remaining
+flash_tmr:    .res 1   ; white-flash frames remaining
+paused:       .res 1   ; 1 while the game is paused
+combo:        .res 1   ; current dodge combo count (getaway)
+combo_tmr:    .res 1   ; frames left before the combo decays
 weight:     .res 1     ; load carried into the run
 loot_val:   .res 1     ; unused holdover (kept for alignment)
 move_timer: .res 1     ; frames until next move allowed (waddle)
@@ -198,6 +206,8 @@ boss_atk:   .res 1     ; bomb-drop timer
 boss_ent:   .res 1     ; entrance countdown
 boss_pat:   .res 1     ; boss attack pattern (0=sweep, 1=dive)
 boss_pat_t: .res 1     ; frames until pattern switch
+boss_flash: .res 1     ; hit-blink frames remaining
+boss_rage:  .res 1     ; 1 once the chopper enters its berserk phase
 fire_cd:    .res 1     ; player shot cooldown
 score_lo:   .res 1     ; running score (16-bit)
 score_hi:   .res 1
@@ -257,6 +267,17 @@ bomb_y:     .res N_BOMB
 bull_a:     .res N_BULL     ; player bullets
 bull_x:     .res N_BULL
 bull_y:     .res N_BULL
+pu_active:  .res N_PU       ; getaway power-ups
+pu_x:       .res N_PU
+pu_y:       .res N_PU
+pu_type:    .res N_PU       ; 0 poutine (shield), 1 extra life, 2 maple star
+
+; ---- battery-backed PRG-RAM ($6000): survives power cycles ----------------
+.segment "SRAM"
+sram_sig:   .res 4          ; magic signature ("BRUN") validating the save
+sram_hi_lo: .res 1          ; persisted all-time high score (16-bit)
+sram_hi_hi: .res 1
+sram_diff:  .res 1          ; last chosen difficulty (0=easy,1=normal,2=hard)
 
 ; ===========================================================================
 .segment "CODE"
@@ -312,6 +333,8 @@ bull_y:     .res N_BULL
     lda #$c3
     sta rng+1
 
+    jsr load_save          ; pull persistent high score + difficulty from WRAM
+
     lda #%10100000         ; NMI on, 8x16 sprites (default for run/title)
     sta ppuctrl_val
 
@@ -354,13 +377,47 @@ mainloop:
 
     jsr flush_vbuf
 
+    ; hit-flash: whiten the backdrop for a few frames on impact
+    bit PPUSTATUS
+    lda #$3f
+    sta PPUADDR
+    lda #$00
+    sta PPUADDR
+    lda flash_tmr
+    beq @noflash
+    dec flash_tmr
+    lda #$30                ; white
+    sta PPUDATA
+    jmp @flashdone
+@noflash:
+    lda #$0f                ; normal black backdrop
+    sta PPUDATA
+@flashdone:
+    ; reset VRAM address latch back to the top of the nametable
+    bit PPUSTATUS
+
     lda ppuctrl_val
     sta PPUCTRL
     lda #%00011110
     sta PPUMASK
+    ; screen shake: jitter the scroll a few pixels while active
+    lda shake_tmr
+    beq @noshake
+    dec shake_tmr
+    lda frame
+    and #2                  ; toggles 0 / 2
+    tax
+    stx PPUSCROLL           ; x scroll jitter
+    lda frame
+    and #1
+    asl a                   ; toggles 0 / 2
+    sta PPUSCROLL           ; y scroll jitter
+    jmp @scrolldone
+@noshake:
     lda #0
     sta PPUSCROLL
     sta PPUSCROLL
+@scrolldone:
 
     inc frame
     lda #1
@@ -476,6 +533,31 @@ cp:
 
 ; --------------------------------------------------------------------------
 .proc run_state
+    ; SELECT pauses the action stages (crossing, packing, getaway)
+    lda state
+    cmp #ST_PLAY
+    beq @pausable
+    cmp #ST_PACK
+    beq @pausable
+    cmp #ST_GETAWAY
+    beq @pausable
+    jmp @dispatch
+@pausable:
+    lda paused
+    bne @ispaused
+    lda pad1_new
+    and #BTN_SEL
+    beq @dispatch
+    jsr pause_enter
+    rts
+@ispaused:
+    lda pad1_new
+    and #BTN_SEL
+    beq @frozen
+    jsr pause_leave
+@frozen:
+    rts
+@dispatch:
     lda state
     asl a
     tax
@@ -493,6 +575,73 @@ state_tab:
     .word do_win
     .word do_pack
     .word do_getaway
+.endproc
+
+; --------------------------------------------------------------------------
+;  Pause: blank the field to a PAUSED card, freeze logic, hide sprites.
+; --------------------------------------------------------------------------
+.proc pause_enter
+    lda #1
+    sta paused
+    lda #0
+    sta shake_tmr
+    sta flash_tmr
+    jsr ppu_off
+    jsr clear_nametable
+    PUTS txt_paused,   (NT + 13*32 + 13)
+    PUTS txt_pauseres, (NT + 16*32 +  8)
+    jsr hide_all_oam
+    jsr ppu_on
+    rts
+.endproc
+
+; resume: rebuild the current stage's scene, then let it run next frame
+.proc pause_leave
+    lda #0
+    sta paused
+    lda state
+    cmp #ST_PACK
+    beq @pack
+    cmp #ST_GETAWAY
+    beq @getaway
+    ; crossing
+    jsr ppu_off
+    jsr load_pal_game
+    jsr clear_nametable
+    jsr draw_field
+    lda #1
+    sta hud_dirty
+    jsr ppu_on
+    rts
+@getaway:
+    jsr ppu_off
+    jsr load_pal_getaway
+    jsr clear_nametable
+    jsr draw_getaway_scene
+    jsr ppu_on
+    rts
+@pack:
+    jsr ppu_off
+    jsr load_pal_pack
+    jsr clear_nametable
+    jsr draw_bin_frame
+    jsr draw_pack_labels
+    jsr redraw_bin
+    jsr ppu_on
+    ; re-post the live TIME / SEGAS numbers
+    lda #>(NT + 21*32 + 10)
+    sta tmp3
+    lda #<(NT + 21*32 + 10)
+    sta tmp4
+    lda pack_secs
+    jsr queue_num2
+    lda #>(NT + 21*32 + 20)
+    sta tmp3
+    lda #<(NT + 21*32 + 20)
+    sta tmp4
+    lda ncons
+    jsr queue_num2
+    rts
 .endproc
 
 ; ===========================================================================
@@ -865,6 +1014,7 @@ loop:
     lda shield
     beq @lose
     dec shield
+    jsr fx_hit
     lda #IFRAMES
     sta iframes
     lda #PLAYER_Y0
@@ -875,6 +1025,7 @@ loop:
     jsr sfx_p
     rts
 @lose:
+    jsr fx_big
     dec lives
     lda #DEAD_TIME
     sta iframes          ; keep player flashing through the DEAD pause
@@ -1944,6 +2095,13 @@ cell_tile:
     sta dist_hi
     sta iframes
     sta regentmr
+    sta combo
+    sta combo_tmr
+    ldx #0
+:   sta pu_active, x
+    inx
+    cpx #N_PU
+    bne :-
     lda #SH_MAX
     sta shield
     lda #2
@@ -2024,12 +2182,14 @@ cell_tile:
 ; --------------------------------------------------------------------------
 .proc do_getaway
     jsr getaway_input
+    jsr combo_tick
     jsr move_parallax
     lda boss_on
     bne @boss
     ; ---- phase 1: dodge traffic until the chopper catches up ----
     jsr move_obstacles
     jsr spawn_tick
+    jsr move_powerups
     jsr getaway_collision
     lda state
     cmp #ST_GETAWAY
@@ -2169,7 +2329,15 @@ cell_tile:
     bcc @kill
     cmp #4
     bcc @kill
-    sta ob_x, x
+    sta ob_x, x             ; A = new x
+    ; dodge combo: did this hazard just cross the warthog's pass line?
+    cmp #PASSLINE+1
+    bcs @next               ; still ahead of the warthog
+    clc
+    adc ob_spd, x           ; reconstruct old x = new + speed
+    cmp #PASSLINE+1
+    bcc @next               ; was already past -> not a new crossing
+    jsr count_dodge
     jmp @next
 @kill:
     lda #0
@@ -2181,6 +2349,41 @@ cell_tile:
     rts
 .endproc
 
+; a hazard slipped past -> grow the dodge combo, award combo*5 points
+.proc count_dodge
+    txa
+    pha
+    lda combo
+    cmp #9
+    bcs @capped
+    inc combo
+@capped:
+    lda #90
+    sta combo_tmr
+    lda combo
+    sta mtmp
+    asl a
+    asl a
+    clc
+    adc mtmp                ; combo * 5
+    jsr add_score
+    pla
+    tax
+    rts
+.endproc
+
+; decay the combo when the player goes too long without a dodge
+.proc combo_tick
+    lda combo_tmr
+    beq @done
+    dec combo_tmr
+    bne @done
+    lda #0
+    sta combo
+@done:
+    rts
+.endproc
+
 ; --------------------------------------------------------------------------
 .proc spawn_tick
     dec spawn_tmr
@@ -2188,6 +2391,12 @@ cell_tile:
     lda spawn_per
     sta spawn_tmr
     jsr spawn_obstacle
+    ; ~1 in 8 spawn ticks also drops a power-up
+    jsr update_rng
+    lda rng
+    and #7
+    bne @ret
+    jsr spawn_powerup
 @ret:
     rts
 .endproc
@@ -2246,6 +2455,163 @@ cell_tile:
 .endproc
 
 ; --------------------------------------------------------------------------
+;  Power-ups: poutine (shield), extra life, maple star (invincibility).
+; --------------------------------------------------------------------------
+pu_tile:
+    .byte $74, $78, $7c
+
+.proc spawn_powerup
+    ldx #0
+@f:
+    lda pu_active, x
+    beq @found
+    inx
+    cpx #N_PU
+    bne @f
+    rts                     ; no free slot
+@found:
+    lda #1
+    sta pu_active, x
+    lda #248
+    sta pu_x, x
+    jsr update_rng
+    lda rng+1
+    and #$1f
+    clc
+    adc #150                ; somewhere on the road band
+    sta pu_y, x
+    jsr update_rng
+    lda rng
+    and #3
+    cmp #3
+    bne @notlife
+    lda #1                  ; extra life (~1 in 4 power-ups)
+    jmp @sett
+@notlife:
+    cmp #2
+    bne @poutine
+    lda #2                  ; maple star
+    jmp @sett
+@poutine:
+    lda #0                  ; poutine
+@sett:
+    sta pu_type, x
+    rts
+.endproc
+
+.proc move_powerups
+    lda scroll_spd
+    clc
+    adc #1
+    sta mtmp                ; power-up drift speed
+    ldx #0
+@l:
+    lda pu_active, x
+    beq @next
+    lda pu_x, x
+    sec
+    sbc mtmp
+    bcc @kill
+    cmp #4
+    bcc @kill
+    sta pu_x, x
+    ; pickup test vs the warthog
+    sec
+    sbc #WART_X
+    bpl @dxp
+    eor #$ff
+    clc
+    adc #1
+@dxp:
+    cmp #16
+    bcs @next
+    lda pu_y, x
+    sec
+    sbc gy
+    bpl @dyp
+    eor #$ff
+    clc
+    adc #1
+@dyp:
+    cmp #16
+    bcs @next
+    ; collected
+    lda #0
+    sta pu_active, x
+    lda pu_type, x
+    jsr apply_powerup
+    jmp @next
+@kill:
+    lda #0
+    sta pu_active, x
+@next:
+    inx
+    cpx #N_PU
+    bne @l
+    rts
+.endproc
+
+; apply the collected power-up (A = type), preserving X
+.proc apply_powerup
+    sta mtmp
+    txa
+    pha
+    lda mtmp
+    cmp #1
+    beq @life
+    cmp #2
+    beq @star
+    ; type 0 poutine -> refill the shield
+    lda #SH_MAX
+    sta shield
+    jmp @reward
+@life:
+    lda lives
+    cmp #9
+    bcs @reward
+    inc lives
+    jmp @reward
+@star:
+    lda #180                ; ~3s of maple-star invincibility
+    sta iframes
+@reward:
+    lda #50
+    jsr add_score
+    lda #SFX_CROSS
+    jsr sfx_p
+    lda #1
+    sta hud_dirty
+    pla
+    tax
+    rts
+.endproc
+
+.proc draw_powerups
+    lda #0
+    sta obloop
+@l:
+    ldx obloop
+    lda pu_active, x
+    beq @n
+    lda pu_x, x
+    sta tmp
+    lda pu_y, x
+    sta tmp2
+    ldy pu_type, x
+    lda pu_tile, y
+    sta tmp3
+    lda #1
+    sta tmp4
+    jsr draw_meta16
+@n:
+    inc obloop
+    lda obloop
+    cmp #N_PU
+    bne @l
+    rts
+.endproc
+
+; --------------------------------------------------------------------------
 .proc getaway_collision
     lda iframes
     beq @go
@@ -2288,15 +2654,19 @@ cell_tile:
 .proc getaway_crash
     lda #0
     sta regentmr
+    sta combo               ; a hit breaks the dodge combo
+    sta combo_tmr
     lda shield
     beq @lose
     dec shield
+    jsr fx_hit
     lda #IFRAMES
     sta iframes
     lda #SFX_SHIELD
     jsr sfx_p
     rts
 @lose:
+    jsr fx_big
     dec lives
     lda lives
     beq @over
@@ -2363,6 +2733,8 @@ cell_tile:
     sta boss_ent
     lda #0
     sta boss_pat            ; start in sweep pattern
+    sta boss_flash
+    sta boss_rage
     lda #200
     sta boss_pat_t
     ldx #0
@@ -2391,6 +2763,10 @@ cell_tile:
     jsr bullet_boss_collision
     rts
 @fight:
+    lda boss_flash
+    beq @noflash
+    dec boss_flash
+@noflash:
     ; switch attack pattern periodically
     dec boss_pat_t
     bne @nosw
@@ -2428,7 +2804,10 @@ cell_tile:
     dec boss_atk
     bne @after
     lda #40
-    sta boss_atk
+    ldx boss_rage
+    beq :+
+    lda #18                 ; berserk: bomb far more often
+:   sta boss_atk
     jsr drop_bomb
     jmp @after
 @dive:
@@ -2445,7 +2824,10 @@ cell_tile:
     dec boss_atk
     bne @after
     lda #22
-    sta boss_atk
+    ldx boss_rage
+    beq :+
+    lda #12                 ; berserk: rapid dive-bombing
+:   sta boss_atk
     jsr drop_bomb
 @after:
     jsr do_fire
@@ -2463,6 +2845,7 @@ cell_tile:
     ; chopper downed -> escape to Canada
     lda #200                ; boss-kill bonus
     jsr add_score
+    jsr fx_big
     lda #SFXN_BOOM
     jsr sfx_n
     lda #ST_WIN
@@ -2608,10 +2991,23 @@ cell_tile:
     lda boss_hp
     beq @next
     dec boss_hp
+    lda #6
+    sta boss_flash          ; blink the chopper on the hit
     lda #20                 ; points per boss hit
     jsr add_score
     lda #SFX_BOSSHIT
     jsr sfx_p
+    ; enter berserk phase once the chopper is badly damaged
+    lda boss_rage
+    bne @next
+    lda boss_hp
+    cmp #3
+    bcs @next
+    lda #1
+    sta boss_rage
+    jsr fx_hit              ; jolt + flash telegraphs the rage
+    lda #SFXN_HIT
+    jsr sfx_n
 @next:
     inx
     cpx #N_BULL
@@ -2745,6 +3141,17 @@ cell_tile:
     inx
     cpx #5
     bne @sc
+    ; dodge combo multiplier (shown once it builds up)
+    lda combo
+    cmp #2
+    bcc @nocombo
+    lda #'X'
+    sta hudline+27
+    lda combo
+    clc
+    adc #'0'
+    sta hudline+28
+@nocombo:
     lda #<hudline
     sta ptr
     lda #>hudline
@@ -2796,6 +3203,7 @@ cell_tile:
     jmp @para
 @traffic:
     jsr draw_hazards
+    jsr draw_powerups
 @para:
     jsr draw_streaks
     jsr draw_clouds
@@ -2831,6 +3239,14 @@ cell_tile:
 
 ; --------------------------------------------------------------------------
 .proc draw_boss
+    ; blink the chopper for a few frames after a hit
+    lda boss_flash
+    beq @show
+    lda frame
+    and #1
+    beq @show
+    jmp @proj                ; skip the body this frame
+@show:
     ; chopper: two 16x16 halves
     lda boss_x
     sta tmp
@@ -2852,6 +3268,7 @@ cell_tile:
     lda #2
     sta tmp4
     jsr draw_meta16
+@proj:
     ; bombs
     lda #0
     sta obloop
@@ -3050,7 +3467,7 @@ cell_tile:
     rts
 .endproc
 
-; if score > high score, replace it
+; if score > high score, replace it (and persist the new high to WRAM)
 .proc update_hiscore
     lda score_hi
     cmp hisc_hi
@@ -3062,9 +3479,73 @@ cell_tile:
 @set:
     lda score_lo
     sta hisc_lo
+    sta sram_hi_lo
     lda score_hi
     sta hisc_hi
+    sta sram_hi_hi
 @done:
+    rts
+.endproc
+
+; ---- battery save: validate signature, load high score / difficulty -------
+.proc load_save
+    lda sram_sig+0
+    cmp #'B'
+    bne @init
+    lda sram_sig+1
+    cmp #'R'
+    bne @init
+    lda sram_sig+2
+    cmp #'U'
+    bne @init
+    lda sram_sig+3
+    cmp #'N'
+    bne @init
+    ; valid save present -> restore high score + difficulty
+    lda sram_hi_lo
+    sta hisc_lo
+    lda sram_hi_hi
+    sta hisc_hi
+    lda sram_diff
+    cmp #3
+    bcc :+
+    lda #1                  ; guard against garbage difficulty
+:   sta difficulty
+    rts
+@init:
+    lda #'B'
+    sta sram_sig+0
+    lda #'R'
+    sta sram_sig+1
+    lda #'U'
+    sta sram_sig+2
+    lda #'N'
+    sta sram_sig+3
+    lda #0
+    sta sram_hi_lo
+    sta sram_hi_hi
+    sta hisc_lo
+    sta hisc_hi
+    lda #1                  ; default difficulty = normal
+    sta sram_diff
+    sta difficulty
+    rts
+.endproc
+
+; ---- impact feedback: kick the screen-shake + hit-flash timers ------------
+.proc fx_hit                ; small jolt (shield absorb, single hit)
+    lda #5
+    sta shake_tmr
+    lda #2
+    sta flash_tmr
+    rts
+.endproc
+
+.proc fx_big                ; heavy jolt (life lost, boss destroyed)
+    lda #14
+    sta shake_tmr
+    lda #5
+    sta flash_tmr
     rts
 .endproc
 
@@ -3958,6 +4439,9 @@ tmpl_shield: .byte "SHIELD:"
     .byte .strlen(s)
     .byte s
 .endmacro
+
+txt_paused:   .byte "PAUSED", 0
+txt_pauseres: .byte "SELECT TO RESUME", 0
 
 ; title banner overlaid on the live getaway demo (black rows 0-5)
 txt_overlay:
