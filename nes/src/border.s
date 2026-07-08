@@ -53,6 +53,10 @@ ST_PACK   = 6
 ST_GETAWAY = 7
 ST_INTRO  = 8
 ST_BONUS  = 9
+ST_SLALOM = 10
+
+SLALOM_TARGET = 16      ; descent distance before reaching the getaway road
+GATE_GAP      = 48      ; pixel gap between a slalom gate's two poles
 
 NUM_LANES  = 8
 CARS_PER   = 3
@@ -546,6 +550,8 @@ cp:
     beq @pausable
     cmp #ST_GETAWAY
     beq @pausable
+    cmp #ST_SLALOM
+    beq @pausable
     jmp @dispatch
 @pausable:
     lda paused
@@ -582,6 +588,7 @@ state_tab:
     .word do_getaway
     .word do_intro
     .word do_bonus
+    .word do_slalom
 .endproc
 
 ; --------------------------------------------------------------------------
@@ -611,6 +618,8 @@ state_tab:
     beq @pack
     cmp #ST_GETAWAY
     beq @getaway
+    cmp #ST_SLALOM
+    beq @slalom
     ; crossing
     jsr ppu_off
     jsr load_pal_game
@@ -625,6 +634,13 @@ state_tab:
     jsr load_pal_getaway
     jsr clear_nametable
     jsr draw_getaway_scene
+    jsr ppu_on
+    rts
+@slalom:
+    jsr ppu_off
+    jsr load_pal_slalom
+    jsr clear_nametable
+    jsr draw_slalom_scene
     jsr ppu_on
     rts
 @pack:
@@ -1169,6 +1185,426 @@ state_tab:
     rts
 .endproc
 
+; ===========================================================================
+;  SLALOM  --  a downhill ski run (Nintendo Slalom style).  You schuss down a
+;  snowy slope: weave BETWEEN the paired slalom flags for points and combo,
+;  dodge the pine trees, tuck (DOWN) to gather speed.  Fill the descent meter
+;  to reach the getaway road.
+; ===========================================================================
+.proc enter_slalom
+    jsr ppu_off
+    lda #%10100000          ; 8x16 sprites
+    sta ppuctrl_val
+    jsr load_pal_slalom
+    jsr clear_nametable
+    jsr draw_slalom_scene
+    lda #120
+    sta px
+    lda #176
+    sta py
+    lda #0
+    sta dist_lo
+    sta dist_hi
+    sta iframes
+    sta regentmr
+    sta combo
+    sta combo_tmr
+    sta boss_on
+    lda #SH_MAX
+    sta shield
+    lda #2
+    sta scroll_spd
+    lda #28
+    sta spawn_per
+    lda #20
+    sta spawn_tmr
+    ldx #0
+    lda #0
+:   sta ob_active, x
+    inx
+    cpx #N_OBST
+    bne :-
+    lda #1
+    sta mus_on
+    lda #SONG_GETAWAY
+    jsr music_play
+    lda #1
+    sta hud_dirty
+    jsr ppu_on
+    rts
+.endproc
+
+; snow slope: black HUD bar (rows 0-1) then snow (rows 2-29)
+.proc draw_slalom_scene
+    bit PPUSTATUS
+    lda #$20
+    sta PPUADDR
+    lda #$00
+    sta PPUADDR
+    ldx #0
+@row:
+    cpx #2
+    lda #$17                ; snow tile (rows >= 2)
+    bcs @have
+    lda #$00                ; black HUD bar (rows 0-1)
+@have:
+    ldy #32
+@col:
+    sta PPUDATA
+    dey
+    bne @col
+    inx
+    cpx #30
+    bne @row
+    ; attributes all palette 0
+    ldy #64
+    lda #0
+@attr:
+    sta PPUDATA
+    dey
+    bne @attr
+    rts
+.endproc
+
+.proc do_slalom
+    jsr slalom_input
+    jsr slalom_move
+    lda state
+    cmp #ST_SLALOM
+    beq @cont
+    rts                     ; a crash may have ended the game
+@cont:
+    jsr slalom_spawn
+    jsr combo_tick
+    jsr shield_regen
+    ; descent progress (2x speed so the meter fills over the run)
+    lda scroll_spd
+    asl a
+    clc
+    adc dist_lo
+    sta dist_lo
+    bcc @nocarry
+    inc dist_hi
+    lda #10
+    jsr add_score
+@nocarry:
+    lda dist_hi
+    cmp #SLALOM_TARGET
+    bcc @render
+    ; reached the bottom -> onto the getaway road
+    lda #ST_GETAWAY
+    sta state
+    jsr enter_getaway
+    rts
+@render:
+    jsr build_getaway_hud   ; same LIVES/SHIELD/DIST/SCORE/combo layout
+    jsr draw_slalom
+    rts
+.endproc
+
+.proc slalom_input
+    lda #3
+    sta scroll_spd
+    lda pad1
+    and #BTN_DOWN
+    beq @notuck
+    lda #6                  ; tuck -> faster descent
+    sta scroll_spd
+@notuck:
+    lda pad1
+    and #BTN_LEFT
+    beq @nl
+    lda px
+    cmp #10
+    bcc @nl
+    dec px
+    dec px
+    dec px
+@nl:
+    lda pad1
+    and #BTN_RIGHT
+    beq @nr
+    lda px
+    cmp #232
+    bcs @nr
+    inc px
+    inc px
+    inc px
+@nr:
+    rts
+.endproc
+
+; move gates/trees down the slope; score gates and crash into trees
+.proc slalom_move
+    ldx #0
+@l:
+    lda ob_active, x
+    beq @next
+    jsr slalom_item         ; X preserved; may crash (changes state)
+    lda state
+    cmp #ST_SLALOM
+    bne @stop
+@next:
+    inx
+    cpx #N_OBST
+    bne @l
+@stop:
+    rts
+.endproc
+
+; process one slalom obstacle (X = index); short local branches only
+.proc slalom_item
+    lda ob_y, x
+    clc
+    adc scroll_spd
+    cmp #210
+    bcc @alive
+    lda #0
+    sta ob_active, x
+    rts
+@alive:
+    sta ob_y, x
+    lda ob_type, x
+    bne @gate
+    ; ---- tree: crash if it overlaps the skier ----
+    lda iframes
+    bne @done               ; invulnerable right after a crash
+    lda ob_y, x
+    sec
+    sbc py
+    bpl @tdy
+    eor #$ff
+    clc
+    adc #1
+@tdy:
+    cmp #14
+    bcs @done
+    lda ob_x, x
+    sec
+    sbc px
+    bpl @tdx
+    eor #$ff
+    clc
+    adc #1
+@tdx:
+    cmp #13
+    bcs @done
+    jsr slalom_crash
+@done:
+    rts
+@gate:
+    lda ob_spd, x           ; reused as "already scored" flag
+    bne @done
+    lda ob_y, x
+    cmp py
+    bcc @done               ; not down to the skier yet
+    lda #1
+    sta ob_spd, x
+    ; d = skier-centre - left pole x
+    lda px
+    clc
+    adc #8
+    sec
+    sbc ob_x, x
+    bcc @missed             ; left of the left pole
+    cmp #8
+    bcc @polehit            ; within the left pole
+    cmp #GATE_GAP
+    bcc @passed             ; between the poles -- clean!
+    cmp #(GATE_GAP+8)
+    bcc @polehit            ; within the right pole
+@missed:
+    lda #0
+    sta combo               ; a skipped gate breaks the combo
+    rts
+@passed:
+    lda combo
+    cmp #9
+    bcs @cap
+    inc combo
+@cap:
+    lda #60
+    sta combo_tmr
+    lda combo
+    sta mtmp
+    asl a
+    asl a
+    clc
+    adc mtmp                ; combo * 5
+    clc
+    adc #10                 ; + flat gate bonus
+    jsr add_score
+    lda #SFX_CROSS
+    jsr sfx_p
+    rts
+@polehit:
+    jsr slalom_crash
+    rts
+.endproc
+
+.proc slalom_spawn
+    dec spawn_tmr
+    bne @ret
+    lda spawn_per
+    sta spawn_tmr
+    ldx #0
+@f:
+    lda ob_active, x
+    beq @found
+    inx
+    cpx #N_OBST
+    bne @f
+    rts
+@found:
+    lda #1
+    sta ob_active, x
+    lda #0
+    sta ob_spd, x           ; clear scored flag
+    lda #16
+    sta ob_y, x
+    jsr update_rng
+    lda rng
+    and #3
+    beq @tree               ; ~1 in 4 is a tree
+    ; gate: left pole x in 8..135 (right pole + width stays on screen)
+    lda #1
+    sta ob_type, x
+    lda rng
+    lsr a
+    and #$7f
+    clc
+    adc #8
+    sta ob_x, x
+    rts
+@tree:
+    lda #0
+    sta ob_type, x
+    jsr update_rng
+    lda rng
+    cmp #232
+    bcc @tokx
+    lda #232
+@tokx:
+    cmp #8
+    bcs @stx
+    lda #8
+@stx:
+    sta ob_x, x
+    rts
+@ret:
+    rts
+.endproc
+
+.proc draw_slalom
+    lda #0
+    sta oam_idx
+    ; skier (blink while invulnerable)
+    lda iframes
+    beq @dsk
+    lda frame
+    and #4
+    bne @dsk
+    jmp @obs
+@dsk:
+    lda px
+    sta tmp
+    lda py
+    sta tmp2
+    lda #$b0
+    sta tmp3
+    lda #0
+    sta tmp4
+    jsr draw_meta16
+@obs:
+    lda #0
+    sta obloop
+@l:
+    ldx obloop
+    lda ob_active, x
+    beq @n
+    lda ob_type, x
+    bne @gate
+    ; tree
+    lda ob_x, x
+    sta tmp
+    lda ob_y, x
+    sta tmp2
+    lda #$40
+    sta tmp3
+    lda #3
+    sta tmp4
+    jsr draw_meta16
+    jmp @n
+@gate:
+    ; left pole (red)
+    lda ob_x, x
+    sta tmp
+    lda ob_y, x
+    sta tmp2
+    lda #$b4
+    sta tmp3
+    lda #1
+    sta tmp4
+    jsr draw_meta16
+    ; right pole (blue)
+    ldx obloop
+    lda ob_x, x
+    clc
+    adc #GATE_GAP
+    sta tmp
+    lda ob_y, x
+    sta tmp2
+    lda #$b4
+    sta tmp3
+    lda #2
+    sta tmp4
+    jsr draw_meta16
+@n:
+    inc obloop
+    lda obloop
+    cmp #N_OBST
+    beq @done
+    jmp @l
+@done:
+    jsr hide_rest_oam
+    rts
+.endproc
+
+.proc slalom_crash
+    lda #0
+    sta combo
+    sta combo_tmr
+    sta regentmr
+    lda shield
+    beq @lose
+    dec shield
+    jsr fx_hit
+    lda #IFRAMES
+    sta iframes
+    lda #SFX_SHIELD
+    jsr sfx_p
+    rts
+@lose:
+    jsr fx_big
+    dec lives
+    lda lives
+    beq @over
+    lda #SH_MAX
+    sta shield
+    lda #IFRAMES
+    sta iframes
+    lda #SFXN_DEATH
+    jsr sfx_n
+    rts
+@over:
+    lda #SFXN_DEATH
+    jsr sfx_n
+    jsr enter_over
+    lda #ST_OVER
+    sta state
+    rts
+.endproc
+
 ; --------------------------------------------------------------------------
 .proc setup_level
     jsr ppu_off
@@ -1438,10 +1874,10 @@ loop:
     jsr enter_level
     rts
 @winall:
-    ; crossed the border -- now floor it away from border control
-    lda #ST_GETAWAY
+    ; crossed the border -- now ski down the Rockies into Canada
+    lda #ST_SLALOM
     sta state
-    jsr enter_getaway
+    jsr enter_slalom
     rts
 .endproc
 
@@ -4384,6 +4820,14 @@ loop:
     jmp load_palette
 .endproc
 
+.proc load_pal_slalom
+    lda #<palette_slalom
+    sta ptr
+    lda #>palette_slalom
+    sta ptr+1
+    jmp load_palette
+.endproc
+
 ; --------------------------------------------------------------------------
 ;  Draw a script of text runs to the nametable (rendering off).
 ;   ptr -> [addrHi, addrLo, len, len bytes...] ... terminated by addrHi 0
@@ -4768,6 +5212,18 @@ palette_night:
     .byte $0f,$0f,$30,$16
     .byte $0f,$0f,$2a,$30
     .byte $0f,$17,$16,$30
+
+palette_slalom:
+    ; snow slope: bg = white snow, grey flecks, white HUD text
+    .byte $0f,$30,$10,$30
+    .byte $0f,$30,$10,$30
+    .byte $0f,$30,$10,$30
+    .byte $0f,$30,$10,$30
+    ; sprites: 0 skier (red/white), 1 red flag, 2 blue flag, 3 pine tree
+    .byte $0f,$16,$30,$0f
+    .byte $0f,$16,$30,$0f
+    .byte $0f,$11,$30,$0f
+    .byte $0f,$27,$29,$30
 
 palette_pack:
     ; background: black, grey(empty cell), red(crate fill), white(wall/text)

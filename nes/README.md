@@ -79,9 +79,25 @@ The stage ends when the **TIME** meter hits zero or you press START. The
 | **SELECT** | Pause / resume |
 
 Reach the checkered border at the top to cross into Canada and advance a level.
-Clear all three crossings and you hit the final stage. Each crossing is
+Clear all three crossings and you hit the mountain. Each crossing is
 **visually themed** — a **daytime** highway, a **dusk** run, then a tense
 **night** crossing.
+
+## Stage 2.5 — THE SLALOM (downhill ski run)
+
+Across the border, the fastest way down the Rockies is on skis. This is a
+**Nintendo *Slalom*-style** downhill: you schuss down a snowy slope, the pines
+and flags rushing up at you.
+
+* **D-Pad Left/Right** — carve across the slope
+* **D-Pad Down** — **tuck** for a burst of speed (and points)
+
+**Weave between each pair of slalom flags** (red gate on the left, blue on the
+right) for points and to build your **dodge combo** — miss a gate and the combo
+resets. **Dodge the pine trees**: clip a tree (or clip a flag pole) and you
+crash — your Halo shield eats the first hit, after that you start losing lives.
+Fill the **descent meter** to reach the bottom, where the Warthog is waiting for
+the getaway.
 
 ## Stage 3 — THE GETAWAY (side-scroller)
 
