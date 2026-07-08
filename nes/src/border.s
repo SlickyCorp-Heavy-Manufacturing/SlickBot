@@ -1244,28 +1244,41 @@ state_tab:
     sta PPUADDR
     lda #$00
     sta PPUADDR
-    ldx #0                  ; row
+    ; rows 0-7: HUD / sky / mountains
+    ldx #0
 @row:
-    cpx #8
-    bcs @run                ; rows 8-29 = the perspective run
-    jsr slope_top_tile      ; rows 0-7 = HUD / sky / mountains
+    jsr slope_top_tile
     ldy #32
 @col:
     sta PPUDATA
     dey
     bne @col
-    jmp @rownext
-@run:
-    txa
-    sec
-    sbc #8
-    tay
-    lda slope_hw, y
-    jsr fill_run_row        ; A = half-width in tiles
-@rownext:
     inx
-    cpx #30
+    cpx #8
     bne @row
+    ; rows 8-29: stream the pre-generated perspective run (704 bytes)
+    lda #<slope_nt
+    sta ptr
+    lda #>slope_nt
+    sta ptr+1
+    ldx #0
+    ldy #0
+@page:
+    lda (ptr), y
+    sta PPUDATA
+    iny
+    bne @page
+    inc ptr+1
+    inx
+    cpx #2
+    bne @page               ; first 512 bytes (2 pages)
+    ldy #0
+@tail:
+    lda (ptr), y
+    sta PPUDATA
+    iny
+    cpy #(22*32-512)
+    bne @tail
     ; attributes: tile rows 0-7 -> pal 0 (sky), rows 8-29 -> pal 1 (slope)
     ldy #16
     lda #$00
@@ -1306,47 +1319,13 @@ state_tab:
     rts
 .endproc
 
-; write one run row: A = half-width in tiles; centre column 16
-.proc fill_run_row
-    sta bitn                ; hw
-    lda #16
-    sec
-    sbc bitn
-    sta cellc               ; L = 16 - hw (left edge column)
-    lda #16
-    clc
-    adc bitn
-    sta cellr               ; R = 16 + hw (right edge column)
-    ldy #0
-@c:
-    cpy cellc
-    bcc @grey               ; col < L
-    beq @ledge              ; col == L
-    cpy cellr
-    bcc @white              ; L < col < R
-    beq @redge              ; col == R
-@grey:
-    lda #$18
-    jmp @put
-@ledge:
-    lda #$1a
-    jmp @put
-@white:
-    lda #$17
-    jmp @put
-@redge:
-    lda #$1b
-@put:
-    sta PPUDATA
-    iny
-    cpy #32
-    bne @c
-    rts
-.endproc
-
-; half-width (tiles) of the run for rows 8..29 -- the perspective spread
+; half-width (tiles) of the run for rows 8..29 -- matches the generated run
+; (hwpx = 16 + i*4, so hw_tiles = 2 + i/2); drives the obstacle fan-out.
 slope_hw:
-    .byte 2,2,3,3,4,4,5,6,6,7,7,8,9,9,10,10,11,11,12,12,13,13
+    .byte 2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12
+
+; the pre-generated perspective run nametable (rows 8-29)
+.include "slope.inc"
 
 .proc do_slalom
     jsr slalom_input
@@ -1483,9 +1462,8 @@ slope_hw:
     bcc @done               ; not down to the skier yet
     lda #1
     sta ob_spd, x
-    ; half-gap scales with perspective: hg = factor * 2
-    jsr slalom_factor
-    asl a
+    ; half-gap scales with the run width at this row
+    jsr slalom_unit
     sta cellr               ; half-gap in px
     ; |d| = |skier-centre - gate-centre|
     lda px
@@ -1540,25 +1518,31 @@ slope_hw:
     rts
 .endproc
 
-; perspective factor for obstacle X: (ob_y>>3) - 4, clamped >= 0
-.proc slalom_factor
+; perspective "unit" for obstacle X = (run half-width in tiles at its row) * 2.
+; The run's own slope_hw table drives the spread, so obstacles and gate poles
+; always land on the white piste -- never on the grey banks, never off-screen
+; (centre = 128 + lane*unit, gate half-gap = unit, poles within +/-4*unit).
+.proc slalom_unit
     lda ob_y, x
     lsr a
     lsr a
-    lsr a
+    lsr a                   ; row = ob_y >> 3
     sec
-    sbc #4
+    sbc #8                  ; index into slope_hw (row 8 = index 0)
     bcs @ok
-    lda #0
+    lda #0                  ; guard above the horizon
 @ok:
+    tay
+    lda slope_hw, y
+    asl a                   ; * 2
     rts
 .endproc
 
 ; project obstacle X to a screen x that fans out from the vanishing point:
-;   ob_x = 128 + ob_lane * factor(y)          (signed lane -4..4)
+;   ob_x = 128 + ob_lane * unit(y)          (signed lane -3..3)
 .proc slalom_projx
-    jsr slalom_factor
-    sta cellr               ; factor
+    jsr slalom_unit
+    sta cellr               ; unit
     lda ob_lane, x
     bpl @pos
     ; negative lane
@@ -1618,10 +1602,14 @@ slope_hw:
     sta ob_spd, x           ; clear scored flag
     lda #64
     sta ob_y, x             ; spawn small, at the horizon
-    ; lane = (rng & 7) - 3   -> -3..4 (a slot across the run)
+    ; lane = (rng % 7) - 3   -> -3..3 (a slot across the run)
     jsr update_rng
     lda rng
     and #7
+    cmp #7
+    bne @lok
+    lda #6
+@lok:
     sec
     sbc #3
     sta ob_lane, x
@@ -1681,9 +1669,8 @@ slope_hw:
     jsr draw_meta16
     jmp @n
 @gate:
-    ; half-gap scales with perspective (hg = factor * 2)
-    jsr slalom_factor
-    asl a
+    ; half-gap scales with the run width at this row
+    jsr slalom_unit
     sta cellr
     ; left pole (red) at centre - hg
     lda ob_x, x
