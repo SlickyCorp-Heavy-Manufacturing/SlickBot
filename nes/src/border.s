@@ -51,6 +51,8 @@ ST_OVER   = 4
 ST_WIN    = 5
 ST_PACK   = 6
 ST_GETAWAY = 7
+ST_INTRO  = 8
+ST_BONUS  = 9
 
 NUM_LANES  = 8
 CARS_PER   = 3
@@ -160,6 +162,9 @@ flash_tmr:    .res 1   ; white-flash frames remaining
 paused:       .res 1   ; 1 while the game is paused
 combo:        .res 1   ; current dodge combo count (getaway)
 combo_tmr:    .res 1   ; frames left before the combo decays
+intro_page:   .res 1   ; current intro-cutscene page
+bonus_tmr:    .res 1   ; bonus-round countdown
+bonus_hits:   .res 1   ; stamps collected in the bonus round
 weight:     .res 1     ; load carried into the run
 loot_val:   .res 1     ; unused holdover (kept for alignment)
 move_timer: .res 1     ; frames until next move allowed (waddle)
@@ -575,6 +580,8 @@ state_tab:
     .word do_win
     .word do_pack
     .word do_getaway
+    .word do_intro
+    .word do_bonus
 .endproc
 
 ; --------------------------------------------------------------------------
@@ -659,6 +666,7 @@ state_tab:
     jsr draw_getaway_scene
     jsr draw_title_banner
     jsr reset_getaway_state
+    jsr draw_diff_word
     lda #1
     sta mus_on
     lda #SONG_TITLE
@@ -698,15 +706,76 @@ state_tab:
 .proc do_title
     lda pad1_new
     and #BTN_START
-    beq @demo
+    beq @nostart
     jsr new_game
     rts
+@nostart:
+    ; UP = harder, DOWN = easier
+    lda pad1_new
+    and #BTN_UP
+    beq @nu
+    lda difficulty
+    cmp #2
+    bcs @nu
+    inc difficulty
+    jsr save_diff
+    jsr draw_diff_word
+    lda #SFX_HOP
+    jsr sfx_p
+@nu:
+    lda pad1_new
+    and #BTN_DOWN
+    beq @demo
+    lda difficulty
+    beq @demo
+    dec difficulty
+    jsr save_diff
+    jsr draw_diff_word
+    lda #SFX_HOP
+    jsr sfx_p
 @demo:
     jsr title_auto_move     ; self-driving Warthog dodges the traffic
     jsr move_parallax
     jsr move_obstacles
     jsr spawn_tick
     jsr draw_getaway        ; warthog + hazards + parallax (banner is background)
+    rts
+.endproc
+
+; persist the chosen difficulty to WRAM
+.proc save_diff
+    lda difficulty
+    sta sram_diff
+    rts
+.endproc
+
+; queue the current difficulty word onto the title banner (row 4, col 15)
+.proc draw_diff_word
+    lda difficulty
+    cmp #2
+    beq @hard
+    cmp #1
+    beq @norm
+    lda #<diff_easy
+    ldx #>diff_easy
+    jmp @set
+@norm:
+    lda #<diff_norm
+    ldx #>diff_norm
+    jmp @set
+@hard:
+    lda #<diff_hard
+    ldx #>diff_hard
+@set:
+    sta ptr
+    stx ptr+1
+    lda #6
+    sta tmp2
+    lda #>(NT + 4*32 + 15)
+    sta tmp3
+    lda #<(NT + 4*32 + 15)
+    sta tmp4
+    jsr vbuf_add
     rts
 .endproc
 
@@ -780,11 +849,296 @@ state_tab:
     sta pack_over
     sta score_lo
     sta score_hi
+    lda #ST_INTRO
+    sta state
+    jsr enter_intro
+    rts
+.endproc
+
+; ===========================================================================
+;  INTRO CUTSCENE  --  the briefing before the packing job.
+; ===========================================================================
+.proc enter_intro
+    jsr ppu_off
+    lda #%10000000
+    sta ppuctrl_val
+    jsr load_pal_game
+    lda #0
+    sta intro_page
+    jsr draw_intro_page
+    jsr hide_all_oam
+    lda #1
+    sta mus_on
+    lda #SONG_TITLE
+    jsr music_play
+    jsr ppu_on
+    rts
+.endproc
+
+.proc do_intro
+    lda pad1_new
+    and #BTN_START
+    beq @ret
+    inc intro_page
+    lda intro_page
+    cmp #2
+    bcc @next
+    ; briefing done -> begin packing
     lda #ST_PACK
     sta state
     lda #SFX_START
     jsr sfx_p
     jsr enter_pack
+    rts
+@next:
+    lda #SFX_HOP
+    jsr sfx_p
+    jsr draw_intro_page
+@ret:
+    rts
+.endproc
+
+.proc draw_intro_page
+    jsr ppu_off
+    jsr clear_nametable
+    lda intro_page
+    bne @p1
+    lda #<txt_intro0
+    ldx #>txt_intro0
+    jmp @go
+@p1:
+    lda #<txt_intro1
+    ldx #>txt_intro1
+@go:
+    sta ptr
+    stx ptr+1
+    jsr draw_script
+    jsr ppu_on
+    rts
+.endproc
+
+; ===========================================================================
+;  BONUS ROUND  --  DUTY FREE DASH.  Between the chopper and the finale you
+;  get a timed catch game: gold loot rains down, slide left/right to bag it.
+; ===========================================================================
+.proc enter_bonus
+    jsr ppu_off
+    lda #%10100000          ; 8x16 sprites
+    sta ppuctrl_val
+    jsr load_pal_getaway
+    jsr clear_nametable
+    jsr draw_getaway_scene
+    lda #12
+    sta bonus_tmr
+    jsr draw_bonus_banner
+    ldx #0
+    lda #0
+:   sta ob_active, x
+    inx
+    cpx #N_OBST
+    bne :-
+    lda #120
+    sta px
+    lda #180
+    sta py
+    lda #59
+    sta subtick
+    lda #0
+    sta bonus_hits
+    lda #10
+    sta spawn_tmr
+    lda #22
+    sta spawn_per
+    lda #1
+    sta mus_on
+    lda #SONG_CROSS
+    jsr music_play
+    jsr ppu_on
+    ; post the starting timer value
+    lda #>(NT + 3*32 + 20)
+    sta tmp3
+    lda #<(NT + 3*32 + 20)
+    sta tmp4
+    lda bonus_tmr
+    jsr queue_num2
+    rts
+.endproc
+
+; black banner (rows 0-4) over the road scene
+.proc draw_bonus_banner
+    bit PPUSTATUS
+    lda #$20
+    sta PPUADDR
+    lda #$00
+    sta PPUADDR
+    ldx #0
+    lda #$00
+@l:
+    sta PPUDATA
+    inx
+    cpx #160                ; rows 0-4
+    bne @l
+    lda #<txt_bonus
+    sta ptr
+    lda #>txt_bonus
+    sta ptr+1
+    jsr draw_script
+    rts
+.endproc
+
+.proc do_bonus
+    dec subtick
+    bpl @notick
+    lda #59
+    sta subtick
+    lda bonus_tmr
+    beq @timeup
+    dec bonus_tmr
+    lda #>(NT + 3*32 + 20)
+    sta tmp3
+    lda #<(NT + 3*32 + 20)
+    sta tmp4
+    lda bonus_tmr
+    jsr queue_num2
+@notick:
+    lda bonus_tmr
+    bne @play
+    ; safety: time already zero
+@timeup:
+    lda #ST_WIN
+    sta state
+    jsr enter_win
+    rts
+@play:
+    lda pad1
+    and #BTN_LEFT
+    beq @nl
+    lda px
+    cmp #16
+    bcc @nl
+    dec px
+    dec px
+@nl:
+    lda pad1
+    and #BTN_RIGHT
+    beq @nr
+    lda px
+    cmp #224
+    bcs @nr
+    inc px
+    inc px
+@nr:
+    jsr bonus_items
+    jsr bonus_spawn
+    jsr draw_bonus
+    rts
+.endproc
+
+.proc bonus_spawn
+    dec spawn_tmr
+    bne @ret
+    lda spawn_per
+    sta spawn_tmr
+    ldx #0
+@f:
+    lda ob_active, x
+    beq @found
+    inx
+    cpx #N_OBST
+    bne @f
+    rts
+@found:
+    lda #1
+    sta ob_active, x
+    lda #44                 ; just below the banner
+    sta ob_y, x
+    jsr update_rng
+    lda rng
+    and #$7f
+    clc
+    adc #24
+    sta ob_x, x
+@ret:
+    rts
+.endproc
+
+.proc bonus_items
+    ldx #0
+@l:
+    lda ob_active, x
+    beq @next
+    lda ob_y, x
+    clc
+    adc #3
+    cmp #200
+    bcs @miss
+    sta ob_y, x
+    cmp py
+    bcc @next               ; still above the catcher
+    lda ob_x, x
+    sec
+    sbc px
+    bpl @dxp
+    eor #$ff
+    clc
+    adc #1
+@dxp:
+    cmp #18
+    bcs @next
+    ; caught!
+    lda #0
+    sta ob_active, x
+    inc bonus_hits
+    lda #25
+    jsr add_score
+    lda #SFX_CROSS
+    jsr sfx_p
+    jmp @next
+@miss:
+    lda #0
+    sta ob_active, x
+@next:
+    inx
+    cpx #N_OBST
+    bne @l
+    rts
+.endproc
+
+.proc draw_bonus
+    lda #0
+    sta oam_idx
+    ; the smuggler catcher
+    lda px
+    sta tmp
+    lda py
+    sta tmp2
+    lda #$02
+    sta tmp3
+    lda #0
+    sta tmp4
+    jsr draw_meta16
+    ; falling loot (gold stars)
+    lda #0
+    sta obloop
+@l:
+    ldx obloop
+    lda ob_active, x
+    beq @n
+    lda ob_x, x
+    sta tmp
+    lda ob_y, x
+    sta tmp2
+    lda #$7c
+    sta tmp3
+    lda #1
+    sta tmp4
+    jsr draw_meta16
+@n:
+    inc obloop
+    lda obloop
+    cmp #N_OBST
+    bne @l
+    jsr hide_rest_oam
     rts
 .endproc
 
@@ -793,7 +1147,7 @@ state_tab:
     jsr ppu_off
     lda #%10100000         ; back to 8x16 sprite mode for the run
     sta ppuctrl_val
-    jsr load_pal_game
+    jsr load_pal_level
     jsr clear_nametable
     jsr draw_field
     jsr copy_speeds
@@ -1444,7 +1798,8 @@ loop:
     sta packed
     sta ncons
     sta pflash
-    lda #PACK_SECS
+    ldx difficulty
+    lda pack_secs_diff, x
     sta pack_secs
     lda #59
     sta subtick
@@ -2106,7 +2461,8 @@ cell_tile:
     sta shield
     lda #2
     sta scroll_spd
-    lda #40
+    ldx difficulty
+    lda spawn_per_diff, x
     sta spawn_per
     lda #24
     sta spawn_tmr
@@ -2719,7 +3075,8 @@ pu_tile:
     jsr music_play
     lda #1
     sta boss_on
-    lda #BOSS_HP
+    ldx difficulty
+    lda boss_hp_diff, x
     sta boss_hp
     lda #255
     sta boss_x
@@ -2842,15 +3199,15 @@ pu_tile:
     jsr bullet_boss_collision
     lda boss_hp
     bne @alive
-    ; chopper downed -> escape to Canada
+    ; chopper downed -> duty-free bonus round, then Canada
     lda #200                ; boss-kill bonus
     jsr add_score
     jsr fx_big
     lda #SFXN_BOOM
     jsr sfx_n
-    lda #ST_WIN
+    lda #ST_BONUS
     sta state
-    jsr enter_win
+    jsr enter_bonus
     rts
 @alive:
     rts
@@ -3954,6 +4311,26 @@ loop:
     jmp load_palette
 .endproc
 
+; crossing palette themed by level: 1 day, 2 dusk, 3+ night
+.proc load_pal_level
+    lda #<palette
+    ldx #>palette
+    ldy level
+    cpy #2
+    bcc @go                 ; level 1 -> day
+    bne @night              ; level >2 -> night
+    lda #<palette_dusk      ; level 2 -> dusk
+    ldx #>palette_dusk
+    jmp @go
+@night:
+    lda #<palette_night
+    ldx #>palette_night
+@go:
+    sta ptr
+    stx ptr+1
+    jmp load_palette
+.endproc
+
 .proc load_pal_pack
     lda #<palette_pack
     sta ptr
@@ -4314,16 +4691,38 @@ sfxn_tab:
     .byte  8,1,12,1,16           ; DEATH -- crash burst
 
 palette:
-    ; background palettes (all the same: black, asphalt, white, yellow)
+    ; LEVEL 1 -- daytime highway (black, asphalt, white, yellow)
     .byte $0f,$00,$30,$28
     .byte $0f,$00,$30,$28
     .byte $0f,$00,$30,$28
     .byte $0f,$00,$30,$28
-    ; sprite palettes
+    ; sprite palettes (shared by all crossings)
     .byte $0f,$27,$12,$16   ; 0 player: skin, shirt, console
     .byte $0f,$0f,$30,$16   ; 1 red car/van: tire, window, red body
     .byte $0f,$0f,$2a,$30   ; 2 patrol rig/warthog: tire, green, white
     .byte $0f,$17,$16,$30   ; 3 moose/console: brown, red, white
+
+palette_dusk:
+    ; LEVEL 2 -- sunset crossing (maroon asphalt, warm lines)
+    .byte $0f,$06,$30,$27
+    .byte $0f,$06,$30,$27
+    .byte $0f,$06,$30,$27
+    .byte $0f,$06,$30,$27
+    .byte $0f,$27,$12,$16
+    .byte $0f,$0f,$30,$16
+    .byte $0f,$0f,$2a,$30
+    .byte $0f,$17,$16,$30
+
+palette_night:
+    ; LEVEL 3 -- night run (deep-blue asphalt, cool lines)
+    .byte $0f,$01,$3d,$21
+    .byte $0f,$01,$3d,$21
+    .byte $0f,$01,$3d,$21
+    .byte $0f,$01,$3d,$21
+    .byte $0f,$27,$12,$16
+    .byte $0f,$0f,$30,$16
+    .byte $0f,$0f,$2a,$30
+    .byte $0f,$17,$16,$30
 
 palette_pack:
     ; background: black, grey(empty cell), red(crate fill), white(wall/text)
@@ -4443,12 +4842,47 @@ tmpl_shield: .byte "SHIELD:"
 txt_paused:   .byte "PAUSED", 0
 txt_pauseres: .byte "SELECT TO RESUME", 0
 
+txt_intro0:
+    TEXT 4,  9, "THE SITUATION"
+    TEXT 8,  5, "CANADA HAS BANNED THE"
+    TEXT 10, 6, "SEGA GENESIS. AGAIN."
+    TEXT 13, 6, "COLLECTORS UP NORTH"
+    TEXT 15, 4, "PAY BIG IN MAPLE GOLD"
+    TEXT 25, 8, "START- MORE"
+    .byte 0
+
+txt_intro1:
+    TEXT 4, 11, "THE PLAN"
+    TEXT 8,  6, "SCANNERS SEE EVERY"
+    TEXT 10, 4, "CRATE... BUT NOT THE"
+    TEXT 12, 5, "ONE PLACE ON EARTH-"
+    TEXT 14, 10, "YOUR COLON"
+    TEXT 17, 4, "PACK IT. RUN IT. EH."
+    TEXT 25, 7, "START- GO SMUGGLE"
+    .byte 0
+
+txt_bonus:
+    TEXT 1, 10, "BONUS ROUND"
+    TEXT 2,  9, "DUTY FREE DASH"
+    TEXT 3, 14, "TIME"
+    .byte 0
+
 ; title banner overlaid on the live getaway demo (black rows 0-5)
 txt_overlay:
     TEXT 1, 11, "BORDER RUN"
     TEXT 3, 10, "PRESS START"
+    TEXT 4,  9, "SPEED"
     TEXT 5, 11, "HI"
     .byte 0
+
+diff_easy: .byte "EASY  "
+diff_norm: .byte "NORMAL"
+diff_hard: .byte "HARD  "
+
+; per-difficulty tuning tables (indexed by difficulty 0=easy,1=normal,2=hard)
+spawn_per_diff: .byte 52, 40, 30      ; getaway traffic gap (smaller = denser)
+boss_hp_diff:   .byte 6, 8, 11        ; chopper hit points
+pack_secs_diff: .byte 40, 30, 22      ; packing countdown seconds
 
 txt_level:
     TEXT 8,  9, "BORDER CROSSED"
