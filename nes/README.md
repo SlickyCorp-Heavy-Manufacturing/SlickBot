@@ -86,8 +86,10 @@ Clear all three crossings and you hit the mountain. Each crossing is
 ## Stage 2.5 — THE SLALOM (downhill ski run)
 
 Across the border, the fastest way down the Rockies is on skis. This is a
-**Nintendo *Slalom*-style** downhill: you schuss down a snowy slope, the pines
-and flags rushing up at you.
+**Nintendo *Slalom*-style** downhill, drawn in **pseudo-3D perspective**: the
+white run narrows to a vanishing point on the horizon under a magenta mountain
+range, and the pines and flags **emerge tiny at the top and fan out** as they
+rush toward you.
 
 * **D-Pad Left/Right** — carve across the slope
 * **D-Pad Down** — **tuck** for a burst of speed (and points)

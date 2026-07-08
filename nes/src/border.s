@@ -265,6 +265,7 @@ ob_x:       .res N_OBST
 ob_y:       .res N_OBST
 ob_type:    .res N_OBST
 ob_spd:     .res N_OBST     ; per-hazard leftward speed
+ob_lane:    .res N_OBST     ; slalom: signed lane (-4..4) for perspective x
 scorebuf:   .res 5          ; 5-digit decimal score
 cloud_x:    .res N_CLOUD    ; background parallax
 cloud_y:    .res N_CLOUD
@@ -1224,6 +1225,7 @@ state_tab:
     inx
     cpx #N_OBST
     bne :-
+    jsr hide_all_oam        ; clear stale sprites from the crossings
     lda #1
     sta mus_on
     lda #SONG_GETAWAY
@@ -1234,37 +1236,117 @@ state_tab:
     rts
 .endproc
 
-; snow slope: black HUD bar (rows 0-1) then snow (rows 2-29)
+; perspective slope: HUD, dark sky, mountains, then a white run that widens
+; downward from a vanishing point on the horizon.
 .proc draw_slalom_scene
     bit PPUSTATUS
     lda #$20
     sta PPUADDR
     lda #$00
     sta PPUADDR
-    ldx #0
+    ldx #0                  ; row
 @row:
-    cpx #2
-    lda #$17                ; snow tile (rows >= 2)
-    bcs @have
-    lda #$00                ; black HUD bar (rows 0-1)
-@have:
+    cpx #8
+    bcs @run                ; rows 8-29 = the perspective run
+    jsr slope_top_tile      ; rows 0-7 = HUD / sky / mountains
     ldy #32
 @col:
     sta PPUDATA
     dey
     bne @col
+    jmp @rownext
+@run:
+    txa
+    sec
+    sbc #8
+    tay
+    lda slope_hw, y
+    jsr fill_run_row        ; A = half-width in tiles
+@rownext:
     inx
     cpx #30
     bne @row
-    ; attributes all palette 0
-    ldy #64
-    lda #0
-@attr:
+    ; attributes: tile rows 0-7 -> pal 0 (sky), rows 8-29 -> pal 1 (slope)
+    ldy #16
+    lda #$00
+@a0:
     sta PPUDATA
     dey
-    bne @attr
+    bne @a0
+    ldy #48
+    lda #$55                ; %01 for all four quadrants -> palette 1
+@a1:
+    sta PPUDATA
+    dey
+    bne @a1
     rts
 .endproc
+
+; tile for a non-run row (X = 0..7)
+.proc slope_top_tile
+    cpx #2
+    bcc @blk                ; 0-1 HUD (black)
+    cpx #4
+    bcc @sky                ; 2-3 sky
+    cpx #5
+    bcc @peak               ; 4 mountain peaks
+    cpx #6
+    bcc @base               ; 5 mountain base
+@blk:
+    lda #$00                ; 6-7 dark hill
+    rts
+@sky:
+    lda #$19
+    rts
+@peak:
+    lda #$1c
+    rts
+@base:
+    lda #$1d
+    rts
+.endproc
+
+; write one run row: A = half-width in tiles; centre column 16
+.proc fill_run_row
+    sta bitn                ; hw
+    lda #16
+    sec
+    sbc bitn
+    sta cellc               ; L = 16 - hw (left edge column)
+    lda #16
+    clc
+    adc bitn
+    sta cellr               ; R = 16 + hw (right edge column)
+    ldy #0
+@c:
+    cpy cellc
+    bcc @grey               ; col < L
+    beq @ledge              ; col == L
+    cpy cellr
+    bcc @white              ; L < col < R
+    beq @redge              ; col == R
+@grey:
+    lda #$18
+    jmp @put
+@ledge:
+    lda #$1a
+    jmp @put
+@white:
+    lda #$17
+    jmp @put
+@redge:
+    lda #$1b
+@put:
+    sta PPUDATA
+    iny
+    cpy #32
+    bne @c
+    rts
+.endproc
+
+; half-width (tiles) of the run for rows 8..29 -- the perspective spread
+slope_hw:
+    .byte 2,2,3,3,4,4,5,6,6,7,7,8,9,9,10,10,11,11,12,12,13,13
 
 .proc do_slalom
     jsr slalom_input
@@ -1364,6 +1446,7 @@ state_tab:
     rts
 @alive:
     sta ob_y, x
+    jsr slalom_projx        ; project lane+y -> screen x (perspective fan-out)
     lda ob_type, x
     bne @gate
     ; ---- tree: crash if it overlaps the skier ----
@@ -1400,19 +1483,34 @@ state_tab:
     bcc @done               ; not down to the skier yet
     lda #1
     sta ob_spd, x
-    ; d = skier-centre - left pole x
+    ; half-gap scales with perspective: hg = factor * 2
+    jsr slalom_factor
+    asl a
+    sta cellr               ; half-gap in px
+    ; |d| = |skier-centre - gate-centre|
     lda px
     clc
     adc #8
     sec
     sbc ob_x, x
-    bcc @missed             ; left of the left pole
-    cmp #8
-    bcc @polehit            ; within the left pole
-    cmp #GATE_GAP
-    bcc @passed             ; between the poles -- clean!
-    cmp #(GATE_GAP+8)
-    bcc @polehit            ; within the right pole
+    bpl @dpos
+    eor #$ff
+    clc
+    adc #1
+@dpos:
+    sta cellc               ; |d|
+    ; pass if |d| <= hg-4
+    lda cellr
+    sec
+    sbc #4
+    cmp cellc
+    bcs @passed
+    ; pole hit if |d| <= hg+4
+    lda cellr
+    clc
+    adc #4
+    cmp cellc
+    bcs @polehit
 @missed:
     lda #0
     sta combo               ; a skipped gate breaks the combo
@@ -1442,6 +1540,64 @@ state_tab:
     rts
 .endproc
 
+; perspective factor for obstacle X: (ob_y>>3) - 4, clamped >= 0
+.proc slalom_factor
+    lda ob_y, x
+    lsr a
+    lsr a
+    lsr a
+    sec
+    sbc #4
+    bcs @ok
+    lda #0
+@ok:
+    rts
+.endproc
+
+; project obstacle X to a screen x that fans out from the vanishing point:
+;   ob_x = 128 + ob_lane * factor(y)          (signed lane -4..4)
+.proc slalom_projx
+    jsr slalom_factor
+    sta cellr               ; factor
+    lda ob_lane, x
+    bpl @pos
+    ; negative lane
+    eor #$ff
+    clc
+    adc #1
+    sta cellc               ; |lane|
+    jsr mul_cc_cr
+    lda #128
+    sec
+    sbc mtmp
+    sta ob_x, x
+    rts
+@pos:
+    sta cellc               ; lane (>=0)
+    jsr mul_cc_cr
+    lda #128
+    clc
+    adc mtmp
+    sta ob_x, x
+    rts
+.endproc
+
+; mtmp = cellc * cellr (both small, unsigned); Y clobbered
+.proc mul_cc_cr
+    lda #0
+    sta mtmp
+    ldy cellc
+    beq @done
+@l:
+    clc
+    adc cellr
+    dey
+    bne @l
+    sta mtmp
+@done:
+    rts
+.endproc
+
 .proc slalom_spawn
     dec spawn_tmr
     bne @ret
@@ -1460,36 +1616,25 @@ state_tab:
     sta ob_active, x
     lda #0
     sta ob_spd, x           ; clear scored flag
-    lda #16
-    sta ob_y, x
+    lda #64
+    sta ob_y, x             ; spawn small, at the horizon
+    ; lane = (rng & 7) - 3   -> -3..4 (a slot across the run)
     jsr update_rng
     lda rng
-    and #3
-    beq @tree               ; ~1 in 4 is a tree
-    ; gate: left pole x in 8..135 (right pole + width stays on screen)
-    lda #1
-    sta ob_type, x
+    and #7
+    sec
+    sbc #3
+    sta ob_lane, x
+    ; type: ~1 in 4 is a tree
     lda rng
-    lsr a
-    and #$7f
-    clc
-    adc #8
-    sta ob_x, x
+    and #$18
+    beq @tree
+    lda #1                  ; gate
+    sta ob_type, x
     rts
 @tree:
-    lda #0
+    lda #0                  ; tree
     sta ob_type, x
-    jsr update_rng
-    lda rng
-    cmp #232
-    bcc @tokx
-    lda #232
-@tokx:
-    cmp #8
-    bcs @stx
-    lda #8
-@stx:
-    sta ob_x, x
     rts
 @ret:
     rts
@@ -1536,8 +1681,14 @@ state_tab:
     jsr draw_meta16
     jmp @n
 @gate:
-    ; left pole (red)
+    ; half-gap scales with perspective (hg = factor * 2)
+    jsr slalom_factor
+    asl a
+    sta cellr
+    ; left pole (red) at centre - hg
     lda ob_x, x
+    sec
+    sbc cellr
     sta tmp
     lda ob_y, x
     sta tmp2
@@ -1546,11 +1697,11 @@ state_tab:
     lda #1
     sta tmp4
     jsr draw_meta16
-    ; right pole (blue)
+    ; right pole (blue) at centre + hg
     ldx obloop
     lda ob_x, x
     clc
-    adc #GATE_GAP
+    adc cellr
     sta tmp
     lda ob_y, x
     sta tmp2
@@ -2911,6 +3062,7 @@ cell_tile:
     jsr clear_nametable
     jsr draw_getaway_scene
     jsr reset_getaway_state
+    jsr hide_all_oam        ; clear stale sprites from the previous stage
     lda #1
     sta mus_on
     lda #SONG_GETAWAY
@@ -5214,12 +5366,14 @@ palette_night:
     .byte $0f,$17,$16,$30
 
 palette_slalom:
-    ; snow slope: bg = white snow, grey flecks, white HUD text
-    .byte $0f,$30,$10,$30
-    .byte $0f,$30,$10,$30
-    .byte $0f,$30,$10,$30
-    .byte $0f,$30,$10,$30
-    ; sprites: 0 skier (red/white), 1 red flag, 2 blue flag, 3 pine tree
+    ; bg pal 0: sky/mountains (dark sky, magenta rock, white cap/HUD text)
+    .byte $0f,$02,$24,$30
+    ; bg pal 1: the slope -- white piste, dark-grey bank (attribute-selected
+    ; for rows 8-29)
+    .byte $0f,$30,$00,$21
+    .byte $0f,$30,$00,$21
+    .byte $0f,$02,$24,$30
+    ; sprites: 0 skier (red/dark), 1 red flag, 2 blue flag, 3 pine tree
     .byte $0f,$16,$30,$0f
     .byte $0f,$16,$30,$0f
     .byte $0f,$11,$30,$0f

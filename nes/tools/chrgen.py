@@ -638,7 +638,7 @@ def build_background_table():
                                   '11133111',
                                   '11111111'])
 
-    # 0x17 SNOW slope fill (colour 1 = white snow, sparse colour 2 flecks)
+    # 0x17 SNOW RUN fill (colour 1 = white piste, sparse colour 2 flecks)
     tiles[0x17] = tile_from_rows(['11111111',
                                   '11111121',
                                   '11111111',
@@ -647,6 +647,41 @@ def build_background_table():
                                   '11111112',
                                   '21111111',
                                   '11111111'])
+
+    # ---- SLALOM perspective backdrop tiles ----------------------------
+    # 0x18 off-piste snow bank (solid colour 2)
+    tiles[0x18] = tile_from_rows(['22222222'] * 8)
+    # 0x19 sky (solid colour 1)
+    tiles[0x19] = tile_from_rows(['11111111'] * 8)
+    # 0x1A left run edge: bank (2) upper-left -> piste (1) lower-right
+    tiles[0x1a] = tile_from_rows(['22222221',
+                                  '22222211',
+                                  '22222111',
+                                  '22221111',
+                                  '22211111',
+                                  '22111111',
+                                  '21111111',
+                                  '11111111'])
+    # 0x1B right run edge: piste (1) lower-left -> bank (2) upper-right
+    tiles[0x1b] = tile_from_rows(['12222222',
+                                  '11222222',
+                                  '11122222',
+                                  '11112222',
+                                  '11111222',
+                                  '11111122',
+                                  '11111112',
+                                  '11111111'])
+    # 0x1C mountain peak (sky 1, rock 2, snowcap 3)
+    tiles[0x1c] = tile_from_rows(['11111111',
+                                  '11111111',
+                                  '11133111',
+                                  '11322311',
+                                  '13222231',
+                                  '32222223',
+                                  '22222222',
+                                  '22222222'])
+    # 0x1D mountain base (solid colour 2 rock)
+    tiles[0x1d] = tile_from_rows(['22222222'] * 8)
 
     # --- font at ASCII positions ---------------------------------------
     for ch, rows in FONT.items():
