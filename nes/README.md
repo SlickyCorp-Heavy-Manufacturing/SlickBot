@@ -10,16 +10,33 @@ rechargeable energy shield** buys you a second chance. Soundtrack: an original
 cosy lounge-jazz loop.
 
 * **Genre:** Frogger + Halo 2 (grid-hop dodging, plus a recharging shield)
-* **Mapper:** NROM-128 (mapper 0), 16 KB PRG + 8 KB CHR
+* **Mapper:** NROM-256 (mapper 0), 32 KB PRG + 8 KB CHR, **battery-backed
+  save RAM** for a persistent high score
 * **Output:** `border.nes` — runs on real hardware and every major emulator
+
+Press **SELECT** to pause any action stage. Impacts kick a **screen shake**
+and a **white hit-flash** for extra crunch.
 
 ## Title & attract mode
 
 The title screen is a **live demo of the getaway stage playing underneath the
 title**: the road streams by with its parallax treeline, traffic and hazards
 fly in from the right, and a **self-driving Warthog auto-dodges** them all —
-while a black banner across the top reads **BORDER RUN / PRESS START** and shows
-the session **high score**. Press **START** to begin.
+while a black banner across the top shows the big **BORDER RUN** logo,
+**PRESS START**, the current **SPEED**, and the all-time **HI** score.
+
+* **UP / DOWN** — pick a difficulty: **EASY / NORMAL / HARD** (changes traffic
+  density, the packing timer, and the boss's health). Your choice is **saved**.
+* **START** — begin.
+
+The **high score persists** across power cycles via the cartridge's
+battery-backed save RAM.
+
+## Intro
+
+Before the job you get a two-page **briefing** on the situation (Canada has
+banned the Genesis; collectors up north pay in maple gold) and the plan (there's
+exactly one place the scanners can't see). Tap **START** through it.
 
 ## Stage 1 - THE PACKING (timed placement puzzle)
 
@@ -59,9 +76,12 @@ The stage ends when the **TIME** meter hits zero or you press START. The
 | ------ | ------ |
 | **D-Pad** | Waddle one lane up / down / left / right |
 | **START** | Begin game / continue from a screen |
+| **SELECT** | Pause / resume |
 
 Reach the checkered border at the top to cross into Canada and advance a level.
-Clear all three crossings and you hit the final stage.
+Clear all three crossings and you hit the final stage. Each crossing is
+**visually themed** — a **daytime** highway, a **dusk** run, then a tense
+**night** crossing.
 
 ## Stage 3 — THE GETAWAY (side-scroller)
 
@@ -81,12 +101,26 @@ parallax sells the speed. Watch for **oncoming traffic** — faster cars barrel
 in from the top lanes. The chase gets faster and the hazards thicker the
 further you get.
 
+**Power-ups** drift in as you drive — grab them:
+
+| Pickup | Effect |
+| ------ | ------ |
+| 🍟 Poutine | refills your shield |
+| ❤️ Extra life | +1 life |
+| ⭐ Maple star | a few seconds of invincibility |
+
+Every hazard you slip past builds a **dodge combo** — a running multiplier
+shown in the HUD (`Xn`) that pays escalating bonus points. Get hit and the
+combo resets.
+
 ### Boss — THE CHOPPER
 
 Fill the distance meter and a **border-patrol helicopter** drops in for the
 final showdown. It has **two attack patterns** — a steady vertical sweep
 dropping single bombs, and a faster **dive** that tracks your Warthog and
-bombs harder — and it switches between them as the fight goes on.
+bombs harder — and it switches between them as the fight goes on. Each shot
+that connects makes it **flash**, and once it's badly damaged it flips into a
+**berserk phase**, bombing far more aggressively for the kill.
 
 * **A** — fire the Warthog's gun (bullets shoot forward at your current height)
 * **D-Pad Up/Down** — line your shots up with the chopper *and* dodge its bombs
@@ -95,20 +129,29 @@ The HUD switches to a **HELO** health bar. Empty it to blow the chopper out of
 the sky and escape into Canada for good. Bombs still cost you shield then
 lives — get hit with no lives left and it's game over.
 
+## Bonus round — DUTY FREE DASH
+
+Down the chopper and, before the finale, you get a quick **timed bonus round**:
+gold loot rains down and you slide **left/right** to bag as much of it as you
+can for extra points before the clock runs out.
+
 ## The finale — WELCOME TO CANADA
 
-Down the chopper and you get a victory drive-in: your (now bigger) Warthog
-rolls in, **honks** as it parks, a **big beaver waves a hockey stick** beside a
-**big Canadian flag**, **maple leaves tumble** down, **fireworks** burst
-overhead, and a triumphant stadium-organ **fanfare** plays. Your crates packed, final
+Then the victory drive-in: your (now bigger) Warthog rolls in, **honks** as it
+parks, a **big beaver waves a hockey stick** beside a **big Canadian flag**, a
+**maple leaf tumbles** down, **fireworks** burst overhead, the **aurora
+borealis** shimmers across the sky, a **Zamboni** does laps, and a triumphant
+stadium-organ **fanfare** plays. Your crates packed, final
 **score** and **high score** are on the banner.
 
 ## Scoring
 
 You rack up points all game — packing consoles, crossing the border, covering
-distance, hitting the chopper and downing it. Your **score** shows in the HUD
-during play, and the session **high score** is shown on the title, the victory
-screen and the game-over screen.
+distance, chaining **dodge combos**, grabbing power-ups, catching bonus-round
+loot, hitting the chopper and downing it. Your **score** shows in the HUD
+during play, and the **high score** is shown on the title, the victory screen
+and the game-over screen — and it now **survives power-off** in the cartridge's
+battery-backed save RAM.
 Get hit with your shield up and it absorbs the blow (you're knocked back to the
 start and a pip drops); the shield **fully recharges** if you stay clean for a
 few seconds — pure Master Chief. Get hit with the shield down and you lose a

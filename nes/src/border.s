@@ -689,6 +689,33 @@ state_tab:
     inx
     cpx #192                ; rows 0-5 (6 * 32)
     bne @l
+    ; big BORDER RUN logo: 20 tiles wide, two rows tall (rows 1-2, col 6)
+    lda #>(NT + 1*32 + 6)
+    sta PPUADDR
+    lda #<(NT + 1*32 + 6)
+    sta PPUADDR
+    ldx #0
+@lt:
+    txa
+    clc
+    adc #$60
+    sta PPUDATA
+    inx
+    cpx #20
+    bne @lt
+    lda #>(NT + 2*32 + 6)
+    sta PPUADDR
+    lda #<(NT + 2*32 + 6)
+    sta PPUADDR
+    ldx #0
+@lb:
+    txa
+    clc
+    adc #$74
+    sta PPUDATA
+    inx
+    cpx #20
+    bne @lb
     lda #<txt_overlay
     sta ptr
     lda #>txt_overlay
@@ -1553,6 +1580,7 @@ loop:
 .proc draw_win_scene
     lda #0
     sta oam_idx
+    ; ---- heroes first (drawn early so they never get dropped) ----
     ; warthog (two halves) at y 176
     lda win_wx
     sta tmp
@@ -1574,7 +1602,22 @@ loop:
     lda #2
     sta tmp4
     jsr draw_meta16
-    ; beaver waving a hockey stick (32x32), bobbing gently
+    ; Canadian flag (32x32) at x=8, bobbing gently (y ~132)
+    lda #8
+    sta tmp
+    lda frame
+    lsr a
+    lsr a
+    and #1
+    clc
+    adc #132
+    sta tmp2
+    lda #$90
+    sta tmp3
+    lda #3
+    sta tmp4
+    jsr draw_meta32
+    ; beaver waving a hockey stick (32x32), bobbing gently (y ~160)
     lda #44
     sta tmp
     lda frame
@@ -1590,22 +1633,8 @@ loop:
     lda #3
     sta tmp4
     jsr draw_meta32
-    ; Canadian flag (32x32) at x=8, bobbing gently
-    lda #8
-    sta tmp
-    lda frame
-    lsr a
-    lsr a
-    and #1
-    clc
-    adc #136
-    sta tmp2
-    lda #$90
-    sta tmp3
-    lda #3
-    sta tmp4
-    jsr draw_meta32
-    ; two maple leaves tumbling down (vertical-flip toggles the tumble)
+    ; ---- flourishes on clear scanlines ----
+    ; one maple leaf tumbling down (vertical-flip toggles the tumble)
     lda frame
     and #$10
     beq @lf1
@@ -1615,43 +1644,69 @@ loop:
     lda #$01
 @lf2:
     sta tmp4
-    lda #176
+    lda #206
     sta tmp
     lda frame
     and #$3f
     clc
-    adc #36
+    adc #28
     sta tmp2
     lda #$5c
     sta tmp3
     jsr draw_meta16
+    ; a Zamboni doing laps in the clear band below the banner (y 112)
     lda frame
+    lsr a
+    and #$7f
     clc
-    adc #32
-    and #$10
-    beq @lf3
-    lda #$81
-    jmp @lf4
-@lf3:
-    lda #$01
-@lf4:
+    adc #24
+    sta tmp
+    lda #112
+    sta tmp2
+    lda #$68
+    sta tmp3
+    lda #2
     sta tmp4
-    lda #208
-    sta tmp
-    lda frame
-    clc
-    adc #32
-    and #$3f
-    clc
-    adc #48
-    sta tmp2
-    lda #$5c
-    sta tmp3
     jsr draw_meta16
-    ; fireworks bursting in the sky
-    lda #40
+    ; aurora borealis: a green shimmer ribbon across the very top
+    ; (3 wide clouds -> <=6 sprites/scanline, well under the 8 limit)
+    ldx #0
+@aur:
+    txa
+    asl a
+    asl a
+    asl a
+    asl a
+    asl a
+    asl a                   ; x = i*64
+    clc
+    adc #30
     sta tmp
-    lda #28
+    txa
+    clc
+    adc frame
+    lsr a
+    lsr a
+    and #3
+    clc
+    adc #2                  ; y ~2-5, gentle shimmer
+    sta tmp2
+    lda #$3c
+    sta tmp3
+    lda #2
+    sta tmp4
+    txa
+    pha
+    jsr draw_meta16
+    pla
+    tax
+    inx
+    cpx #3
+    bne @aur
+    ; fireworks bursting overhead (in the corners, clear of the banner text)
+    lda #16
+    sta tmp
+    lda #40
     sta tmp2
     lda #0
     sta tmp4
@@ -1659,19 +1714,9 @@ loop:
     and #$08
     jsr fw_tile
     jsr draw_meta16
-    lda #128
+    lda #224
     sta tmp
-    lda #20
-    sta tmp2
-    lda #2
-    sta tmp4
-    lda frame
-    and #$10
-    jsr fw_tile
-    jsr draw_meta16
-    lda #200
-    sta tmp
-    lda #34
+    lda #48
     sta tmp2
     lda #3
     sta tmp4
@@ -4867,9 +4912,9 @@ txt_bonus:
     TEXT 3, 14, "TIME"
     .byte 0
 
-; title banner overlaid on the live getaway demo (black rows 0-5)
+; title banner overlaid on the live getaway demo (black rows 0-5).
+; The big BORDER RUN logo is blitted into rows 1-2 separately.
 txt_overlay:
-    TEXT 1, 11, "BORDER RUN"
     TEXT 3, 10, "PRESS START"
     TEXT 4,  9, "SPEED"
     TEXT 5, 11, "HI"

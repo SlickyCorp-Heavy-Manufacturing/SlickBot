@@ -642,6 +642,34 @@ def build_background_table():
     for ch, rows in FONT.items():
         tiles[ord(ch)] = tile_from_rows(rows)
 
+    # --- big BORDER RUN title logo: each font glyph doubled to 16x16 ----
+    # top row of tiles -> 0x60..0x73, bottom row -> 0x74..0x87 (sequential
+    # so the title can blit two straight runs).
+    def scale2x_bg(rows8):
+        big = [[0] * 16 for _ in range(16)]
+        for y in range(8):
+            for x in range(8):
+                v = 0 if rows8[y][x] == '.' else int(rows8[y][x])
+                big[2 * y][2 * x] = v
+                big[2 * y][2 * x + 1] = v
+                big[2 * y + 1][2 * x] = v
+                big[2 * y + 1][2 * x + 1] = v
+
+        def sub(x0, y0):
+            return tile_from_rows(
+                [''.join(str(big[y][x]) for x in range(x0, x0 + 8))
+                 for y in range(y0, y0 + 8)])
+        return sub(0, 0), sub(8, 0), sub(0, 8), sub(8, 8)
+
+    logo = "BORDER RUN"
+    for i, ch in enumerate(logo):
+        rows8 = FONT.get(ch, FONT[' '])
+        tl, tr, bl, br = scale2x_bg(rows8)
+        tiles[0x60 + i * 2 + 0] = tl
+        tiles[0x60 + i * 2 + 1] = tr
+        tiles[0x74 + i * 2 + 0] = bl
+        tiles[0x74 + i * 2 + 1] = br
+
     return tiles
 
 
