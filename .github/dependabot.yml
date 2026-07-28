@@ -5,6 +5,9 @@ updates:
     groups:
       npm:
         patterns: ["*"]
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     schedule:
       interval: daily
   - package-ecosystem: github-actions
