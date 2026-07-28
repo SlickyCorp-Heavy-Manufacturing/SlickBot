@@ -76,7 +76,7 @@ const typedBG = {
     },
     generateColdStartToken: (contentBinding: string): string => createColdStartToken(contentBinding)
   }
-} as unknown as BgUtils;
+} satisfies BgUtils;
 
 function ensureString(value: unknown, name: string): string {
   if (typeof value !== 'string') {
