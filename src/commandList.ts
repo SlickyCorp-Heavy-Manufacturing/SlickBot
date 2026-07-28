@@ -23,6 +23,7 @@ import { CocktailRecommendation, GetCocktail } from './cocktail/index.js';
 import { PlayNowCommand } from './play/index.js';
 import { DefineCommand } from './dictionary/index.js';
 import { DalleCommand } from './dalle-mini/index.js';
+import { HateSpeechCommand } from './hate-speech/hate-speech.js';
 
 export const commandList: ICommand[] = [
   HelpCommand,
@@ -51,4 +52,5 @@ export const commandList: ICommand[] = [
   GetCocktail,
   DefineCommand,
   DalleCommand,
+  HateSpeechCommand,
 ];
