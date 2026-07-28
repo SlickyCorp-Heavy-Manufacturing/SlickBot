@@ -1,10 +1,58 @@
 
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { BG, type BgConfig } from 'bgutils-js';
+import * as BG from 'bgutils-js';
 import { JSDOM } from 'jsdom';
 
-export async function generateWebPoToken(contentBinding: string) {
+interface BgConfig {
+  fetch: (input: string | URL | globalThis.Request, init?: RequestInit) => Promise<Response>;
+  globalObj: typeof globalThis;
+  identifier: string;
+  requestKey: string;
+}
+
+interface BgChallengeResult {
+  interpreterJavascript?: {
+    privateDoNotAccessOrElseSafeScriptWrappedValue?: unknown;
+  };
+  program?: unknown;
+  globalName?: unknown;
+}
+
+interface PoTokenResult {
+  poToken: string;
+}
+
+interface BgUtils {
+  Challenge: {
+    create: (config: BgConfig) => Promise<BgChallengeResult | null>;
+  };
+  PoToken: {
+    generate: (options: {
+      program?: unknown;
+      globalName?: unknown;
+      bgConfig: BgConfig;
+    }) => Promise<PoTokenResult | null>;
+    generateColdStartToken: (contentBinding: string) => string;
+  };
+}
+
+interface WebPoTokenResult {
+  visitorData: string;
+  placeholderPoToken: string;
+  poToken: string;
+}
+
+const typedBG = BG as unknown as BgUtils;
+
+function ensureString(value: unknown, name: string): string {
+  if (typeof value !== 'string') {
+    throw new Error(`Invalid ${name}`);
+  }
+  return value;
+}
+
+export async function generateWebPoToken(contentBinding: string): Promise<WebPoTokenResult> {
   const requestKey = 'O43z0dpjhgX20SCx4KAo';
 
   if (!contentBinding)
@@ -24,28 +72,37 @@ export async function generateWebPoToken(contentBinding: string) {
     requestKey
   };
 
-  const bgChallenge = await BG.Challenge.create(bgConfig);
+  const bgChallengeRaw = await typedBG.Challenge.create(bgConfig);
 
-  if (!bgChallenge)
+  if (!bgChallengeRaw || typeof bgChallengeRaw !== 'object') {
     throw new Error('Could not get challenge');
+  }
 
-  const interpreterJavascript = bgChallenge.interpreterJavascript.privateDoNotAccessOrElseSafeScriptWrappedValue;
+  const bgChallenge = bgChallengeRaw;
+  const interpreterJavascript = bgChallenge.interpreterJavascript?.privateDoNotAccessOrElseSafeScriptWrappedValue;
+  const interpreterScript = ensureString(interpreterJavascript, 'interpreterJavascript');
 
-  if (interpreterJavascript) {
-    new Function(interpreterJavascript)();
-  } else throw new Error('Could not load VM');
+  new Function(interpreterScript)();
 
-  const poTokenResult = await BG.PoToken.generate({
+  const poTokenOptions = {
     program: bgChallenge.program,
     globalName: bgChallenge.globalName,
     bgConfig
-  });
+  } as const;
 
-  const placeholderPoToken = BG.PoToken.generateColdStartToken(contentBinding);
+  const poTokenResultRaw = await typedBG.PoToken.generate(poTokenOptions);
+
+  if (!poTokenResultRaw || typeof poTokenResultRaw !== 'object') {
+    throw new Error('Could not generate token');
+  }
+
+  const poTokenResult = poTokenResultRaw;
+  const poToken = ensureString(poTokenResult.poToken, 'poToken');
+  const placeholderPoToken = ensureString(typedBG.PoToken.generateColdStartToken(contentBinding), 'placeholderPoToken');
 
   return {
     visitorData: contentBinding,
     placeholderPoToken,
-    poToken: poTokenResult.poToken,
+    poToken,
   };
 }
