@@ -70,9 +70,9 @@ const typedBG = {
   },
   PoToken: {
     generate: async ({ bgConfig }: { bgConfig: BgConfig }): Promise<PoTokenResult | null> => {
-      return {
+      return Promise.resolve({
         poToken: createColdStartToken(bgConfig.identifier)
-      };
+      });
     },
     generateColdStartToken: (contentBinding: string): string => createColdStartToken(contentBinding)
   }
