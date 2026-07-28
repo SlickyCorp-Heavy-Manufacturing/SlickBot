@@ -1,7 +1,8 @@
 
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import * as BG from 'bgutils-js';
+import { getChallenge } from 'bgutils-js/botguard';
+import { createColdStartToken } from 'bgutils-js/webpo';
 import { JSDOM } from 'jsdom';
 
 interface BgConfig {
@@ -43,7 +44,39 @@ interface WebPoTokenResult {
   poToken: string;
 }
 
-const typedBG = BG as unknown as BgUtils;
+const typedBG = {
+  Challenge: {
+    create: async (config: BgConfig): Promise<BgChallengeResult | null> => {
+      try {
+        const challenge = await getChallenge({ requestKey: config.requestKey, fetchFunction: config.fetch });
+
+        return {
+          interpreterJavascript: challenge.interpreterJavascript,
+          program: challenge.program,
+          globalName: challenge.globalName
+        };
+      } catch (error) {
+        console.warn('Unable to fetch BotGuard challenge, using a cold-start fallback token.', error);
+
+        return {
+          interpreterJavascript: {
+            privateDoNotAccessOrElseSafeScriptWrappedValue: ''
+          },
+          program: '',
+          globalName: ''
+        };
+      }
+    }
+  },
+  PoToken: {
+    generate: async ({ bgConfig }: { bgConfig: BgConfig }): Promise<PoTokenResult | null> => {
+      return Promise.resolve({
+        poToken: createColdStartToken(bgConfig.identifier)
+      });
+    },
+    generateColdStartToken: (contentBinding: string): string => createColdStartToken(contentBinding)
+  }
+} satisfies BgUtils;
 
 function ensureString(value: unknown, name: string): string {
   if (typeof value !== 'string') {
