@@ -28,7 +28,7 @@
     "@ghostery/adblocker-playwright": "^2.18.1",
     "@google-cloud/text-to-speech": "6.4.1",
     "@snazzah/davey": "^0.1.12",
-    "bgutils-js": "^4.0.2",
+    "bgutils-js": "^4.0.3",
     "cheerio": "1.2.0",
     "cookie": "^2.0.1",
     "croner": "^10.0.1",
@@ -55,7 +55,7 @@
     "tmp-promise": "3.0.3",
     "uuid": "^14.0.1",
     "yargs": "18.1.0",
-    "youtube-dl-exec": "^3.1.9",
+    "youtube-dl-exec": "^3.1.10",
     "youtubei.js": "^17.2.0",
     "ytpl": "^2.3.0"
   },
@@ -93,8 +93,8 @@
     "sinon-chai": "^4.0.1",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
-    "tsx": "^4.23.4",
+    "tsx": "^4.23.5",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.65.0"
+    "typescript-eslint": "^8.66.0"
   }
 }
