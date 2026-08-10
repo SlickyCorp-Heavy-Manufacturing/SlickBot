@@ -69,7 +69,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
       - name: Validate PR title with commitlint
-        uses: kevintyj/prlint@d69001e39d3294dc90e1a19e86e514edd32d2df1
+        uses: kevintyj/prlint@4f01874a73c0cda0c42d6226f89c0a32db80a497
 
   ci:
     name: SlickyBot CI
