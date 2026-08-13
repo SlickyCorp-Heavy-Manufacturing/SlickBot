@@ -26,7 +26,7 @@
     "@discordjs/opus": "0.10.0",
     "@discordjs/voice": "^0.19.2",
     "@ghostery/adblocker-playwright": "^2.18.2",
-    "@google-cloud/text-to-speech": "6.4.1",
+    "@google-cloud/text-to-speech": "7.0.0",
     "@snazzah/davey": "^0.1.12",
     "bgutils-js": "^4.0.3",
     "cheerio": "1.2.0",
@@ -80,7 +80,7 @@
     "@types/yargs": "^17.0.35",
     "c8": "^12.0.0",
     "chai": "^6.2.2",
-    "conventional-changelog-conventionalcommits": "^10.2.1",
+    "conventional-changelog-conventionalcommits": "^10.3.0",
     "eslint": "^10.8.1",
     "globals": "^17.9.0",
     "husky": "^9.1.7",
@@ -93,8 +93,8 @@
     "sinon-chai": "^4.0.1",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
-    "tsx": "^4.23.11",
+    "tsx": "^4.23.12",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.66.0"
+    "typescript-eslint": "^8.67.0"
   }
 }
