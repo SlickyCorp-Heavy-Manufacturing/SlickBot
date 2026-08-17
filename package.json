@@ -56,12 +56,12 @@
     "uuid": "^14.0.1",
     "yargs": "18.1.0",
     "youtube-dl-exec": "^3.1.12",
-    "youtubei.js": "^17.2.0",
+    "youtubei.js": "^18.0.0",
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
     "@codedependant/semantic-release-docker": "^7.0.0",
-    "@commitlint/cli": "^21.2.1",
+    "@commitlint/cli": "^21.2.2",
     "@eslint/js": "^10.0.1",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@semantic-release/exec": "^7.1.0",
@@ -82,7 +82,7 @@
     "chai": "^6.2.2",
     "conventional-changelog-conventionalcommits": "^10.3.0",
     "eslint": "^10.8.1",
-    "globals": "^17.10.0",
+    "globals": "^17.11.0",
     "husky": "^9.1.7",
     "mocha": "^11.8.0",
     "nock": "14.0.17",
