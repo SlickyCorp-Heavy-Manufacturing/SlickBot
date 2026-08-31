@@ -55,7 +55,7 @@
     "tmp-promise": "3.0.3",
     "uuid": "^14.0.2",
     "yargs": "18.1.0",
-    "youtube-dl-exec": "^3.1.12",
+    "youtube-dl-exec": "^3.1.13",
     "youtubei.js": "^18.0.0",
     "ytpl": "^2.3.0"
   },
@@ -72,7 +72,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/luxon": "3.7.5",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^26.3.0",
+    "@types/node": "^26.4.0",
     "@types/node-schedule": "2.1.8",
     "@types/sinon-chai": "^4.0.0",
     "@types/tmp": "0.2.6",
