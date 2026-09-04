@@ -1,12 +1,9 @@
-import { AudioResource, createAudioResource } from '@discordjs/voice';
+import { AudioResource, createAudioResource, StreamType } from '@discordjs/voice';
 import { Message } from 'discord.js';
-import { EnabledTrackTypes } from 'googlevideo/utils';
-import { Readable } from 'node:stream';
-import type { ReadableStream } from 'node:stream/web'
+import youtubeDl from 'youtube-dl-exec';
 import { Innertube } from 'youtubei.js';
 
 import { PlayItem } from './play-item.js';
-import { createSabrStream } from './utils/sabr-stream-factory.js';
 
 export class PlayItemYoutube implements PlayItem {
   public readonly msg: Message;
@@ -27,7 +24,9 @@ export class PlayItemYoutube implements PlayItem {
 
   private readonly videoId: string;
 
-  private constructor(msg: Message, title: string, videoId: string, volume?: number) {
+  private readonly url: string;
+
+  private constructor(msg: Message, title: string, videoId: string, url: string, volume?: number) {
     this.msg = msg;
     this.title = title;
     this.onError = async (error: Error) => {
@@ -41,19 +40,24 @@ export class PlayItemYoutube implements PlayItem {
       return Promise.resolve();
     };
     this.videoId = videoId;
+    this.url = url;
     this.volume = volume;
   }
 
-  public async createAudioResource(): Promise<AudioResource<PlayItem>> {
+  public createAudioResource(): Promise<AudioResource<PlayItem>> {
     console.log(`Creating audio resource for YouTube video ID: ${this.videoId}`);
-    const { streamResults } = await createSabrStream(
-      this.videoId,
-      { audioQuality: 'AUDIO_QUALITY_MEDIUM', enabledTrackTypes: EnabledTrackTypes.AUDIO_ONLY, preferOpus: true }
-    );
-    return Promise.resolve(createAudioResource(
-      Readable.fromWeb(streamResults.audioStream as ReadableStream<Uint8Array>),
-      { metadata: this },
-    ));
+    const streamProcess = youtubeDl.exec(this.url, {
+      format: 'bestaudio[acodec=opus]/bestaudio',
+      noPlaylist: true,
+      output: '-'
+    });
+    if (!streamProcess.stdout) {
+      throw new Error('Unable to create YouTube audio stream');
+    }
+    return Promise.resolve(createAudioResource(streamProcess.stdout, {
+      inputType: StreamType.WebmOpus,
+      metadata: this
+    }));
   }
 
   public static async from(msg: Message, url: string, volume?: number) {
@@ -70,6 +74,6 @@ export class PlayItemYoutube implements PlayItem {
     const info = await this.innertube.getBasicInfo(videoId);
     console.log(`Retrieved video info: ${JSON.stringify(info.basic_info)}`);
 
-    return new PlayItemYoutube(msg, info.basic_info.title ?? '<unknown title>', videoId, volume);
+    return new PlayItemYoutube(msg, info.basic_info.title ?? '<unknown title>', videoId, url, volume);
   }
 }

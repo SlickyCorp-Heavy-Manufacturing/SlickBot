@@ -142,6 +142,15 @@ export async function createSabrStream(
     }
   });
 
+  const poTokenRefreshInterval = setInterval(() => {
+    void generateWebPoToken(videoId)
+      .then(({ poToken }) => serverAbrStream.setPoToken(poToken))
+      .catch((error: unknown) => console.warn('Unable to refresh YouTube PO token.', error));
+  }, 30000);
+  const clearPoTokenRefresh = () => clearInterval(poTokenRefreshInterval);
+  serverAbrStream.once('finish', clearPoTokenRefresh);
+  serverAbrStream.once('abort', clearPoTokenRefresh);
+
   // Handle player response reload events (e.g, when IP changes, or formats expire).
   serverAbrStream.on('reloadPlayerResponse', async (reloadPlaybackContext) => {
     const playerResponse = await makePlayerRequest(innertube, videoId, reloadPlaybackContext);
