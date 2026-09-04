@@ -23,7 +23,7 @@ export class PlayItemYoutube implements PlayItem {
 
   private static innertube: Innertube;
 
-  private static readonly urlRegex = /(?:youtube(?:-nocookie)?\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]vi?=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  private static readonly urlRegex = /(?:youtube(?:-nocookie)?\.com\/(?:shorts\/|[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]vi?=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
 
   private readonly videoId: string;
 
