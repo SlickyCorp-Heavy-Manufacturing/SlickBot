@@ -30,5 +30,6 @@ RUN rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
   apt-get autoremove --yes
 
 COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules/youtube-dl-exec/bin/yt-dlp ./node_modules/youtube-dl-exec/bin/yt-dlp
 
 CMD ["node", "dist/index.js"]
