@@ -1,19 +1,13 @@
 
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { BotGuardClient, getChallenge } from 'bgutils-js/botguard';
+import { BotGuardClient } from 'bgutils-js/botguard';
 import type { WebPoSignalOutput } from 'bgutils-js/shared-types';
 import { createColdStartToken } from 'bgutils-js/webpo';
 import { WebPoMinter } from 'bgutils-js/webpo';
-import { buildURL, getHeaders } from 'bgutils-js/utils';
+import { buildURL, getHeaders, parseLooseJSON, USER_AGENT } from 'bgutils-js/utils';
 import { JSDOM } from 'jsdom';
-
-interface BgConfig {
-  fetch: (input: string | URL | globalThis.Request, init?: RequestInit) => Promise<Response>;
-  globalObj: typeof globalThis;
-  identifier: string;
-  requestKey: string;
-}
+import type { IRawResponse } from 'youtubei.js';
 
 interface BgChallengeResult {
   interpreterJavascript?: {
@@ -23,63 +17,11 @@ interface BgChallengeResult {
   globalName?: unknown;
 }
 
-interface PoTokenResult {
-  poToken: string;
-}
-
-interface BgUtils {
-  Challenge: {
-    create: (config: BgConfig) => Promise<BgChallengeResult | null>;
-  };
-  PoToken: {
-    generate: (options: {
-      program?: unknown;
-      globalName?: unknown;
-      bgConfig: BgConfig;
-    }) => Promise<PoTokenResult | null>;
-    generateColdStartToken: (contentBinding: string) => string;
-  };
-}
-
 interface WebPoTokenResult {
   visitorData: string;
   placeholderPoToken: string;
   poToken: string;
 }
-
-const typedBG = {
-  Challenge: {
-    create: async (config: BgConfig): Promise<BgChallengeResult | null> => {
-      try {
-        const challenge = await getChallenge({ requestKey: config.requestKey, fetchFunction: config.fetch });
-
-        return {
-          interpreterJavascript: challenge.interpreterJavascript,
-          program: challenge.program,
-          globalName: challenge.globalName
-        };
-      } catch (error) {
-        console.warn('Unable to fetch BotGuard challenge, using a cold-start fallback token.', error);
-
-        return {
-          interpreterJavascript: {
-            privateDoNotAccessOrElseSafeScriptWrappedValue: ''
-          },
-          program: '',
-          globalName: ''
-        };
-      }
-    }
-  },
-  PoToken: {
-    generate: async ({ bgConfig }: { bgConfig: BgConfig }): Promise<PoTokenResult | null> => {
-      return Promise.resolve({
-        poToken: createColdStartToken(bgConfig.identifier)
-      });
-    },
-    generateColdStartToken: (contentBinding: string): string => createColdStartToken(contentBinding)
-  }
-} satisfies BgUtils;
 
 function ensureString(value: unknown, name: string): string {
   if (typeof value !== 'string') {
@@ -94,29 +36,56 @@ export async function generateWebPoToken(contentBinding: string): Promise<WebPoT
   if (!contentBinding)
     throw new Error('Could not get visitor data');
 
-  const dom = new JSDOM();
+  const dom = new JSDOM('<!DOCTYPE html><html lang="en"><head><title></title></head><body></body></html>', {
+    url: 'https://www.youtube.com',
+    referrer: 'https://www.youtube.com/'
+  });
 
   Object.assign(globalThis, {
     window: dom.window,
-    document: dom.window.document
+    document: dom.window.document,
+    location: dom.window.location,
+    origin: dom.window.origin
   });
 
-  const bgConfig: BgConfig = {
-    fetch: (input: string | URL | globalThis.Request, init?: RequestInit) => fetch(input, init),
-    globalObj: globalThis,
-    identifier: contentBinding,
-    requestKey
-  };
-
-  const bgChallengeRaw = await typedBG.Challenge.create(bgConfig);
-
-  if (!bgChallengeRaw || typeof bgChallengeRaw !== 'object') {
-    throw new Error('Could not get challenge');
+  if (!('navigator' in globalThis)) {
+    Object.defineProperty(globalThis, 'navigator', { value: dom.window.navigator });
   }
 
-  const bgChallenge = bgChallengeRaw;
-  const interpreterJavascript = bgChallenge.interpreterJavascript?.privateDoNotAccessOrElseSafeScriptWrappedValue;
-  const interpreterScript = ensureString(interpreterJavascript, 'interpreterJavascript');
+  const pageResponse = await fetch('https://www.youtube.com', {
+    headers: {
+      accept: '*/*',
+      'accept-language': 'en-US,en;q=0.7',
+      'user-agent': USER_AGENT
+    }
+  });
+  if (!pageResponse.ok) {
+    throw new Error(`Unable to fetch YouTube homepage: ${pageResponse.status}`);
+  }
+
+  const pageHtml = await pageResponse.text();
+  const initialAttestationData = /window\.ytAtN\(\s*({[\s\S]*?})\s*\)/.exec(pageHtml);
+  if (!initialAttestationData) {
+    throw new Error('Could not find BotGuard challenge');
+  }
+
+  const initialAttestationDataJson = parseLooseJSON(initialAttestationData[1]);
+  const challengeResponse = initialAttestationDataJson.R as IRawResponse;
+  const bgChallenge = challengeResponse.bgChallenge as BgChallengeResult | undefined;
+  if (!bgChallenge) {
+    throw new Error('Could not get BotGuard challenge');
+  }
+
+  const interpreterUrl = ensureString(
+    (bgChallenge as { interpreterUrl?: { privateDoNotAccessOrElseTrustedResourceUrlWrappedValue?: unknown } })
+      .interpreterUrl?.privateDoNotAccessOrElseTrustedResourceUrlWrappedValue,
+    'interpreterUrl'
+  );
+  const bgScriptResponse = await fetch(`https:${interpreterUrl}`);
+  const interpreterScript = await bgScriptResponse.text();
+  if (!interpreterScript) {
+    throw new Error('Could not load BotGuard interpreter');
+  }
 
   new Function(interpreterScript)();
 
@@ -145,7 +114,7 @@ export async function generateWebPoToken(contentBinding: string): Promise<WebPoT
     websafeFallbackToken: integrityTokenData[3]
   }, webPoSignalOutput);
   const poToken = ensureString(await webPoMinter.mintAsWebsafeString(contentBinding), 'poToken');
-  const placeholderPoToken = ensureString(typedBG.PoToken.generateColdStartToken(contentBinding), 'placeholderPoToken');
+  const placeholderPoToken = ensureString(createColdStartToken(contentBinding), 'placeholderPoToken');
 
   return {
     visitorData: contentBinding,
