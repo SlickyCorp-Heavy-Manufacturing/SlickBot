@@ -1,8 +1,11 @@
 
 /* eslint-disable @typescript-eslint/no-implied-eval */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { getChallenge } from 'bgutils-js/botguard';
+import { BotGuardClient, getChallenge } from 'bgutils-js/botguard';
+import type { WebPoSignalOutput } from 'bgutils-js/shared-types';
 import { createColdStartToken } from 'bgutils-js/webpo';
+import { WebPoMinter } from 'bgutils-js/webpo';
+import { buildURL, getHeaders } from 'bgutils-js/utils';
 import { JSDOM } from 'jsdom';
 
 interface BgConfig {
@@ -117,20 +120,31 @@ export async function generateWebPoToken(contentBinding: string): Promise<WebPoT
 
   new Function(interpreterScript)();
 
-  const poTokenOptions = {
-    program: bgChallenge.program,
-    globalName: bgChallenge.globalName,
-    bgConfig
-  } as const;
+  const webPoSignalOutput: WebPoSignalOutput = [];
+  const botGuardClient = await BotGuardClient.create({
+    program: ensureString(bgChallenge.program, 'program'),
+    globalName: ensureString(bgChallenge.globalName, 'globalName'),
+    globalObject: globalThis
+  });
+  const botguardResponse = await botGuardClient.snapshot({ webPoSignalOutput });
+  const integrityTokenResponse = await fetch(buildURL('GenerateIT', true), {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify([requestKey, botguardResponse])
+  });
 
-  const poTokenResultRaw = await typedBG.PoToken.generate(poTokenOptions);
-
-  if (!poTokenResultRaw || typeof poTokenResultRaw !== 'object') {
-    throw new Error('Could not generate token');
+  if (!integrityTokenResponse.ok) {
+    throw new Error(`Unable to generate integrity token: ${integrityTokenResponse.status}`);
   }
 
-  const poTokenResult = poTokenResultRaw;
-  const poToken = ensureString(poTokenResult.poToken, 'poToken');
+  const integrityTokenData = await integrityTokenResponse.json() as [string, number, number, string];
+  const webPoMinter = await WebPoMinter.create({
+    integrityToken: integrityTokenData[0],
+    estimatedTtlSecs: integrityTokenData[1],
+    mintRefreshThreshold: integrityTokenData[2],
+    websafeFallbackToken: integrityTokenData[3]
+  }, webPoSignalOutput);
+  const poToken = ensureString(await webPoMinter.mintAsWebsafeString(contentBinding), 'poToken');
   const placeholderPoToken = ensureString(typedBG.PoToken.generateColdStartToken(contentBinding), 'placeholderPoToken');
 
   return {
