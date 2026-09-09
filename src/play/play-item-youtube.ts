@@ -49,7 +49,10 @@ export class PlayItemYoutube implements PlayItem {
     const streamProcess = youtubeDl.exec(this.url, {
       format: 'bestaudio[acodec=opus]/bestaudio',
       noPlaylist: true,
-      output: '-'
+      output: '-',
+      // Some YouTube videos require a JS runtime for extraction; the default
+      // yt-dlp environment can otherwise fail with "No supported JavaScript runtime".
+      jsRuntimes: 'node'
     });
     if (!streamProcess.stdout) {
       throw new Error('Unable to create YouTube audio stream');
