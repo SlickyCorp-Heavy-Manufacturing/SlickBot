@@ -1,4 +1,4 @@
-#Build stage
+# Build stage
 FROM docker.io/node:26.8.1 AS build
 
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY . .
 
 RUN npm run build
 
-#Production stage
+# Production stage
 FROM docker.io/node:26.8.1 AS production
 
 LABEL org.opencontainers.image.source=https://github.com/SlickyCorp-Heavy-Manufacturing/SlickBot
@@ -21,8 +21,9 @@ WORKDIR /app
 
 COPY package*.json .
 
+RUN npm ci --build-from-source --ignore-scripts --omit=dev
+
 RUN rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
-  npm ci --build-from-source --ignore-scripts --omit=dev && \
   npx --yes playwright install --with-deps chromium && \
   apt update && \
   apt install --yes ffmpeg && \
