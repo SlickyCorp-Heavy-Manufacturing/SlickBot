@@ -9,7 +9,7 @@ permissions:
 
 concurrency:
   group: release
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   release:
@@ -26,6 +26,38 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
+      - name: Wait for quiet period on main
+        shell: bash
+        env:
+          QUIET_PERIOD_SECONDS: 300
+        run: |
+          set -euo pipefail
+
+          start_sha="$(git rev-parse origin/main)"
+          echo "Waiting for a 5 minute quiet period on main before releasing."
+
+          while true; do
+            git fetch --quiet origin main
+            current_sha="$(git rev-parse origin/main)"
+
+            if [[ "$current_sha" != "$start_sha" ]]; then
+              echo "A newer commit arrived on main after this workflow started. Cancelling this release run."
+              exit 1
+            fi
+
+            latest_epoch="$(git log -1 --format=%ct origin/main)"
+            now_epoch="$(date +%s)"
+            age_seconds=$((now_epoch - latest_epoch))
+
+            if (( age_seconds >= QUIET_PERIOD_SECONDS )); then
+              echo "main has been quiet for ${QUIET_PERIOD_SECONDS} seconds; proceeding with release."
+              break
+            fi
+
+            remaining=$((QUIET_PERIOD_SECONDS - age_seconds))
+            echo "main last changed ${age_seconds}s ago; waiting ${remaining}s for the quiet period to finish."
+            sleep 60
+          done
       - name: Set up QEMU
         uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a
       - name: Set up Docker Buildx
