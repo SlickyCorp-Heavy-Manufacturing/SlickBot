@@ -75,7 +75,6 @@ export class PlayItemYoutube implements PlayItem {
 
     // Get basic info about the video
     const info = await this.innertube.getBasicInfo(videoId);
-    console.log(`Retrieved video info: ${JSON.stringify(info.basic_info)}`);
 
     return new PlayItemYoutube(msg, info.basic_info.title ?? '<unknown title>', videoId, url, volume);
   }
