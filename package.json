@@ -54,7 +54,7 @@
     "soundcloud.ts": "0.7.4",
     "tmp-promise": "3.0.3",
     "uuid": "^14.0.2",
-    "yargs": "18.1.0",
+    "yargs": "18.2.0",
     "youtube-dl-exec": "^3.1.15",
     "youtubei.js": "^18.0.0",
     "ytpl": "^2.3.0"
@@ -93,7 +93,7 @@
     "sinon-chai": "^4.0.1",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
-    "tsx": "^4.23.13",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.70.0"
   }
