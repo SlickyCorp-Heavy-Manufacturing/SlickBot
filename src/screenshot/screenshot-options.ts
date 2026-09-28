@@ -5,14 +5,12 @@ export default interface ScreenshotOptions {
   /**
    * Click these elements before taking the screenshot.
    */
-  readonly clicks?: [
-    {
-      /**
-       * The selector string of the elment to click.
-       */
-      readonly selector: string;
-    }
-  ];
+  readonly clicks?: {
+    /**
+     * The selector string of the elment to click.
+     */
+    readonly selector: string;
+  }[];
   /**
    * The selector string of the element that should be screenshotted.
    */
