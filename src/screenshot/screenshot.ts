@@ -36,7 +36,9 @@ export default class Screenshot {
       if (options.clicks) {
         for (const click of options.clicks) {
           console.log(`Clicking '${click.selector}...`);
-          await page.locator(click.selector).click();
+          for (const element of await page.locator(click.selector).all()) {
+            await element.click();
+          }
           console.log('  - done');
         }
       }
