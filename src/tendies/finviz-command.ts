@@ -8,6 +8,9 @@ async function finvizScreenshot(map: string): Promise<Buffer> {
   return await Screenshot.get({
     clicks: [
       {
+        selector: 'button[aria-label="Close"]',
+      },
+      {
         selector: 'button[title="Fullscreen"]',
       },
     ],
