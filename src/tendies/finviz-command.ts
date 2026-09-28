@@ -8,7 +8,7 @@ async function finvizScreenshot(map: string): Promise<Buffer> {
   return await Screenshot.get({
     clicks: [
       {
-        selector: 'button:has-text("Fullscreen")',
+        selector: 'button[title="Fullscreen"]',
       },
     ],
     selector: 'canvas.chart',
