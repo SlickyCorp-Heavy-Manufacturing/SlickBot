@@ -20,14 +20,26 @@ async function finvizScreenshot(map: string): Promise<Buffer> {
   });
 }
 
-export const SpyCommand: ICommand = {
-  name: '!spy',
-  helpDescription: 'Bot will respond with a box chart of spy',
+export const CapCommand: ICommand = {
+  name: '!cap',
+  helpDescription: 'Bot will respond with a box chart of the market cap',
   showInHelp: true,
-  trigger: (msg: Message) => msg.content.startsWith('!spy'),
+  trigger: (msg: Message) => msg.content.startsWith('!cap'),
   command: async (msg: Message): Promise<void> => {
     await (msg.channel as TextChannel).send({
-      files: [await finvizScreenshot('spy')],
+      files: [await finvizScreenshot('cap')],
+    });
+  },
+};
+
+export const CryptoCommand: ICommand = {
+  name: '!crypto',
+  helpDescription: 'Bot will respond with a box chart of crypto',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!crypto'),
+  command: async (msg: Message): Promise<void> => {
+    await (msg.channel as TextChannel).send({
+      files: [await finvizScreenshot('crypto')],
     });
   },
 };
@@ -55,6 +67,42 @@ export const EtfCommand: ICommand = {
   command: async (msg: Message): Promise<void> => {
     await (msg.channel as TextChannel).send({
       files: [await finvizScreenshot('etf')],
+    });
+  },
+};
+
+export const NasdaqCommand: ICommand = {
+  name: '!nasdaq',
+  helpDescription: 'Bot will respond with a box chart of the Nasdaq index',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!nasdaq'),
+  command: async (msg: Message): Promise<void> => {
+    await (msg.channel as TextChannel).send({
+      files: [await finvizScreenshot('sec_ndx')],
+    });
+  },
+};
+
+export const RussellCommand: ICommand = {
+  name: '!russell',
+  helpDescription: 'Bot will respond with a box chart of the Russell index',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!russell'),
+  command: async (msg: Message): Promise<void> => {
+    await (msg.channel as TextChannel).send({
+      files: [await finvizScreenshot('sec_rut')],
+    });
+  },
+};
+
+export const SpyCommand: ICommand = {
+  name: '!spy',
+  helpDescription: 'Bot will respond with a box chart of spy',
+  showInHelp: true,
+  trigger: (msg: Message) => msg.content.startsWith('!spy'),
+  command: async (msg: Message): Promise<void> => {
+    await (msg.channel as TextChannel).send({
+      files: [await finvizScreenshot('spy')],
     });
   },
 };
