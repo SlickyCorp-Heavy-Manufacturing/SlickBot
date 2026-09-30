@@ -39,6 +39,10 @@ export default class Screenshot {
           for (const element of await page.locator(click.selector).all()) {
             await element.click();
           }
+          if (click.sleepAfterClick) {
+            console.log(`  - sleeping for ${click.sleepAfterClick}ms...`);
+            await page.waitForTimeout(click.sleepAfterClick);
+          }
           console.log('  - done');
         }
       }

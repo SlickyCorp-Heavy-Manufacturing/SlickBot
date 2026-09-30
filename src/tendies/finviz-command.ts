@@ -12,6 +12,7 @@ async function finvizScreenshot(map: string): Promise<Buffer> {
       },
       {
         selector: 'button[title="Fullscreen"]',
+        sleepAfterClick: 500,
       },
     ],
     selector: 'canvas.chart',
