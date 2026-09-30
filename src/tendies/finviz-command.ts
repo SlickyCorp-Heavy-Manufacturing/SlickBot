@@ -16,7 +16,7 @@ async function finvizScreenshot(map: string): Promise<Buffer> {
     ],
     selector: 'canvas.chart',
     url: `https://finviz.com/map.ashx?t=${map}`,
-    viewportSize: { height: 1200, width: 1200 },
+    viewportSize: { height: 1920, width: 1200 },
   });
 }
 
