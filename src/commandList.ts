@@ -6,12 +6,16 @@ import { TroutslapCommand } from './troutslap/troutslap-command.js';
 import { KlingonCommand } from './klingon/klingon-command.js';
 import { PlayCommand } from './play/play-command.js';
 import {
-  TendiesCommand,
+  CapCommand,
+  CryptoCommand,
+  DowCommand,
+  EtfCommand,
+  NasdaqCommand,
+  RussellCommand,
   ShortsCommand,
   SpyCommand,
-  EtfCommand,
+  TendiesCommand,
   WorldCommand,
-  DowCommand,
 } from './tendies/index.js';
 import { NiceReaction, ChulasRecation } from './reactions/index.js';
 import { DevNullCommand } from './dev_null/dev-null-command.js';
@@ -53,4 +57,8 @@ export const commandList: ICommand[] = [
   DefineCommand,
   DalleCommand,
   HateSpeechCommand,
+  CapCommand,
+  CryptoCommand,
+  NasdaqCommand,
+  RussellCommand,
 ];
