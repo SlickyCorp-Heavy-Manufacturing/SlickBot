@@ -35,13 +35,16 @@ export default class Screenshot {
       // Clicks
       if (options.clicks) {
         for (const click of options.clicks) {
+          let clicked = 0;
           console.log(`Clicking '${click.selector}...`);
           for (const element of await page.locator(click.selector).all()) {
             if (await element.isVisible()) {
+              console.log(`  - element [${element.toString()}] is visible, clicking...`);
               await element.click();
+              clicked++;
             }
           }
-          if (click.sleepAfterClick) {
+          if (clicked > 0 && click.sleepAfterClick) {
             console.log(`  - sleeping for ${click.sleepAfterClick}ms...`);
             await page.waitForTimeout(click.sleepAfterClick);
           }

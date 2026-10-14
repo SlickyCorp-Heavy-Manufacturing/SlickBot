@@ -9,10 +9,19 @@ async function finvizScreenshot(map: string): Promise<Buffer> {
     clicks: [
       {
         selector: 'button[aria-label="Close"]',
+        sleepAfterClick: 250,
       },
       {
         selector: 'button[title="Fullscreen"]',
         sleepAfterClick: 500,
+      },
+      {
+        selector: 'button[data-testid="elite-features-dialog-close"]',
+        sleepAfterClick: 250,
+      },
+      {
+        selector: 'button[aria-label="Close"]',
+        sleepAfterClick: 250,
       },
     ],
     selector: 'canvas.chart',
