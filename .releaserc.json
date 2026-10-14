@@ -14,6 +14,12 @@
       "npmPublish": false
     }],
     ["@codedependant/semantic-release-docker", {
+      "dockerBuildFlags": {
+        "annotation": [
+          "index:org.opencontainers.image.description=Discord bot that does important features",
+          "index:org.opencontainers.image.source=https://github.com/SlickyCorp-Heavy-Manufacturing/SlickBot"
+        ]
+      },
       "dockerBuildQuiet": false,
       "dockerPlatform": ["linux/amd64"],
       "dockerRegistry": "ghcr.io"
