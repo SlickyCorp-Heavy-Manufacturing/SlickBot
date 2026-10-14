@@ -37,7 +37,9 @@ export default class Screenshot {
         for (const click of options.clicks) {
           console.log(`Clicking '${click.selector}...`);
           for (const element of await page.locator(click.selector).all()) {
-            await element.click();
+            if (await element.isVisible()) {
+              await element.click();
+            }
           }
           if (click.sleepAfterClick) {
             console.log(`  - sleeping for ${click.sleepAfterClick}ms...`);
