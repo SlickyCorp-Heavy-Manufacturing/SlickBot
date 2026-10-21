@@ -56,12 +56,12 @@
     "uuid": "^14.0.3",
     "yargs": "18.2.0",
     "youtube-dl-exec": "^3.1.17",
-    "youtubei.js": "^18.1.0",
+    "youtubei.js": "^18.2.0",
     "ytpl": "^2.3.0"
   },
   "devDependencies": {
     "@codedependant/semantic-release-docker": "^8.0.0",
-    "@commitlint/cli": "^21.2.3",
+    "@commitlint/cli": "^21.2.4",
     "@eslint/js": "^10.0.1",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@semantic-release/exec": "^7.1.0",
