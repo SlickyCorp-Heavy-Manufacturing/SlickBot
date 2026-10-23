@@ -5,7 +5,12 @@ WORKDIR /app
 
 COPY package*.json .
 
-RUN npm install
+ARG TARGETARCH
+RUN if [ "$TARGETARCH" = "arm64" ]; then \
+    CFLAGS="-DOPUS_ARM_MAY_HAVE_NEON_INTR" npm install; \
+  else \
+    npm install; \
+  fi
 
 COPY . .
 
@@ -21,7 +26,13 @@ WORKDIR /app
 
 COPY package*.json .
 
-RUN npm ci --build-from-source --ignore-scripts --omit=dev
+ARG TARGETARCH
+RUN npm ci --build-from-source --ignore-scripts --omit=dev && \
+  if [ "$TARGETARCH" = "arm64" ]; then \
+    CFLAGS="-DOPUS_ARM_MAY_HAVE_NEON_INTR" npm rebuild --build-from-source @discordjs/opus; \
+  else \
+    npm rebuild --build-from-source @discordjs/opus; \
+  fi
 
 RUN rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
   npx --yes playwright install --with-deps chromium && \
