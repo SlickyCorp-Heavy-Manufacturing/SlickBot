@@ -4,7 +4,6 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { ReloadPlaybackContext } from 'googlevideo/protos';
 import { SabrStream, type SabrPlaybackOptions } from 'googlevideo/sabr-stream';
 import type { SabrFormat } from 'googlevideo/shared-types';
@@ -28,6 +27,12 @@ export interface StreamResults {
     audioFormat: SabrFormat;
   };
   videoTitle: string;
+}
+
+function decodeWebsafeBase64(value: string): Uint8Array {
+  const standardBase64 = value.replace(/-/g, '+').replace(/_/g, '/');
+  const paddedBase64 = standardBase64.padEnd(standardBase64.length + (4 - standardBase64.length % 4) % 4, '=');
+  return Uint8Array.from(atob(paddedBase64), (character) => character.charCodeAt(0));
 }
 
 Platform.shim.eval = async (data: Types.BuildScriptResult, env: Record<string, Types.VMPrimative>) => {
@@ -132,46 +137,49 @@ export async function createSabrStream(
   const sabrFormats = playerResponse.streaming_data?.adaptive_formats.map(buildSabrFormat) || [];
 
   const serverAbrStream = new SabrStream({
+    videoId,
     formats: sabrFormats,
     serverAbrStreamingUrl,
     videoPlaybackUstreamerConfig,
     poToken: webPoTokenResult.poToken,
+    callbacks: {
+      onMintPoToken: async () => decodeWebsafeBase64((await generateWebPoToken(videoId)).poToken),
+      onReloadPlayerResponse: async (reloadPlaybackContext?: ReloadPlaybackContext) => {
+        const reloadedPlayerResponse = await makePlayerRequest(innertube, videoId, reloadPlaybackContext);
+        const reloadedStreamingUrl = await innertube.session.player?.decipher(reloadedPlayerResponse.streaming_data?.server_abr_streaming_url);
+        const reloadedUstreamerConfig = reloadedPlayerResponse.player_config?.media_common_config.media_ustreamer_request_config?.video_playback_ustreamer_config;
+
+        if (!reloadedStreamingUrl || !reloadedUstreamerConfig) {
+          throw new Error('Reloaded streaming data is incomplete');
+        }
+
+        return {
+          serverAbrStreamingUrl: reloadedStreamingUrl,
+          videoPlaybackUstreamerConfig: reloadedUstreamerConfig
+        };
+      }
+    },
     clientInfo: {
       clientName: parseInt(Constants.CLIENT_NAME_IDS[innertube.session.context.client.clientName as keyof typeof Constants.CLIENT_NAME_IDS]),
       clientVersion: innertube.session.context.client.clientVersion
     }
   });
 
-  const poTokenRefreshInterval = setInterval(() => {
-    void generateWebPoToken(videoId)
-      .then(({ poToken }) => serverAbrStream.setPoToken(poToken))
-      .catch((error: unknown) => console.warn('Unable to refresh YouTube PO token.', error));
-  }, 30000);
-  const clearPoTokenRefresh = () => clearInterval(poTokenRefreshInterval);
-  serverAbrStream.once('finish', clearPoTokenRefresh);
-  serverAbrStream.once('abort', clearPoTokenRefresh);
-
-  // Handle player response reload events (e.g, when IP changes, or formats expire).
-  serverAbrStream.on('reloadPlayerResponse', async (reloadPlaybackContext) => {
-    const playerResponse = await makePlayerRequest(innertube, videoId, reloadPlaybackContext);
-
-    const serverAbrStreamingUrl = await innertube.session.player?.decipher(playerResponse.streaming_data?.server_abr_streaming_url);
-    const videoPlaybackUstreamerConfig = playerResponse.player_config?.media_common_config.media_ustreamer_request_config?.video_playback_ustreamer_config;
-
-    if (serverAbrStreamingUrl && videoPlaybackUstreamerConfig) {
-      serverAbrStream.setStreamingURL(serverAbrStreamingUrl);
-      serverAbrStream.setUstreamerConfig(videoPlaybackUstreamerConfig);
-    }
-  });
-
-  const { videoStream, audioStream, selectedFormats } = await serverAbrStream.start(options);
+  const { videoStream, audioStream, selectedFormats } = serverAbrStream.start(options);
+  const { videoFormat } = selectedFormats;
+  if (!videoFormat) {
+    throw new Error('A video format is required');
+  }
 
   return {
     innertube,
     streamResults: {
       videoStream,
       audioStream,
-      selectedFormats,
+      selectedFormats: {
+        videoFormat,
+        audioFormat: selectedFormats.audioFormat
+      },
       videoTitle
     }
   };
