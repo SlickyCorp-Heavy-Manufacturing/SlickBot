@@ -77,7 +77,7 @@ export class Play {
       }
     } else {
       const text = msg.content.replace(/^![^\s]+\s+/, '');
-      const textParts = text.match(/.{1,5000}(\s|$)/gs)?.map((part) => new PlayItemTTS(msg, part, 'Some Text', 150));
+      const textParts = text.match(/.{1,5000}(\s|$)/gs)?.map((part) => new PlayItemTTS(msg, part, 'Some Text', 200));
       if (textParts) {
         items.push(...textParts);
       }
